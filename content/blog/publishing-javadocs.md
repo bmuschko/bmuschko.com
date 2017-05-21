@@ -1,0 +1,162 @@
++++
+title = "Publishing Javadocs with Gradle"
+tags = [
+    "java",
+    "javadoc",
+    "gradle",
+    "documentation",
+    "ci",
+    "travis"
+]
+date = "2017-05-21"
+draft = false
+highlight = true
++++
+
+
+## Introduction
+
+Documentation is a must-have for any consumer-facing project. It can come in different shapes and sizes: documentation about the functionality of the project, DSL documentation, API documentation, usage examples and many more. For consumers of libraries the relevant part of the documentation often is the exposed API. In the Java world, API documentation materializes as Javadocs.
+
+Java provides the [`javadoc`](http://www.oracle.com/technetwork/articles/java/index-jsp-135444.html) tool for generating Javadocs documentation from source code. Running the tool is a no-brainer either from the command line or as an integration with any of the build tools available, like Ant, Maven or Gradle. Even if generating Javadocs is simple, there's still the question of making the documentation accessible to consumers, the software developers using the library. If you are in the business of writing open-source libraries then you have various options. You could just publish your artifacts to Maven Central and reference it through [javadoc.io](http://www.javadoc.io/) (e.g. as done by the [Mockito project](http://site.mockito.org/)). However, you might prefer to publish your artifact to a different repository so javadoc.io disqualifies as option. Another hosting platform that has become increasing popular is [GitHub Pages](https://pages.github.com/).
+
+In this post you will learn how to generate Javadocs and publish them to GitHub Pages with the help of of an external plugin. Furthermore, we'll learn of integrate the process with the Continuous Integration provider [Travis CI](https://travis-ci.org/).
+
+This post won't go into a lot of details on Java or Gradle. Please consult the relevant documentation for more information.
+
+---
+
+## Generating  Javadocs
+
+Applying the [Java plugin](https://docs.gradle.org/current/userguide/java_plugin.html) to a Gradle build script automatically provides a task for generating Javadocs out-of-the-box. That task is called [`javadoc`](https://docs.gradle.org/current/userguide/java_plugin.html#sec:javadoc), takes the compiled source code from the `main` source set as input and builds a set of HTML pages as output. The following example code demonstrates how to apply the Java plugin to the project:
+
+_build.gradle_
+
+``` groovy
+apply plugin: 'java'
+```
+
+_Listing 1. Applying the Java plugin_
+
+Executing the task produces the Javadoc files in the directory _build/docs/javadoc_. The following console output shows how the task execution plays out in practice:
+
+``` shell
+$ ./gradlew javadoc
+:compileJava
+:processResources
+:classes
+:javadoc
+
+BUILD SUCCESSFUL
+```
+
+Next, let's have a look at how to publish the Javadoc files to GitHub Pages.
+
+---
+
+## Publishing to GitHub Pages
+
+Publishing the pages is almost as easy as generating them. You might have guessed it - there's a plugin for it. The plugin we'll use for this example is called the [Github Pages Plugin](https://github.com/ajoberstar/gradle-git/wiki/Github%20Pages%20Plugin). It's available on the [Gradle plugin portal](https://plugins.gradle.org/plugin/org.ajoberstar.github-pages) as well as [Bintray's JCenter repository](https://bintray.com/ajoberstar/maven/gradle-git). In the build script `ghpages.gradle`, we are applying the Github Pages Plugin. Moreover, we are configuring the plugin to map the output files from the `javadoc` task to the context path `docs/javadoc`. GitHub Pages will take the context page when exposing the URL for browsing the published artifacts. We also provide the URL of the GitHub repository. Depending on whether the environment variable `GH_TOKEN` is available, a URL is used that is either HTTPs-based or based on the `git` protocol.
+
+<a name="listing2"></a>_ghpages.gradle_
+
+``` groovy
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.ajoberstar:gradle-git:1.4.2'
+    }
+}
+
+apply plugin: org.ajoberstar.gradle.git.ghpages.GithubPagesPlugin
+
+ext {
+    repoPath = 'bmuschko/gradle-docker-plugin'
+    ghToken = System.getenv('GH_TOKEN')
+}
+
+githubPages {
+    if (ghToken) {
+        repoUri = "https://github.com/${repoPath}.git"
+        credentials {
+            username = ghToken
+            password = ''
+        }
+    } else {
+        repoUri = "git@github.com:${repoPath}.git"
+    }
+
+    pages {
+        from(javadoc.outputs.files) {
+            into 'docs/javadoc'
+        }
+    }
+}
+
+publishGhPages.dependsOn javadoc
+```
+
+_Listing 2. Using the gradle-git plugin to publish Javadocs_
+
+The Github Pages Plugin creates the task `publishGhPages`. By wiring it to the `javadoc` task as task dependency we make sure that the Javadocs are always created before they are published to GitHub Pages. You can find this code being used in the [Gradle Docker Plugin](https://github.com/bmuschko/gradle-docker-plugin/blob/master/gradle/documentation.gradle) if you want to have a closer look at the details. Initiating the publishing process is simple - run the corresponding publishing task:
+
+``` shell
+$ ./gradlew javadoc
+:compileJava
+:processResources
+:classes
+:javadoc
+:prepareGhPages
+:publishGhPages
+
+BUILD SUCCESSFUL
+```
+
+Pages published to GitHub can be resolved through the HTTP URL pattern _http://\<username\>.github.io_. In the example above the URL would evaluate to _http://bmuschko.github.io_. GitHub Pages organizes the published files with the name of the repository. Additionally, we provided the context path _docs/javadoc_. As a result our Javadocs can be browsed with the URL _http://bmuschko.github.io/gradle-docker-plugin/docs/javadoc_.
+
+In the last section of this post, we'll have a look at automatically running the publication process through Continuous Integration.
+
+---
+
+## Publishing Javadocs with every commit
+
+So far we automated the whole process of generating and publishing Javadocs. But what if we wanted to run this process as part of a build and deployment pipeline? Piece of cake. To demonstrate such a setup, we'll assume that we are building an open-source project. The following section talks about how to create a job on [Travis CI](https://travis-ci.org/). Be aware that a functionally similar setup can be achieved by using other Continuous Integration providers.
+
+Getting started with Travis CI is straight forward. Log in with your GitHub account, activate the project to be built and create a `.travis.yml` for configuring the job. More information on these steps can be found on the [Travis CI getting started page](https://docs.travis-ci.com/user/for-beginners). 
+
+The plugin configuration in [listing 2](#listing2) is looking for an environment variable named `GH_TOKEN`. Generate this [access token on Github](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) under _Settings > Personal access tokens_. With the access token in hand, we can now provide it to our project by configuring an environment variable on Travis CI.
+
+![Travis CI environment variable](/img/blog/travis-ci-env-var.png)
+
+_Figure 1. Declaring the Github token as environment variable on Travis CI_
+
+Let's also have a look at the required Travis configuration file. As shown in [listing 3](#listing3), we are configuring Travis to [build a Java-based project](https://docs.travis-ci.com/user/languages/java/) with JDK 8. The actual command of the job runs the tasks `build` and `publishGhPages` with the help of the Gradle Wrapper (which of course should be checked in with the source code).
+
+<a name="listing3"></a>_.travis.yml_
+
+``` yaml
+language: java
+install: true
+
+jdk:
+  - oraclejdk8
+
+script:
+  - ./gradlew build publishGhPages
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+```
+
+_Listing 3. Configuring the Travis CI job_
+
+The Travis CI job configuration assumes that a new version of the Javadocs should be published whenever there's a compilable code change. In a more realistic setting, we'd want to publish a new version of the library artifacts at the same time though a discussion of the topic is out of scope for this post.

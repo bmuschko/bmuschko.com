@@ -1,0 +1,22 @@
+baseURL = "http://www.bmuschko.com/"
+languageCode = "en-us"
+title = "Benjamin Muschko's development blog"
+disqusShortname = "bmuschko"
+
+[params]
+  avatar = "profile.jpg"
+  author = "Benjamin Muschko"
+
+[params.social]
+  Github        = "bmuschko"
+  Twitter       = "bmuschko"
+  LinkedIn      = "benjaminmuschko"
+  Stackoverflow = "users/528428/benjamin-muschko"
+  Email         = "benjamin.muschko@gmail.com"
+
+[[menu.main]]
+  name = "blog"
+  url = "/blog/"
+[[menu.main]]
+  name = "talks"
+  url = "/talks/"

@@ -1,0 +1,70 @@
+name: Talks
+source:
+  - title: Testing the build with Testkit
+    tags:
+      - testing
+      - functional
+      - gradle
+    description: Build code contributes to the success of a company to a large extent. It enables an organization to deliver their software to the end user fast, frequently and reliably. With Continuous Delivery becoming a standard practice throughout the industry and build logic increasing in complexity, a need arises to verify the logic powering these processes. Gradle provides powerful support for testing build code out-of-the-box. In this demo-driven session, we will discuss the ins and outs of TestKit, a Gradle core library that helps with functional testing of build logic.
+    slides: https://speakerdeck.com/bmuschko/testing-the-build-with-testkit
+    video: https://www.youtube.com/watch?v=P7SvwkRXjSU
+
+  - title: Gradle plugin best practices by example
+    tags:
+      - plugin
+      - reusability
+      - gradle
+    description: Gradle is a general purpose, multi-platform build tool. Plugins allow for extending Gradle's core capabilities with reusable and targeted functionality. In this session, we'll discuss techniques and best practices for developing your own Gradle plugins by dissecting the structure, code, documentation and supporting infrastructure of an existing Gradle plugin.
+    slides: https://speakerdeck.com/bmuschko/gradle-plugin-best-practices-by-example
+    video: https://www.youtube.com/watch?v=2VKXzkAOuwc
+
+  - title: Advanced Dependency Management with Gradle
+    tags:
+      - dependency
+      - maven
+      - ivy
+      - gradle
+    description: Gradle's dependency management is declarative, highly flexible and can cope with demanding requirements posed by enterprise projects. Among its key functionalities are transitive dependency resolution, full compatibility with existing infrastructure like Maven and Ivy repositories, as well as precise dependency resolution control, reporting and diagnostics. I am sure you are already using those features for your own projects but you can go further. In this demo-driven session, we will focus on less prominent, but extremely powerful dependency management capabilities you can use in your build today.
+    slides: https://speakerdeck.com/bmuschko/advanced-dependency-management-with-gradle
+    video: https://www.youtube.com/watch?v=YwEiGSSR4fc
+
+  - title: State of the art Gradle multi-module builds
+    tags:
+      - modularization
+      - ide
+      - gradle
+    description: "Large, complex projects often consist of multiple modules based on particular functionality and logical boundaries. The benefits are obvious: better maintainability, less coupling and high cohesion of code. Gradle provides powerful support for configuring and executing modularized projects. In the course of this session, we will discuss the state of the art techniques for tackling highly-customized multi-project builds. Furthermore, this talk will give an outlook on the features to come."
+    slides: https://speakerdeck.com/bmuschko/state-of-the-art-gradle-multi-module-builds
+    video: https://www.youtube.com/watch?v=T5bYWLNTKN4
+
+  - title: Web Application Deployments With Gradle
+    tags:
+      - web
+      - deployment
+      - container
+      - gradle
+    description: Web applications live and breathe in their runtime environment, the web container. But what is the best way to install the relevant artifacts during development or as part of your deployment pipeline? In this talk, we will discuss the techniques and tooling required to implement efficient, flexible, and most importantly, automated deployment strategies to local and remote web containers with Gradle.
+    slides: https://speakerdeck.com/bmuschko/web-application-deployments-with-gradle-from-the-developers-machine-to-continuous-deployment
+    video: https://www.youtube.com/watch?v=mWwN3PrcJUc
+
+  - title: Provisioning virtualized infrastructure with Gradle
+    tags:
+      - virtualization
+      - infrastructure
+      - vagrant
+      - docker
+      - gradle
+    description: Server infrastructure and configuration plays a crucial role in every build pipeline. It provides the runtime environment for your application and is used as basis for automated acceptance and exploratory testing. Managing infrastructure manually is time-consuming and error-prone. Virtualization helps to provide a repeatable, "production-like" environment. In this talk, we'll discuss how Gradle integrates with popular tools for creating virtual machines (VMs) as part of a standardized deployment and release process.
+    slides: https://speakerdeck.com/bmuschko/provisioning-virtualized-infrastructure-with-gradle
+    video: https://www.youtube.com/watch?v=G5kMc_ZzJ7E
+
+  - title: Building a Continuous Delivery Pipeline with Gradle and Jenkins
+    tags:
+      - ci
+      - cd
+      - pipeline
+      - jenkins
+      - gradle
+    description: Getting software from a developer's machine to a production environment without a fully automated process is time-consuming and error-prone. Continuous Delivery enables building, testing and deploying of software through build pipelines with well-defined quality gates. In this session, we will discuss how to build an exemplary pipeline with the help of Gradle and Jenkins.
+    slides: https://speakerdeck.com/bmuschko/building-a-continuous-delivery-pipeline-with-gradle-and-jenkins
+    video: https://www.youtube.com/watch?v=L4ZgTCq6dLQ
