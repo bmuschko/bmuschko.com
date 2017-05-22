@@ -1,7 +1,7 @@
 baseURL = "http://www.bmuschko.com/"
 languageCode = "en-us"
 title = "Benjamin Muschko's development blog"
-disqusShortname = "bmuschko"
+disqusShortname = "bmuschko-com"
 
 [params]
   avatar = "profile.jpg"
