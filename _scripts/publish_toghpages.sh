@@ -29,4 +29,7 @@ echo "Create CNAME file"
 echo bmuschko.com >> public/CNAME
 
 echo "Updating gh-pages branch"
-cd public && git add --all && git commit -m "Publishing to gh-pages (publish.sh)"
+cd public && git add --all && git commit -m "Add and commit to gh-pages branch"
+
+echo "Publish site"
+git push origin gh-pages
