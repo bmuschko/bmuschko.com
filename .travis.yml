@@ -1,9 +1,25 @@
-dist: trusty
-sudo: required
+language: go
 
-before_install:
-- sudo apt-get update -qq
-- sudo apt-get install -qq hugo
+go:
+  - "1.7.1"
 
+# Clean and don't fail
+install:
+  - rm -rf public || exit 0
+
+before_script:
+  - git clone --branch v2 https://github.com/go-yaml/yaml $GOPATH/src/gopkg.in/yaml.v2
+  - go get -u -v github.com/spf13/hugo
+
+# Build the website
 script:
-- _scripts/publish_toghpages.sh
+  - hugo
+
+# Deploy to GitHub pages
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: public
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
