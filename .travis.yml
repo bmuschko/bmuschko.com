@@ -1,0 +1,5 @@
+before_install:
+- sudo apt-get install hugo
+
+script:
+- _scripts/publish_toghpages.sh
