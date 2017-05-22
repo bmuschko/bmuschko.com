@@ -2,6 +2,7 @@ baseURL = "http://www.bmuschko.com/"
 languageCode = "en-us"
 title = "Benjamin Muschko's development blog"
 disqusShortname = "bmuschko-com"
+googleAnalytics = "UA-99678333-1"
 
 [params]
   avatar = "profile.jpg"
