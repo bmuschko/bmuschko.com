@@ -2,7 +2,8 @@ dist: trusty
 sudo: required
 
 before_install:
-- sudo apt-get install hugo
+- sudo apt-get update -qq
+- sudo apt-get install -qq hugo
 
 script:
 - _scripts/publish_toghpages.sh
