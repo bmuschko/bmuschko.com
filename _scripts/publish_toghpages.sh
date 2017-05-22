@@ -26,7 +26,7 @@ echo "Generating site"
 hugo
 
 echo "Create CNAME file"
-echo bmuschko.com >> CNAME
+echo bmuschko.com >> public/CNAME
 
 echo "Updating gh-pages branch"
 cd public && git add --all && git commit -m "Publishing to gh-pages (publish.sh)"
