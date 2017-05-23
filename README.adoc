@@ -1,0 +1,19 @@
+= Benjamin Muschko's Website image:https://travis-ci.org/bmuschko/bmuschko.com.svg?branch=master["Build Status", link="https://travis-ci.org/bmuschko/bmuschko.com"]
+
+This is the source for http://www.bmuschko.com. I use the general-purpose website framework link:https://gohugo.io/[Hugo] to
+take the source here and create a static site which can be found at link:http://www.bmuschko.com[bmuschko.com].
+The page uses the link:https://github.com/nurlansu/hugo-sustain[sustain theme].
+
+== License
+
+The following files and directories including their contents are Copyright Benjamin Muschko, or
+their respective copyright holders:
+
+- `content/`
+- `static/img/`
+
+All other directories and files are MIT Licensed unless clearly
+designated otherwise.
+
+Feel free to use the HTML and CSS as you please.
+If you do use anything here, a link back to http://github.com/bmuschko would be appreciated.
