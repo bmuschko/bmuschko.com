@@ -26,7 +26,7 @@ This post won't go into a lot of details on Java or Gradle. Please consult the r
 
 ---
 
-## Generating  Javadocs
+== Generating  Javadocs
 
 Applying the link:https://docs.gradle.org/current/userguide/java_plugin.html[Java plugin] to a Gradle build script automatically provides a task for generating Javadocs out-of-the-box. That task is called link:https://docs.gradle.org/current/userguide/java_plugin.html#sec:javadoc[`javadoc`], takes the compiled source code from the `main` source set as input and builds a set of HTML pages as output. The following example code demonstrates how to apply the Java plugin to the project:
 
@@ -54,7 +54,7 @@ Next, let's have a look at how to publish the Javadoc files to GitHub Pages.
 
 ---
 
-## Publishing to GitHub Pages
+== Publishing to GitHub Pages
 
 Publishing the pages is almost as easy as generating them. You might have guessed it - there's a plugin for it. The plugin we'll use for this example is called the link:https://github.com/ajoberstar/gradle-git/wiki/Github%20Pages%20Plugin[Github Pages Plugin]. It's available on the link:https://plugins.gradle.org/plugin/org.ajoberstar.github-pages[Gradle plugin portal] as well as link:https://bintray.com/ajoberstar/maven/gradle-git[Bintray's JCenter repository]. In the build script `ghpages.gradle`, we are applying the Github Pages Plugin. Moreover, we are configuring the plugin to map the output files from the `javadoc` task to the context path `docs/javadoc`. GitHub Pages will take the context page when exposing the URL for browsing the published artifacts. We also provide the URL of the GitHub repository. Depending on whether the environment variable `GH_TOKEN` is available, a URL is used that is either HTTPs-based or based on the `git` protocol.
 
@@ -122,7 +122,7 @@ In the last section of this post, we'll have a look at automatically running the
 
 ---
 
-## Publishing Javadocs with every commit
+== Publishing Javadocs with every commit
 
 So far we automated the whole process of generating and publishing Javadocs. But what if we wanted to run this process as part of a build and deployment pipeline? Piece of cake. To demonstrate such a setup, we'll assume that we are building an open-source project. The following section talks about how to create a job on link:https://travis-ci.org/[Travis CI]. Be aware that a functionally similar setup can be achieved by using other Continuous Integration providers.
 
