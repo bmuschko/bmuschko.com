@@ -19,7 +19,7 @@ before_script:
 
 # Build the website
 script:
-  - asciidoc-link-verifier
+  - ./asciidoc-link-verifier
   - hugo
   - echo bmuschko.com >> public/CNAME
 
