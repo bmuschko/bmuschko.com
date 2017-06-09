@@ -15,7 +15,7 @@ before_script:
   - tar -xvf /tmp/asciidoc-link-verifier.tar.gz
   - export PATH=$PATH:$PWD/asciidoc-link-verifier/
   - echo $PATH
-  - ls -l $PWD/asciidoc-link-verifier/
+  - ls -l $PWD
 
 # Build the website
 script:
