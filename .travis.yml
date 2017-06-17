@@ -11,7 +11,7 @@ before_script:
   - gem install asciidoctor
   - git clone --branch v2 https://github.com/go-yaml/yaml $GOPATH/src/gopkg.in/yaml.v2
   - go get -u -v github.com/spf13/hugo
-  - wget https://github.com/bmuschko/link-verifier/releases/download/v0.1/link-verifier-0.1-linux64.tar.gz -O /tmp/link-verifier.tar.gz
+  - wget https://github.com/bmuschko/link-verifier/releases/download/v0.2/link-verifier-0.2-linux64.tar.gz -O /tmp/link-verifier.tar.gz
   - tar -xvf /tmp/link-verifier.tar.gz
   - export PATH=$PATH:$PWD/link-verifier/
 
