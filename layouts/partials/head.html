@@ -31,7 +31,7 @@
 			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 		<![endif]-->` | safeHTML }}
 
-    {{ if not .Site.BuildDrafts }}
-      {{ template "_internal/google_analytics.html" . }}
+    {{ if ne (printf "%v" $.Site.BaseURL) "http://localhost:1313/" }}
+        {{ template "_internal/google_analytics.html" . }}
     {{ end }}
   </head>
