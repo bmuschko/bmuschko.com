@@ -21,7 +21,7 @@
                {{ end }}
             </p>
     
-            <p>{{ $talk.description }}</p>
+            <p>{{ $talk.description | markdownify }}</p>
     
             <p><a href="{{ $talk.slides }}">Slides</a> | <a href="{{ $talk.video }}">Video</a></p>
     

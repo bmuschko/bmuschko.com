@@ -1,5 +1,20 @@
 name: Talks
 source:
+  - title: Designing and writing Gradle plugins
+    tags:
+      - plugins
+      - recipes
+      - patterns
+      - gradle
+    description: "Implementing plugins can be a daunting task for Gradle beginners and advanced users alike. The task requires many intricate considerations, decisions and deep knowledge about (sometimes undocumented) features. Have you ever asked yourself one of the following questions, then this session is for you!
+\n\n
+- What's the best structure for my plugin code?\n
+- How do I make my plugin as performant, flexible and user-friendly as possible?\n
+- How do I ensure the best forward and backward compatibility for builds consuming my plugin?\n
+- How do I expose a declarative DSL to configure my plugin's runtime behavior?"
+    slides: https://speakerdeck.com/bmuschko/designing-and-writing-gradle-plugins
+    video: https://www.youtube.com/watch?v=wLHqAC0Ag4M
+
   - title: Testing the build with Testkit
     tags:
       - testing
