@@ -1,0 +1,77 @@
++++
+title = "So you want to write a tech book"
+tags = [
+    "tech",
+    "writing",
+    "book",
+    "author"
+]
+date = "2017-06-18"
+draft = true
+highlight = true
++++
+
+You are a published author. Your family and friends are super proud of you, co-workers admire your perseverance, hard work and deep technical knowledge, it looks great on the resume and companies are eager to hire you (it must be worth a higher salary right?). That's the dream you set out to do - write a technical book on an area of knowledge you are passionate about. Unfortunately, you haven't started writing yet nor do you have a publisher for your work. 
+
+Writing a book on a technical topic is a long, arduous but incredibly rewarding journey. In this blog post, I am going to talk about my personal experience with developing, writing and marketing a tech book. If you are an aspiring author, this post will give you an insight into the process of producing a book, help you avoid common pitfalls, and (hopefully) motivate you to share your knowledge on a technical topic. The thoughts I am laying out in this post are most the result on working on the book link:https://www.manning.com/books/gradle-in-action["Gradle in Action"] published by Manning Publications.
+
+---
+
+== Motivation for writing
+
+Just the thought of wanting to write a book won't cut it to complete a book. It takes a lot of energy and commitment to actually get it over the finish line. Before writing a book as yourself why you want to write it. The reasons might be very different from person to person. For my part I always enjoyed writing whether that's technical or non-technical content. What drove me was the combination of a topic that I am passionate about with the goal of putting together a consistent body of work in the form of a book. I believe another aspect was the fact that I wanted to prove to myself that I could do it.
+
+Unlike successful novels, it's by no means a given that a tech book will make you rich or famous. Tech books are considered successful if they sell more than 10,000 copies. Reality is that most tech books will never reach that goal. I believe up until now I didn't sell more than a combined number of 6,000 copies of ebooks or print books. An author earns roughly 10% of the sales price. So for a book that is being sold for $50 you make $5. Most of time you will also have to factor in discounts offered by the publisher. Bottom line is that the monetary aspect is not a non-reason for writing a tech book.
+
+In a way writing a book is a lot like running a marathon. You have to keep in chipping away at the content at a maintainable speed. Some people are unsure whether they can keep up the demands on writing a book. A good way to try it out for yourself is participate in the NoWoMo, a full month of writing content, cherrishing your accomplishments and interacting with fellow writers and aspiring authors. I tried it but for for some reason it didn't really click for me. I think the main reason was the fact that I didn't have a clear outline yet which really brings us to the next topic. What should you prepare before jumping into the writing process?
+
+== Work you should do before starting to write
+
+From my perspective there are three important artifacts you'll need to produce before even starting to write content.
+
+1. Determining the target audience of your book.
+2. Writing a summary of your book.
+3. Creating a structured outline of all chapters you are planning to cover.
+
+All of these artifacts help you formalize a vision for your book. Especially point number 1 is also going to have a strong influence on the topics you will want to cover and the prerequisite knowledge you are expecting a reader to have. Most publishers will likely ask you for those artifacts before signing a contract with you.
+
+== Working with a publisher or self-publish
+
+Especially for first-time book authors writing a book is associated with a lot of unknowns. You might ask yourself one if not all of the following questions (maybe even more):
+
+- Are people even interested in the content I am planning to write?
+- Who's going to review my content?
+- Am I a good enough writer?
+- Do I need to create diagrams and image to better teach of topic?
+- How do I best market my book?
+
+The main benefit of working with a publisher is that they have a lot experience with the process of writing, producing and marketing a tech book. They will take you by the hand, lead you through the process and ensure that the book is properly reviewed and marketed so it can sell any many copies as possible. On the downside, you might experience that you don't have all the freedom you wanted for your book. A publisher might impose a certain angle on your book's content, potentially influence your writing style and require a mandatory set of tools as part of the their writing and publishing process. In practice it's a compromise you'll need to make. Approaching a publish has become very easy these days. Most publishers provide detailed information on their web pages on how to submit a proposal.
+
+The alternative to writing a book with a publisher is to self-publish. There are many platforms like LeanPub that make publishing your own books as smooth and possible. They usually also provide a way to buy your book. Self-publishing guarantees a higher monetary margin. However, as mentioned above I don't think money should be driver for writing a tech book.
+
+So how do you decide for one of the options? I personally preferred to go with a publisher for a specific reason. As a first-time author it makes the finished product more visible to your audience and builds your reputation. Working with a well-respected publisher like O'Reilly, Manning Publication or Pragmatic Programmers also increases your chance of selling more copies. Another aspect that was important to me was the guidance I received in the process resulting in overall stronger content. I learned a lot from working with a publisher. I'd now feel much more confident in self-publishing a book.
+
+== Finding your writing style
+
+- non-native speaker
+- first book
+
+== Staying motivated
+
+- there's always something to do
+- no more time for anything else
+- hobbies, friends and family fall short
+- avoid bursts
+- having a full-time job
+- try to avoid overtime
+- working on weekends
+- take a week of vacation every 3 months
+- support network
+
+== Helpful tools for producing and maintaining content
+== Implementing, testing and hosting code examples
+== Developing diagrams and graphics
+== Interacting with reviewers, editors and readers
+== Marketing the book
+== Working on the book after it was published
+== What did I learn?
