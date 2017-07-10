@@ -1,5 +1,5 @@
 +++
-title = "So you want to write a tech book"
+title = "So you want to write a tech book..."
 tags = [
     "tech",
     "writing",
@@ -25,6 +25,8 @@ Unlike successful novels, it's by no means a given that a tech book will make yo
 
 In a way writing a book is a lot like running a marathon. You have to keep in chipping away at the content at a maintainable speed. Some people are unsure whether they can keep up the demands on writing a book. A good way to try it out for yourself is participate in the NoWoMo, a full month of writing content, cherrishing your accomplishments and interacting with fellow writers and aspiring authors. I tried it but for for some reason it didn't really click for me. I think the main reason was the fact that I didn't have a clear outline yet which really brings us to the next topic. What should you prepare before jumping into the writing process?
 
+---
+
 == Work you should do before starting to write
 
 From my perspective there are three important artifacts you'll need to produce before even starting to write content.
@@ -34,6 +36,8 @@ From my perspective there are three important artifacts you'll need to produce b
 3. Creating a structured outline of all chapters you are planning to cover.
 
 All of these artifacts help you formalize a vision for your book. Especially point number 1 is also going to have a strong influence on the topics you will want to cover and the prerequisite knowledge you are expecting a reader to have. Most publishers will likely ask you for those artifacts before signing a contract with you.
+
+---
 
 == Working with a publisher or self-publish
 
@@ -51,27 +55,73 @@ The alternative to writing a book with a publisher is to self-publish. There are
 
 So how do you decide for one of the options? I personally preferred to go with a publisher for a specific reason. As a first-time author it makes the finished product more visible to your audience and builds your reputation. Working with a well-respected publisher like O'Reilly, Manning Publication or Pragmatic Programmers also increases your chance of selling more copies. Another aspect that was important to me was the guidance I received in the process resulting in overall stronger content. I learned a lot from working with a publisher. I'd now feel much more confident in self-publishing a book.
 
+---
+
 == Finding your writing style
 
-- non-native speaker
-- first book
+Writing is hard. That's true for amateur writers as well as established book authors. Finding your writing style might take a bit of time and doesn't come natural to most people. I didn't have much writing experience when I started to write my book. Neither were I a native speaker nor had I written longer articles or a book yet. Many publishers provide you will a so-called development editor. A development editor helps you with structuring your content, analyses the text based on relevance to the reader and gives guidance on writing your style and process. Most developers have a somewhat technical background and therefore understand your content (at least on a high level). If you are new to writing a book I'd recommend writing a book with a publisher.
+
+Getting into the flow is key. Try to write in an environment that makes you feel comfortable. Some people work best at home. Others prefer an inspiring environment like a coffee shop. Analogously, writing productivity varies on the time of day. Start writing whenever you feel most productive. It's not uncommon to experience the notorious writers block, a mental state preventing you from getting into the flow. For me it didn't work to fit the condition. Instead I simply rested for the day and stopped writing to gather my energy for the next day.
+
+---
 
 == Staying motivated
 
-- there's always something to do
-- no more time for anything else
-- hobbies, friends and family fall short
-- avoid bursts
-- having a full-time job
-- try to avoid overtime
-- working on weekends
-- take a week of vacation every 3 months
-- support network
+It's almost inevitable to hit a point of low motivation even with the strongest ambitions and drive. Publishers will ask you to deliver on a tight deadline and there's always something to be done: writing content, copy editing, working in suggestions, creating images, or developing and polishing code examples. When I started to write my book, I allowed myself for one or two days off per week to slack off and recharge. For some reason I wasn't able to stick to it. Less than two or three months after starting the book I feel into a rud of pushing through weeks of book writing without a break. 
 
-== Helpful tools for producing and maintaining content
+Writing a book requires a lot of commitment and can be very taxing on personal relationships, your health and any hobbies you might have. In fact I noticed that writing a book consumes _all_ free-time beside my regular day job. It's important to give yourself some grace every once in a while to avoid burning out. Remember writing a book is a marathon. As a reward for working really hard I allowed myself one week of vacation every three months. Optimally, you take a relaxing trip to avoid the temptation of falling back into writing. Unplugging really pays of and rechageds your batteries. I was amazed how much difference it made when picking up the work after coming back from vacation.
+
+Being able to lean on a strong support network of family, friends and co-workers can make all the difference when taking the journey of becoming an author. Try to harvest any positive energy and encourage you can get. In the long run it will keep you motivated and increases the changes to getting the book over the finish line.
+
+---
+
 == Implementing, testing and hosting code examples
+
+Approachable, real-world code examples are crucial if you want to create an immersive learning experience. In fact I used the code examples as a rough guideline for structuring the content of a chapter. First, I implemented the code and then wrote the content. There are at least two strategies you can follow when creating code examples.
+
+1. Independent, distinct code examples that explains a problem
+2. A single, coherent application or program that is evolved from chapter to chapter
+
+The strategy you pick for your book highly influences how content can be written. Personally, I prefer option 2 as readers can follow the content step by step, build up a full-fledged application or program end to end. As you can imagine option 1 is far easier to develop. Option 2 requires thinking through the content of each chapter and how they fit together.
+
+Code examples used in a book can easily get out-of-date or broken if not maintained meticulously. Any little change e.g. upgrade of a dependent tool or library can render a code example broken. I'd highly recommend looking into automating the process of embedding into the text as external files and testing them upon every single change. As you'd expect this setup requires quite a bit of automation infrastructure. Some publishers already provide such an infrastructure. The ones I know of use a combination of GtiHub, AsciiDoc, Gradle or Maven and a Continuous Integration tool. If you feel ambitious then you can implement a custom solution yourself. At the time of writing my book, the publisher did not provide a testing infrastructure so I had to write it myself. For can find some link:https://github.com/bmuschko/gradle-in-action-source#continuous-integration[information on the source code repository containing the book sources]. Nowadays, I'd probably implement a more advanced solution.
+
+Talking about GitHub...always keep your code under version control. You do not want to lose any of it in the process. The same goes for the text and any imagery of course. Some providers already provide you with a versioning solution.
+
+---
+
 == Developing diagrams and graphics
-== Interacting with reviewers, editors and readers
-== Marketing the book
+
+A picture says more than 1,000 words. This saying is especially true when teaching technical material. Consider creating visual material alongside any text you are writing. For me the tool link:https://www.omnigroup.com/omnigraffle/[OmniGraffle] worked really well. It's a commercial tool that comes with a lot of templates and is easy to nativate and operate even for authors that lack design skills. 
+
+If you happen to develop your book with a publisher then those images will likely be reworked during the pre-publishing phase. For that very reason try to get the point across and avoid spending too much time on the creation process. In case you are self publishing then you'll have to polish imagery yourself or might want to think about hiring a professional designer.
+
+---
+
+== Interacting with editors, reviewers and readers
+
+During the writing process you inevitability will have to interact with different stakeholders. If you work with a publisher your closest peer is a development editor. Development editor can be very useful in vetting your content. Take their advice seriously as they often give you the outside perspective on your writing style, how you teach a topic and whether the content will be appropriate for the target group. 
+
+Most publishers support an early access progress. Such a program provides readers with a way to buy your book and access the content as it is being written e.g. the link:https://www.manning.com/meap-program[Manning MEAP] or O'Reilly link:http://archive.oreilly.com/pub/post/new_rough_cuts_provides_early.html[Early Access]. The feedback you can get from your readers through the early access program is invaluable. Definitely take the comments to heart and incorporate potential critism and suggestion into the content. When you think it about it, it's a link:https://www.gocd.org/2016/03/15/are-you-ready-for-continuous-delivery-part-2-feedback-loops/[fast feedback loop similar to a build pipeline in Continous Delivery]. Adapt as you learn. I also asked friends and peers to review my book to supplement the early access program. It never hurts to get additional feedback and perspective from different angles. When receiving feedback make sure to ask for an honest opinion. Critism might hurt a bit but in the long run leads to a better book.
+
+---
+
 == Working on the book after it was published
+
+Having the published book in your hands is a great feeling. You might think that your job is done right there. Not so fast. 
+
+- answer questions on forum
+- speaking at conferences and user groups
+- promote/market book
+
+---
+
 == What did I learn?
+
+- in a world of pain
+- dive deeply into a domain, learn new things
+- structuring, forumalizing thoughts, bring content to the point
+- better writer
+- put yourself in the shoes of a user
+- teaching skills which helped with running trainings
+- interacting with readers
