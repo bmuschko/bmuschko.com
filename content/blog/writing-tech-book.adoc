@@ -6,42 +6,42 @@ tags = [
     "book",
     "author"
 ]
-date = "2017-06-18"
-draft = true
+date = "2017-07-18"
+draft = false
 highlight = true
 +++
 
-You are a published author. Your family and friends are super proud of you, co-workers admire your perseverance, hard work and deep technical knowledge, it looks great on the resume and companies are eager to hire you (it must be worth a higher salary right?). That's the dream you set out to do - write a technical book on an area of knowledge you are passionate about. Unfortunately, you haven't started writing yet nor do you have a publisher for your work. 
+You are a published author. Your family and friends are super proud of you and co-workers admire your perseverance, hard work and deep technical knowledge. Being an author looks great on the resume and companies are eager to hire you (it must be worth a higher salary right?). That's the dream you set out to achieve: writing a technical book on an area of knowledge you are passionate about. Unfortunately, you haven't started writing yet and you are still looking for a publisher for your work.
 
-Writing a book on a technical topic is a long, arduous but incredibly rewarding journey. In this blog post, I am going to talk about my personal experience with developing, writing and marketing a tech book. If you are an aspiring author, this post will give you an insight into the process of producing a book, help you avoid common pitfalls, and (hopefully) motivate you to share your knowledge on a technical topic. The thoughts I am laying out in this post are most the result on working on the book link:https://www.manning.com/books/gradle-in-action["Gradle in Action"] published by Manning Publications.
+Writing a book on a technical topic is a long, arduous but incredibly rewarding journey. In this blog post, I am going to talk about my personal experience with developing, writing and marketing a tech book. If you are an aspiring author, this post will give you an insight into the process of producing a book, help you avoid common pitfalls, and (hopefully) motivate you to share your knowledge on a technical topic. The thoughts I am laying out in this post are the result on working on my own book link:https://www.manning.com/books/gradle-in-action["Gradle in Action"] published by Manning Publications.
 
 ---
 
 == Motivation for writing
 
-Just the thought of wanting to write a book won't cut it to complete a book. It takes a lot of energy and commitment to actually get it over the finish line. Before writing a book as yourself why you want to write it. The reasons might be very different from person to person. For my part I always enjoyed writing whether that's technical or non-technical content. What drove me was the combination of a topic that I am passionate about with the goal of putting together a consistent body of work in the form of a book. I believe another aspect was the fact that I wanted to prove to myself that I could do it.
+Just the thought of wanting to write a book won't cut it to complete a book. It takes a lot of energy and commitment to actually get it over the finish line. Before writing a book, ask yourself why you want to write it. The reasons might be very different from person to person. For my part, I always enjoyed writing whether it's technical or non-technical content. What drove me was the combination of a topic that I am passionate about with the goal of putting together a comprehensive body of work in the form of a book. I believe another aspect was the fact that I wanted to prove to myself that I could do it.
 
-Unlike successful novels, it's by no means a given that a tech book will make you rich or famous. Tech books are considered successful if they sell more than 10,000 copies. Reality is that most tech books will never reach that goal. I believe up until now I didn't sell more than a combined number of 6,000 copies of ebooks or print books. An author earns roughly 10% of the sales price. So for a book that is being sold for $50 you make $5. Most of time you will also have to factor in discounts offered by the publisher. Bottom line is that the monetary aspect is not a non-reason for writing a tech book.
+Unlike successful novels, a successful tech book will likely not lead to fame and fortune. Tech books are considered successful if they sell more than 10,000 copies. In reality, most tech books will never reach that goal. At the time of writing this article, "Gradle in Action" has sold a combined total of 6,000 copies of ebooks and print books. As far as I know, most publishers pay the author 10-20% of the sales price in royalties. Consequently, at a rate of 10% you make $5 for every sold book a the price point of $50. Most of the time you will also have to factor in discounts offered by the publisher. Bottom line is that the monetary aspect is not the motivating factor for writing a tech book.
 
-In a way writing a book is a lot like running a marathon. You have to keep in chipping away at the content at a maintainable speed. Some people are unsure whether they can keep up the demands on writing a book. A good way to try it out for yourself is participate in the NoWoMo, a full month of writing content, cherrishing your accomplishments and interacting with fellow writers and aspiring authors. I tried it but for for some reason it didn't really click for me. I think the main reason was the fact that I didn't have a clear outline yet which really brings us to the next topic. What should you prepare before jumping into the writing process?
+In a way, writing a book is a lot like running a marathon. You have to keep chipping away at the content at a sustainable speed. Some people are unsure whether they can keep up with the demands of writing a book. A good way to try it out for yourself is to participate in the link:http://nanowrimo.org/[NaNoWriMo], a full month of writing content, sharing your accomplishments and interacting with fellow writers and aspiring authors. I tried it but for for some reason it didn't really click for me. I think the main reason was that I didn't have a clear outline yet--which really brings us to the next topic. What should you prepare before jumping into the writing process?
 
 ---
 
 == Work you should do before starting to write
 
-From my perspective there are three important artifacts you'll need to produce before even starting to write content.
+From my perspective, there are three important things you will need to do before even starting to write content.
 
-1. Determining the target audience of your book.
-2. Writing a summary of your book.
-3. Creating a structured outline of all chapters you are planning to cover.
+1. Determine the target audience of your book.
+2. Write a summary of your book.
+3. Create a structured outline of all chapters you are planning to cover.
 
-All of these artifacts help you formalize a vision for your book. Especially point number 1 is also going to have a strong influence on the topics you will want to cover and the prerequisite knowledge you are expecting a reader to have. Most publishers will likely ask you for those artifacts before signing a contract with you.
+Each of these tasks will help you formalize a vision for your book. The first point, in particular, will likely have a strong influence on the topics you will want to cover and the prerequisite knowledge you are expecting a reader to have. Most publishers will likely ask you for these three deliverables before signing a contract with you.
 
 ---
 
-== Working with a publisher or self-publish
+== Working with a publisher versus self-publishing
 
-Especially for first-time book authors writing a book is associated with a lot of unknowns. You might ask yourself one if not all of the following questions (maybe even more):
+Especially for first-time authors, writing a book is associated with mny unknowns. You might ask yourself one if not all of the following questions (maybe even more):
 
 - Are people even interested in the content I am planning to write?
 - Who's going to review my content?
@@ -49,42 +49,42 @@ Especially for first-time book authors writing a book is associated with a lot o
 - Do I need to create diagrams and image to better teach of topic?
 - How do I best market my book?
 
-The main benefit of working with a publisher is that they have a lot experience with the process of writing, producing and marketing a tech book. They will take you by the hand, lead you through the process and ensure that the book is properly reviewed and marketed so it can sell any many copies as possible. On the downside, you might experience that you don't have all the freedom you wanted for your book. A publisher might impose a certain angle on your book's content, potentially influence your writing style and require a mandatory set of tools as part of the their writing and publishing process. In practice it's a compromise you'll need to make. Approaching a publish has become very easy these days. Most publishers provide detailed information on their web pages on how to submit a proposal.
+The main benefit of working with a publisher is that they have a lot experience with the process of writing, producing and marketing a tech book. They will take you by the hand, lead you through the process and ensure that the book is properly reviewed and marketed so it can sell as many copies as possible. The downside is that you might not have as much freedom as you would like to have in terms of the writing process. A publisher might impose a certain angle on your book's content, influence your writing style or require a mandatory set of tools as part of the their writing and publishing process. In practice, working with a publisher means making certain compromises, but it could well be worth the trade-off. Approaching a publisher has become very easy these days. Most publishers provide detailed information on their web pages on how to submit a proposal.
 
-The alternative to writing a book with a publisher is to self-publish. There are many platforms like LeanPub that make publishing your own books as smooth and possible. They usually also provide a way to buy your book. Self-publishing guarantees a higher monetary margin. However, as mentioned above I don't think money should be driver for writing a tech book.
+The alternative to writing a book with a publisher is to self-publish. There are many platforms like link:https://leanpub.com/[Leanpub] that make the process of publishing your own book as smooth and possible. They usually also provide a way to sell your book. Self-publishing guarantees a higher monetary margin. However, as mentioned above, I don't think money should be driver for writing a tech book.
 
-So how do you decide for one of the options? I personally preferred to go with a publisher for a specific reason. As a first-time author it makes the finished product more visible to your audience and builds your reputation. Working with a well-respected publisher like O'Reilly, Manning Publication or Pragmatic Programmers also increases your chance of selling more copies. Another aspect that was important to me was the guidance I received in the process resulting in overall stronger content. I learned a lot from working with a publisher. I'd now feel much more confident in self-publishing a book.
+So how do you decide which route to take? I personally preferred to go with a publisher for a specific reason. As a first-time author, working with a publisher makes the finished product more visible to your target audience and builds your reputation. Working with a well-respected publisher like link:https://www.oreilly.com/[O'Reilly], link:https://www.manning.com/[Manning Publication] or link:https://pragprog.com/[Pragmatic Programmers] also increases your chances of selling more copies. Another aspect that was important to me was the guidance I received in the process, which resulted in overall stronger content. I learned a lot from working with a publisher. I would now feel much more confident in self-publishing a book.
 
 ---
 
 == Finding your writing style
 
-Writing is hard. That's true for amateur writers as well as established book authors. Finding your writing style might take a bit of time and doesn't come natural to most people. I didn't have much writing experience when I started to write my book. Neither were I a native speaker nor had I written longer articles or a book yet. Many publishers provide you will a so-called development editor. A development editor helps you with structuring your content, analyses the text based on relevance to the reader and gives guidance on writing your style and process. Most developers have a somewhat technical background and therefore understand your content (at least on a high level). If you are new to writing a book I'd recommend writing a book with a publisher.
+Writing is hard. That's true for amateur writers as well as established authors. Finding your writing style might take a bit of time and doesn't come naturally to most people. I didn't have much writing experience when I started to write my book. I am not a native English speaker, and I had previously never written longer articles or books. Many publishers provide you with a so-called development editor. A development editor helps you with structuring your content, analyzing the text based on relevance to the reader and providing guidance on developing your writing style and process. Most development editors have some technical background and thus understand your content (at least on a high level). If you are new to writing a book, I would recommend writing a book with a publisher.
 
-Getting into the flow is key. Try to write in an environment that makes you feel comfortable. Some people work best at home. Others prefer an inspiring environment like a coffee shop. Analogously, writing productivity varies on the time of day. Start writing whenever you feel most productive. It's not uncommon to experience the notorious writers block, a mental state preventing you from getting into the flow. For me it didn't work to fit the condition. Instead I simply rested for the day and stopped writing to gather my energy for the next day.
+Getting into the flow is key. Try to write in an environment that makes you feel comfortable. Some people work best at home. Others prefer an inspiring environment like a coffee shop. Similarly, writing productivity varies on the time of day. Start writing whenever you feel most productive. It's not uncommon to experience the notorious writers block, a mental state preventing you from getting into the flow. For me it didn't work to force it. Instead, I would simply take a day off from writing to gather my energy for the next day.
 
 ---
 
 == Staying motivated
 
-It's almost inevitable to hit a point of low motivation even with the strongest ambitions and drive. Publishers will ask you to deliver on a tight deadline and there's always something to be done: writing content, copy editing, working in suggestions, creating images, or developing and polishing code examples. When I started to write my book, I allowed myself for one or two days off per week to slack off and recharge. For some reason I wasn't able to stick to it. Less than two or three months after starting the book I feel into a rud of pushing through weeks of book writing without a break. 
+It's almost inevitable that you will hit a point of low motivation even with the strongest ambitions and drive. Publishers will ask you to deliver on a tight deadline and there's always something to be done: writing content, copy editing, incorporating suggestions, creating images, or developing and polishing code examples. When I started writing, I allowed myself for one or two days off per week to recharge. But that didn't last long.  After the first couple of months, I found myself pushing through weeks on end without taking a break. 
 
-Writing a book requires a lot of commitment and can be very taxing on personal relationships, your health and any hobbies you might have. In fact I noticed that writing a book consumes _all_ free-time beside my regular day job. It's important to give yourself some grace every once in a while to avoid burning out. Remember writing a book is a marathon. As a reward for working really hard I allowed myself one week of vacation every three months. Optimally, you take a relaxing trip to avoid the temptation of falling back into writing. Unplugging really pays of and rechageds your batteries. I was amazed how much difference it made when picking up the work after coming back from vacation.
+Writing a book requires a lot of commitment and can be very taxing on personal relationships, your health and any hobbies you might have. In fact I noticed that writing a book consumed pretty much _all_ free-time outside of my regular day job. It's important to give yourself some grace every once in a while to avoid burning out. Remember that writing a book is a marathon, not a sprint. As a reward for working really hard, I allowed myself a one week vacation every three months. Ideally, you take a relaxing trip to avoid the temptation of falling back into writing. Unplugging really pays off and recharges your batteries. I was amazed how much difference it made when I picked up after coming back from vacation.
 
-Being able to lean on a strong support network of family, friends and co-workers can make all the difference when taking the journey of becoming an author. Try to harvest any positive energy and encourage you can get. In the long run it will keep you motivated and increases the changes to getting the book over the finish line.
+Being able to lean on a strong support network of family, friends and co-workers can make all the difference when taking the journey of becoming an author. Take advantage of any positive energy and encouragement you can get. In the long run, it will keep you motivated and increase the chances of getting the book over the finish line.
 
 ---
 
 == Implementing, testing and hosting code examples
 
-Approachable, real-world code examples are crucial if you want to create an immersive learning experience. In fact I used the code examples as a rough guideline for structuring the content of a chapter. First, I implemented the code and then wrote the content. There are at least two strategies you can follow when creating code examples.
+Approachable, real-world code examples are crucial if you want to create an immersive learning experience. In fact, I used the code examples as a rough guideline for structuring the content of a chapter. I implemented the code first and then wrote the content. There are at least two strategies you can follow when creating code examples.
 
-1. Independent, distinct code examples that explains a problem
-2. A single, coherent application or program that is evolved from chapter to chapter
+1. Independent, distinct code examples that explain a problem
+2. A single, coherent application or program that carries over from chapter to chapter
 
-The strategy you pick for your book highly influences how content can be written. Personally, I prefer option 2 as readers can follow the content step by step, build up a full-fledged application or program end to end. As you can imagine option 1 is far easier to develop. Option 2 requires thinking through the content of each chapter and how they fit together.
+The strategy you pick for your book highly influences how content can be written. Personally, I prefer option 2 as readers can follow the content step by step, working up to a full-fledged application or program. As you can imagine, option 1 is far easier to develop. Option 2 requires thinking through the content of each chapter and how it all fits together.
 
-Code examples used in a book can easily get out-of-date or broken if not maintained meticulously. Any little change e.g. upgrade of a dependent tool or library can render a code example broken. I'd highly recommend looking into automating the process of embedding into the text as external files and testing them upon every single change. As you'd expect this setup requires quite a bit of automation infrastructure. Some publishers already provide such an infrastructure. The ones I know of use a combination of GtiHub, AsciiDoc, Gradle or Maven and a Continuous Integration tool. If you feel ambitious then you can implement a custom solution yourself. At the time of writing my book, the publisher did not provide a testing infrastructure so I had to write it myself. For can find some link:https://github.com/bmuschko/gradle-in-action-source#continuous-integration[information on the source code repository containing the book sources]. Nowadays, I'd probably implement a more advanced solution.
+Code examples used in a book can easily get out-of-date or broken if not maintained meticulously. Any little change, such as an upgrade of a dependent tool or library, can render a code example broken. I would highly recommend automating the process by embedding the coding samples into the text as external files and then testing them upon every single change. As you might expect, this setup requires quite a bit of automation infrastructure. Some publishers already provide such an infrastructure. Several publishers use a combination of GitHub, AsciiDoc, Gradle or Maven and a Continuous Integration tool. If you are feeling ambitious, you can implement a custom solution yourself. At the time of writing my book, the publisher did not provide a testing infrastructure, so I had to write it myself. You can find more information on the testing infrastructure I used at this link:https://github.com/bmuschko/gradle-in-action-source#continuous-integration[information on the source code repository containing the book sources]. Nowadays, I'd probably implement a more advanced solution.
 
 Talking about GitHub...always keep your code under version control. You do not want to lose any of it in the process. The same goes for the text and any imagery of course. Some providers already provide you with a versioning solution.
 
@@ -92,36 +92,39 @@ Talking about GitHub...always keep your code under version control. You do not w
 
 == Developing diagrams and graphics
 
-A picture says more than 1,000 words. This saying is especially true when teaching technical material. Consider creating visual material alongside any text you are writing. For me the tool link:https://www.omnigroup.com/omnigraffle/[OmniGraffle] worked really well. It's a commercial tool that comes with a lot of templates and is easy to nativate and operate even for authors that lack design skills. 
+A picture is worth 1,000 words. This saying is especially true when teaching technical material. Consider creating visual material alongside any text you are writing. For me, the tool link:https://www.omnigroup.com/omnigraffle/[OmniGraffle] worked really well. It's a commercial tool that comes with a lot of templates and is easy to nativate and operat--even for authors who lack design skills. 
 
-If you happen to develop your book with a publisher then those images will likely be reworked during the pre-publishing phase. For that very reason try to get the point across and avoid spending too much time on the creation process. In case you are self publishing then you'll have to polish imagery yourself or might want to think about hiring a professional designer.
+If you are working with a publisher, your images will likely be reworked during the pre-publishing phase. Try to keep this in mind and avoid spending too much time on the creation process. If you are self-publishing, you will either need to polish imagery yourself or else you might want to consider hiring a professional designer.
 
 ---
 
 == Interacting with editors, reviewers and readers
 
-During the writing process you inevitability will have to interact with different stakeholders. If you work with a publisher your closest peer is a development editor. Development editor can be very useful in vetting your content. Take their advice seriously as they often give you the outside perspective on your writing style, how you teach a topic and whether the content will be appropriate for the target group. 
+The writing process will inevitability involve interacting with different stakeholders. If you work with a publisher, you will be working closely with a development editor. Development editors can be very useful in vetting your content. Take their advice seriously, as they often give you valuable outside perspective on your writing style, how you teach a topic and whether the content will be appropriate for the target group. 
 
-Most publishers support an early access progress. Such a program provides readers with a way to buy your book and access the content as it is being written e.g. the link:https://www.manning.com/meap-program[Manning MEAP] or O'Reilly link:http://archive.oreilly.com/pub/post/new_rough_cuts_provides_early.html[Early Access]. The feedback you can get from your readers through the early access program is invaluable. Definitely take the comments to heart and incorporate potential critism and suggestion into the content. When you think it about it, it's a link:https://www.gocd.org/2016/03/15/are-you-ready-for-continuous-delivery-part-2-feedback-loops/[fast feedback loop similar to a build pipeline in Continous Delivery]. Adapt as you learn. I also asked friends and peers to review my book to supplement the early access program. It never hurts to get additional feedback and perspective from different angles. When receiving feedback make sure to ask for an honest opinion. Critism might hurt a bit but in the long run leads to a better book.
+Most publishers follow an early access program, which provides readers with a way to buy your book and access the content as it is being written e.g. the link:https://www.manning.com/meap-program[Manning MEAP] or link:http://archive.oreilly.com/pub/post/new_rough_cuts_provides_early.html[O'Reilly Early Access]. The feedback you can get from your readers through the early access program is invaluable. Definitely take the comments to heart and be responsive to potential critisms and suggestions. When you think it about it, it's a link:https://www.gocd.org/2016/03/15/are-you-ready-for-continuous-delivery-part-2-feedback-loops/[fast feedback loop similar to a build pipeline in Continous Delivery]. Adapt as you learn. I also asked friends and peers to review my book to supplement the early access program. It never hurts to get additional feedback and perspective from different angles. When receiving feedback, make sure to ask for an honest opinion. Accepting criticism isn't always easy, but it will lead to better results.
 
 ---
 
 == Working on the book after it was published
 
-Having the published book in your hands is a great feeling. You might think that your job is done right there. Not so fast. 
+Having the published book in your hands is a great feeling. You might think that your job is done right there. Not so fast. There's plenty of work that happens after the release.
 
-- answer questions on forum
-- speaking at conferences and user groups
-- promote/market book
+Reader will have questions on your book. Most publishers set up a forum to for you to engage with readers. To give you a sense of what this looks like, link:https://forums.manning.com/forums/gradle-in-action[this is what the forum for my book looked like]. I'd highly recommend setting up a forum for your readers even if you are self-publishing. The forum is a great way to take the pulse of your reader base. At times, responding to questions can become quite involved. It's important to stick to a positive code of conduct even if readers utter strong critisim. They are the consumers of your product. In order to make the product better, you will need to be ready to listen to feedback and answer questions raised by readers.
+
+The book content has been vetted by reviewers, copy editors and readers over and over again. However, there's almost no way that there are no typos, issues in the illustrations or other issues with the content. Given that a printed book is impossible to change (apart from a revised version or a second edition) an link:http://www.businessdictionary.com/definition/errata.html[errata] can document any of those corrections. Some publishers already provide a dedicated page for collecting any corrections. For this purpose, I decided to use an link:https://github.com/bmuschko/gradle-in-action-errata[AsciiDoc file hosted on GitHub].
+
+Having written a book is an excellent way to get invited with conferences and demonstrate your expertise in the field when submitting a proposed talk. Take the opportunity to promote your book at conferences and user groups. Most publishers send you a stash of print copies. I used to bring two copies of "Gradle in Action" to each of my talks and would either let organizers give them out either through a raffle or as a way to reward attendees who ask a great question. Promoting your book over social media, such as like Twitter and Facebook, is a very effective way to get the word out. Make good use of these tools. Publishers periodically offer discounts for your book. It's very cheap to tweet those promotions to your followers.
 
 ---
 
 == What did I learn?
 
-- in a world of pain
-- dive deeply into a domain, learn new things
-- structuring, forumalizing thoughts, bring content to the point
-- better writer
-- put yourself in the shoes of a user
-- teaching skills which helped with running trainings
-- interacting with readers
+Learning how to write a book from scratch was extremely fulfilling. Each step of the process allowed me to build a different skill set. What did I learn specifically?
+
+- Forumalizing thoughts into structured content
+- Communicating content with clarity in written form
+- Emphazing with end users
+- Interacting with readers in-person and on forums
+
+I hope I didn't scare you away from writing your own book. If you are willing to go through the pain and can commit to devoting the necessary time and energy, you will be rewarded with an abundance of positive energy, praise and personal growth. Some people asked me whether I would consider writing another book. I am certainly be open to giving it another shot. I would write the book for different reasons than for "Gradle in Action". Through the process, I have come to learn that I really enjoy teaching.
