@@ -16,12 +16,16 @@ In July 2017 link:https://golang.org/[Google Go] made a link:https://www.tiobe.c
 
 Make files and shell script can be powerful tools but they do not provide any support for strong modeling of a domain, are hard to maintain and do not provide any means to testing the automation code. In this post I'd like to identify if Gradle can live up to the game. We'll look at a simple Go project, some typical challenges and tasks encountered when building this project and how Gradle can help to automate the process.
 
+---
+
 == How can Gradle help?
 
 image:/img/blog/golang-with-gradle/go-mini.png[float=right]
 Gradle currently does not provide a standard way to build Go project with its core distribution. However, users can write plugins to enhance the functionality by plugins to model new domains. link:https://github.com/gogradle/gogradle[GoGradle] is a plugin that helps with compiling, testing and assembling Go projects. At this year's Gradle Summit, the plugin was awarded the Gradle plugin of the year 2017. For a deep dive on the plugin functionality check out the link:https://www.youtube.com/watch?v=Mvf3gY1MopE/[recording of the Summit talk on GoGradle].
 
 _Disclaimer:_ I found link:https://github.com/echocat/gradle-golang-plugin[another Gradle plugin for building Go project]. I did not have a chance to compare the functionality and their implementation approaches nor did I have deeper look at the alternative plugin.
+
+---
 
 == The sample project
 
@@ -38,9 +42,15 @@ Most of the automation steps mentioned above can be executed by invoking a shell
 
 Let's see if the Gradle plugin can fulfill all of those requirements while at the same hiding and simplifying complex implementation logic which otherwise lives in a shell script.
 
+---
+
 == Initial setup
 
-.build.gradle
+Getting started with the GoGradle plugin is easy. We just have to create a `build.gradle` file in the root directory of the existing project. In the build script, apply the plugin and provide some basic configuration that indicates the root path of the package used for the project. For the Link Verifier project, I assigned `github.com/bmuschko/link-verifier` to the `packagePath` property of the extension. All sections below directly refer to version 0.6.5. Please be aware that the behavior and/or the configuration options may change in future versions of the plugin.
+
+By default the GoGradle plugin downloads the latest version of Go automatically and stores it in a temporary directory. Alternatively, a user can also configure a concrete Go version as needed. Please refer to the link:https://github.com/gogradle/gogradle/blob/master/docs/getting-started.md#configuration[plugin documentation] for more information.
+
+_build.gradle_
 [source,groovy]
 ----
 plugins {
@@ -51,10 +61,17 @@ golang {
     packagePath = 'github.com/bmuschko/link-verifier'
 }
 ----
+_Listing 1. Basic project setup_
+
+Now that we applied the plugin to our project, we have link:https://github.com/gogradle/gogradle/blob/master/docs/tasks.md[a bunch of useful tasks] to our disposal. Probably the most important one is `build` which resolves all dependencies, compiles the code, runs the tests and assembles the binaries. Executing the task fails the compilation tasks. Obviously, the project is missing external dependencies referenced in source file. In the next step, we'll fix the situation.
+
+---
 
 == Managing and resolving dependencies
 
-.glide.yaml
+Glide is my package management tool of choice for building Go projects. The project uses xurls and testify with a specific version to ensure reproducibility. Listing 2 shows those dependencies in the yaml format processed by Glide.
+
+_glide.yaml_
 [source,yaml]
 ----
 package: .
@@ -65,8 +82,11 @@ testImport:
 - package: github.com/stretchr/testify
   version: 1.1.4
 ----
+_Listing 2. The Glide dependency definition file_
 
-.glide.lock
+As you might know Go resolves external packages from Git repositories. Glides maps the concrete version of an external dependency Glide to a Git commit hash of the repository hosting the code in file named `glide.lock`. An example of such a lock file can be seen in listing 3.
+
+_glide.lock_
 [source,yaml]
 ----
 hash: 806deb3bb1bb02051f152c49856cac37224f623247742a1b8c028b38dff21aef
@@ -78,9 +98,11 @@ testImports:
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
 ----
+_Listing 3. The Glide dependency lock file_
 
+You might know that Gradle currently does not support resolving dependencies from a Git repository. So how do we make sure that Gradle understands the information? GoGradle enhances the standard way of declaring dependencies in Gradle. By applying the plugin users can declare Git-based dependencies with a help of a DSL that almost seamlessly blending into the existing dependency management DSL as shown in listing 4.
 
-.build.gradle
+_build.gradle_
 [source,groovy]
 ----
 dependencies {
@@ -90,16 +112,53 @@ dependencies {
     }
 }
 ----
+_Listing 4. Gradle dependency definitions derived from Glide yaml file_
+
+Now, as you can imagine typing down the dependency declaration mannually is somewhat painful. Thankfully, the plugin introduces the convenience task `init` that link:https://github.com/gogradle/gogradle/blob/master/docs/getting-started.md#start[derives the information declared in the Glide lock file and translates it into Gradle-based configuration] that can be understood by GoGradle. I'd expect that VCS-based repository formats are going to be understood by Gradle core natively in the future.
+
+> The `init` task is not limited to Glide. It also understands a variety of other Go package management tools. Please link:https://github.com/gogradle/gogradle#why-gogradle[refer to the documentation] to identify if your package manager is supported by GoGradle.
+
+With all the dependencies in place, the project is able to run through the compilation and test steps as if you'd run the plain Go commands. Let's also have a closer look at the testing capabilities of the plugin.
+
+---
+
+== Executing tests
+
+Testing support for Go nicely blends in with the typical naming scheme for 
+
+[source,shell]
+----
+$ gradle test
+
+> Task :prepare
+Found go 1.8.3 in /usr/local/go/bin/go, use it.
+Use project GOPATH: /Users/bmuschko/dev/projects/gradle-playground/link-verifier/.gogradle/project_gopath
+
+> Task :test
+Test for github.com/bmuschko/link-verifier/stat finished, 4 completed, 0 failed
+Test for github.com/bmuschko/link-verifier/text finished, 6 completed, 0 failed
+Test for github.com/bmuschko/link-verifier/http finished, 3 completed, 0 failed
+Test for github.com/bmuschko/link-verifier/file finished, 6 completed, 0 failed
+
+BUILD SUCCESSFUL in 3s
+5 actionable tasks: 3 executed, 2 up-to-date
+----
+
+image:/img/blog/golang-with-gradle/test-report.png[Test report]
+
+---
 
 == Cross-compiling binaries
 
-.build.gradle
+_build.gradle_
 [source,groovy]
 ----
 build {
     targetPlatform = 'darwin-amd64, netbsd-amd64, netbsd-386, openbsd-amd64, openbsd-386, freebsd-amd64, freebsd-386, linux-amd64, linux-386, linux-arm, windows-amd64, windows-386'
 }
 ----
+_Listing 5. Target platforms definitions_
+
 
 ----
 .
