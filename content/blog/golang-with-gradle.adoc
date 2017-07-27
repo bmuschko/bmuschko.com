@@ -124,7 +124,7 @@ With all the dependencies in place, the project is able to run through the compi
 
 == Executing tests
 
-Testing support for Go nicely blends in with the typical naming scheme for 
+Testing support for Go follows the same conventions you might know from Java-based projects. The `test` task provided by the plugin finds all Go file that follow the convention `_test.go`. GoGradle properly detects and runs all tests in the project as shown in the following console output:
 
 [source,shell]
 ----
@@ -144,11 +144,67 @@ BUILD SUCCESSFUL in 3s
 5 actionable tasks: 3 executed, 2 up-to-date
 ----
 
+By default the task automatically generates test reports as well as coverage profile data which can be found in the directory `.gogradle/reports`. Figure 1 shows a sample report for the project. 
+
 image:/img/blog/golang-with-gradle/test-report.png[Test report]
+_Figure 1. HTML test report_
+
+At the time of writing the plugin creates one coverage profile data file per Go test file. Aggregating individual coverage files into one file would require some custom logic. Listing 5 demonstrate a simple solution to the problem though I expect this functionality to be worked into the plugin sooner or later.
+
+_buildSrc/src/main/groovy/AggregateCoverage.groovy_
+[source,groovy]
+----
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputFile
+
+class AggregateCoverage extends DefaultTask {
+    @InputDirectory
+    File inputDir = project.file('.gogradle/reports/coverage/profiles')
+    
+    @OutputFile
+    File outputFile = project.file("$project.buildDir/reports/coverage-aggregate/coverage.txt")
+    
+    AggregateCoverage() {
+        group = 'GoGradle'
+        description = 'Aggregates coverage profile data.'
+    }
+    
+    @TaskAction
+    void aggregate() {
+        StringBuilder aggregatedCoverage = new StringBuilder()
+        
+        inputDir.listFiles().each {
+            aggregatedCoverage << it.text
+        }
+        
+        outputFile.text = aggregatedCoverage.toString()
+    }
+}
+----
+_Listing 5. Custom task for aggregating coverage profiles_
+
+
+
+_build.gradle_
+[source,groovy]
+----
+task aggregateCoverage(type: AggregateCoverage) {
+    mustRunAfter test
+}
+
+build.dependsOn aggregateCoverage
+----
+_Listing 6. Hooking coverage aggregration task into task lifecycle_
+
+After exploring the plugin's testing capabilities, let's finish off the discussion by having a look a the cross-compilation functionality.
 
 ---
 
 == Cross-compiling binaries
+
+Link Verifier creates a link:https://github.com/bmuschko/link-verifier/blob/bm/gradle/cross-compile.sh[matrix-combination of cross-compiled binary files]. The plugin takes away the burden of having to implement the logic manually for every single project. With the help of the `build` task a user can declare a list of target platforms as shown in listing 7.
 
 _build.gradle_
 [source,groovy]
@@ -157,8 +213,9 @@ build {
     targetPlatform = 'darwin-amd64, netbsd-amd64, netbsd-386, openbsd-amd64, openbsd-386, freebsd-amd64, freebsd-386, linux-amd64, linux-386, linux-arm, windows-amd64, windows-386'
 }
 ----
-_Listing 5. Target platforms definitions_
+_Listing 7. Target platforms definitions_
 
+The task creates the resulting prebuilt libraries in the directory `.gogradle`. Each file name consists of the provided target platform and the name of the project. Currently, the version assigned to the project is not taken into account.
 
 ----
 .
@@ -176,3 +233,76 @@ _Listing 5. Target platforms definitions_
     ├── windows_386_link-verifier
     └── windows_amd64_link-verifier
 ----
+
+In my shell script I also extracted all third-party licenses and bundled them with the binary in a `tar.gz` or `.zip` file. The plugin does not provide this functionality. However, it's very easy to achieve this with the help of Gradle's built-in capabilities.
+
+_buildSrc/src/main/groovy/Distributions.groovy_
+[source,groovy]
+----
+import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputDirectory
+
+class Distributions extends DefaultTask {
+    @InputDirectory
+    File inputDir = project.file('.gogradle')
+    
+    @OutputDirectory
+    File outputDir = project.file("$project.buildDir/distributions")
+    
+    Distributions() {
+        group = 'GoGradle'
+        description = 'Builds packaged distributions for all prebuilt binaries.'
+    }
+    
+    @TaskAction
+    void create() {
+        inputDir.listFiles(new CrossCompiledFileFilter(project)).each { preBuiltLib ->
+            if (preBuiltLib.name.contains('windows')) {
+                ant.zip(destfile: "${outputDir}/${preBuiltLib.name}.zip") {
+                    fileset(dir: inputDir) {
+                        include(name: preBuiltLib.name)
+                    }
+                }
+            } else {
+                def tarFile = "${outputDir}/${preBuiltLib.name}.tar"
+                ant.tar(destfile: tarFile) {
+                    tarfileset(dir: inputDir) {
+                        include(name: preBuiltLib.name)
+                    }
+                }
+                ant.gzip(destfile: "${tarFile}.gz", src: tarFile)
+                project.delete(tarFile)
+            }
+        }
+    }
+    
+    private static class CrossCompiledFileFilter implements FilenameFilter {
+        private final Project project
+        
+        CrossCompiledFileFilter(Project project) {
+            this.project = project
+        }
+        
+        boolean accept(File f, String filename) {
+            filename.endsWith("_${project.name}")
+        }  
+    } 
+}
+----
+_Listing 8. Packaging prebuilt binaries into archive files_
+
+_build.gradle_
+[source,groovy]
+----
+task dist(type: Distributions) {
+    mustRunAfter build
+}
+----
+_Listing 9. Instantiating a task for creating distributions_
+
+---
+
+== Summary
