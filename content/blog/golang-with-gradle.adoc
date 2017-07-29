@@ -5,8 +5,8 @@ tags = [
     "golang",
     "gradle"
 ]
-date = "2017-07-23"
-draft = true
+date = "2017-07-29"
+draft = false
 highlight = true
 +++
 
