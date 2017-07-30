@@ -19,6 +19,8 @@
     {{ if .Site.Params.Social.LinkedIn }}
       <li><a href="http://linkedin.com/in/{{ .Site.Params.Social.LinkedIn }}"><i class="fa fa-linkedin"></i></a></li>
     {{ end }}
+    
+    <li><a href="{{ .Site.BaseURL }}blog/index.xml"><i class="fa fa-rss"></i></a></li>
   </ul>
 </div>
 
