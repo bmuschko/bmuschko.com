@@ -1,0 +1,182 @@
++++
+title = "Building a Continuous Delivery pipeline with Gradle and Jenkins"
+tags = [
+    "build",
+    "continuous",
+    "deployment",
+    "jenkins",
+    "gradle",
+    "spring",
+    "heroku",
+    "web-app"
+]
+date = "2017-08-27"
+draft = true
+highlight = true
++++
+
+== Introduction
+
+== The sample application
+
+== Automated testing and static code analysis
+
+_code-analysis.gradle_
+[source,groovy]
+----
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.5'
+    }
+}
+
+apply plugin: org.sonarqube.gradle.SonarQubePlugin
+----
+
+_code-analysis.gradle_
+[source,groovy]
+----
+sonarqube {
+    properties {
+        property 'sonar.host.url', 'https://sonarcloud.io'
+        property 'sonar.organization', 'bmuschko-github'
+        property 'sonar.login', System.getenv('SONAR_LOGIN')
+        properties['sonar.tests'] += sourceSets.integrationTest.java.srcDirs
+    }
+}
+----
+
+== The target runtime platform
+
+_deploy.gradle_
+[source,groovy]
+----
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.heroku.sdk:heroku-gradle:0.3.0'
+    }
+}
+
+apply plugin: com.heroku.sdk.gradle.HerokuPlugin
+----
+
+_build.gradle_
+[source,groovy]
+----
+heroku {
+    appName = 'todo-spring-boot'
+    includes = ["$buildDir.name/libs/$war.archiveName"]
+    includeBuildDir = false
+
+    processTypes(
+        web: "java \$JAVA_OPTS -jar $buildDir.name/libs/$war.archiveName --server.port=\$PORT".toString()
+    )
+}
+
+deployHeroku {
+    dependsOn assemble
+
+    doFirst {
+        if (!System.getenv('HEROKU_API_KEY')) {
+            throw new GradleException('Deployment to Heroku requires setting the environment variable HEROKU_API_KEY')
+        }
+    }
+}
+----
+
+== Modeling the pipeline
+
+== Setting up Jenkins
+
+== Declarative pipeline
+
+image:/img/blog/deployment-pipeline-jenkins-gradle/blue-ocean-pipeline.png[]
+
+_Jenkinsfile_
+[source,groovy]
+----
+pipeline {
+    agent any
+
+    triggers {
+        pollSCM('*/5 * * * *')
+    }
+
+    stages {
+        stage('Compile') {
+            steps {
+                gradlew('clean', 'classes')
+            }
+        }
+        stage('Unit Tests') {
+            steps {
+                gradlew('test')
+            }
+            post {
+                always {
+                    junit '**/build/test-results/test/TEST-*.xml'
+                }
+            }
+        }
+        stage('Long-running Verification') {
+            environment {
+                SONAR_LOGIN = credentials('SONAR_LOGIN')
+            }
+            steps {
+                parallel("Integration Tests": {
+                    gradlew('integrationTest')
+                },
+                "Code Analysis": {
+                    gradlew('sonarqube')
+                })
+            }
+            post {
+                always {
+                    junit '**/build/test-results/integrationTest/TEST-*.xml'
+                }
+            }
+        }
+        stage('Assemble') {
+            steps {
+                gradlew('assemble')
+                stash includes: '**/build/libs/*.war', name: 'app'
+            }
+        }
+        stage('Promotion') {
+            steps {
+                timeout(time: 1, unit:'DAYS') {
+                    input 'Deploy to Production?'
+                }
+            }
+        }
+        stage('Deploy to Production') {
+            environment {
+                HEROKU_API_KEY = credentials('HEROKU_API_KEY')
+            }
+            steps {
+                unstash 'app'
+                gradlew('deployHeroku')
+            }
+        }
+    }
+    post {
+        failure {
+            mail to: 'benjamin.muschko@gmail.com', subject: 'Build failed', body: 'Please fix!'
+        }
+    }
+}
+
+def gradlew(String... args) {
+    sh "./gradlew ${args.join(' ')} -s"
+}
+----
