@@ -31,16 +31,17 @@ This post won't go into a lot of details on Java or Gradle. Please consult the r
 Applying the link:https://docs.gradle.org/current/userguide/java_plugin.html[Java plugin] to a Gradle build script automatically provides a task for generating Javadocs out-of-the-box. That task is called link:https://docs.gradle.org/current/userguide/java_plugin.html#sec:javadoc[`javadoc`], takes the compiled source code from the `main` source set as input and builds a set of HTML pages as output. The following example code demonstrates how to apply the Java plugin to the project:
 
 _build.gradle_
-
-``` groovy
+[source,groovy]
+----
 apply plugin: 'java'
-```
+----
 
 _Listing 1. Applying the Java plugin_
 
 Executing the task produces the Javadoc files in the directory _build/docs/javadoc_. The following console output shows how the task execution plays out in practice:
 
-``` shell
+[source,shell]
+----
 $ ./gradlew javadoc
 :compileJava
 :processResources
@@ -48,7 +49,7 @@ $ ./gradlew javadoc
 :javadoc
 
 BUILD SUCCESSFUL
-```
+----
 
 Next, let's have a look at how to publish the Javadoc files to GitHub Pages.
 
@@ -60,8 +61,8 @@ Publishing the pages is almost as easy as generating them. You might have guesse
 
 [[listing2]]
 _ghpages.gradle_
-
-``` groovy
+[source,groovy]
+----
 buildscript {
     repositories {
         jcenter()
@@ -98,13 +99,14 @@ githubPages {
 }
 
 publishGhPages.dependsOn javadoc
-```
+----
 
 _Listing 2. Using the gradle-git plugin to publish Javadocs_
 
 The Github Pages Plugin creates the task `publishGhPages`. By wiring it to the `javadoc` task as task dependency we make sure that the Javadocs are always created before they are published to GitHub Pages. You can find this code being used in the link:https://github.com/bmuschko/gradle-docker-plugin/blob/master/gradle/documentation.gradle[Gradle Docker Plugin] if you want to have a closer look at the details. Initiating the publishing process is simple - run the corresponding publishing task:
 
-``` shell
+[source,shell]
+----
 $ ./gradlew javadoc
 :compileJava
 :processResources
@@ -114,7 +116,7 @@ $ ./gradlew javadoc
 :publishGhPages
 
 BUILD SUCCESSFUL
-```
+----
 
 Pages published to GitHub can be resolved through the HTTP URL pattern _http://<username>.github.io_. In the example above the URL would evaluate to _http://bmuschko.github.io_. GitHub Pages organizes the published files with the name of the repository. Additionally, we provided the context path _docs/javadoc_. As a result our Javadocs can be browsed with the URL _http://bmuschko.github.io/gradle-docker-plugin/docs/javadoc_.
 
@@ -138,8 +140,8 @@ Let's also have a look at the required Travis configuration file. As shown in <<
 
 [[listing3]]
 _.travis.yml_
-
-``` yaml
+[source,yaml]
+----
 language: java
 install: true
 
@@ -157,7 +159,7 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
-```
+----
 
 _Listing 3. Configuring the Travis CI job_
 
