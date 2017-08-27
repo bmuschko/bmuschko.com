@@ -132,7 +132,7 @@ Getting started with Travis CI is straight forward. Log in with your GitHub acco
 
 The plugin configuration in <<listing2,listing 2>> is looking for an environment variable named `GH_TOKEN`. Generate this link:https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/[access token on Github] under _Settings > Personal access tokens_. With the access token in hand, we can now provide it to our project by configuring an environment variable on Travis CI.
 
-image:/img/blog/travis-ci-env-var.png[Travis CI environment variable]
+image:/img/blog/publishing-javadocs/travis-ci-env-var.png[Travis CI environment variable]
 
 _Figure 1. Declaring the Github token as environment variable on Travis CI_
 
