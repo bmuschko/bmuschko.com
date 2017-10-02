@@ -1,8 +1,9 @@
 +++
-title = "Building a Continuous Delivery pipeline with Gradle and Jenkins"
+title = "Crafting a real-world build pipeline with Jenkins by example"
 tags = [
     "build",
     "continuous",
+    "delivery",
     "deployment",
     "jenkins",
     "gradle",
@@ -10,16 +11,32 @@ tags = [
     "heroku",
     "web-app"
 ]
-date = "2017-08-27"
+date = "2017-10-01"
 draft = true
 highlight = true
 +++
 
 == Introduction
 
+link:https://www.cloudbees.com/jenkinsworld/home[Jenkins World 2017] just came to a close two weeks ago. Time to revisit the improvements that have been made to the support for build pipelines. I am no stranger to using Jenkins to model a Continuous Delivery pipeline. In the dark ages, you had to construct a pipeline with the help of different Jenkins plugins bit by bit. The approach was highly brittle, inconsistent and full of magical tips and tricks. You can find a discussion of the approach in my book link:https://www.manning.com/books/gradle-in-action[Gradle in Action].
+
+In this blog post, I am going to discuss how to construct and operate a link:https://jenkins.io/doc/book/pipeline/syntax/#declarative-pipeline[declarative pipeline with Jenkins]. The vehicle for the pipeline is a Java-based web application using Spring Boot built with Gradle. To emulate a real-world scenario, every change made to the project is travels through the full pipeline and is deployed to Heroku on demand. You can find the link:https://github.com/bmuschko/todo-spring-boot[full source code on GitHub].
+
 == The sample application
 
-== Automated testing and static code analysis
+The functionality of the sample application is straight-forward. It allows you to record to-do items that can completed by checking them off the list. A database stores the to-do items and their states. Figure 1 shows a screenshot of the deployed application. You can try out the application for yourself link:https://todo-spring-boot.herokuapp.com[deployed on Heroku].
+
+image:/img/blog/deployment-pipeline-jenkins-gradle/todo-app-screenshot.png[]
+
+_Figure 1. A web-based application for managing to-do items_
+
+On the technical side, the web application was built with Java and Spring Boot. Unit tests have been implemented in the directory `src/test/java`. Under `src/integrationTest/java` you can find integration tests for the controller and data access layer.
+
+== Modeling the build pipeline
+
+== Unit and integration testing
+
+== Static code analysis with SonarCloud
 
 _code-analysis.gradle_
 [source,groovy]
@@ -100,7 +117,11 @@ deployHeroku {
 
 == Declarative pipeline
 
-image:/img/blog/deployment-pipeline-jenkins-gradle/blue-ocean-pipeline.png[]
+image:/img/blog/deployment-pipeline-jenkins-gradle/blue-ocean-input-wait.png[]
+
+image:/img/blog/deployment-pipeline-jenkins-gradle/blue-ocean-input-abort.png[]
+
+image:/img/blog/deployment-pipeline-jenkins-gradle/blue-ocean-all-green.png[]
 
 _Jenkinsfile_
 [source,groovy]
@@ -130,19 +151,23 @@ pipeline {
         }
         stage('Long-running Verification') {
             environment {
-                SONAR_LOGIN = credentials('SONAR_LOGIN')
+                SONAR_LOGIN = credentials('SONARCLOUD_TOKEN')
             }
-            steps {
-                parallel("Integration Tests": {
-                    gradlew('integrationTest')
-                },
-                "Code Analysis": {
-                    gradlew('sonarqube')
-                })
-            }
-            post {
-                always {
-                    junit '**/build/test-results/integrationTest/TEST-*.xml'
+            parallel {
+                stage('Integration Tests') {
+                    steps {
+                        gradlew('integrationTest')
+                    }
+                    post {
+                        always {
+                            junit '**/build/test-results/integrationTest/TEST-*.xml'
+                        }
+                    }
+                }
+                stage('Code Analysis') {
+                    steps {
+                        gradlew('sonarqube')
+                    }
                 }
             }
         }
