@@ -24,7 +24,7 @@ In this blog post, I am going to discuss how to construct and operate a link:htt
 
 == The sample application
 
-The functionality of the sample application is straight-forward. It allows you to record to-do items that can completed by checking them off the list. A database stores the to-do items and their states. Figure 1 shows a screenshot of the deployed application. You can try out the application for yourself link:https://todo-spring-boot.herokuapp.com[deployed on Heroku].
+The functionality of the sample application is straight-forward. It allows you to record to-do items that can completed by checking them off the list. A database stores the to-do items and their states. Figure 1 shows a screenshot of the deployed application. You can try out the application for yourself deployed on Heroku.
 
 image:/img/blog/deployment-pipeline-jenkins-gradle/todo-app-screenshot.png[]
 
