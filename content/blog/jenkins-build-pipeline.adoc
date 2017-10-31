@@ -9,7 +9,7 @@ tags = [
     "spring",
     "heroku"
 ]
-date = "2017-10-28"
+date = "2017-10-30"
 draft = true
 highlight = true
 +++
@@ -24,7 +24,7 @@ In this blog post, I am going to discuss how to construct and operate a link:htt
 
 The functionality of the sample application is straightforward. It allows the user to record to-do items that can completed by checking them off the list. A database stores the to-do items and their states. Figure 1 shows a screenshot of the deployed application. You can try out the link:https://todo-spring-boot.herokuapp.com/[deployed application] for yourself on Heroku.
 
-image:/img/blog/deployment-pipeline-jenkins-gradle/todo-app-screenshot.png[]
+image:/img/blog/jenkins-build-pipeline/todo-app-screenshot.png[]
 
 _Figure 1. A web-based application for managing to-do items_
 
@@ -47,7 +47,7 @@ The build pipeline for the To Do web application should consist of the following
 
 Some of the phases should be executable in parallel especially the ones that might take a long time to finish e.g. integration testing (3) and static code analysis (4). While Continuous Deployment might work perfectly for this kind of application, the pipeline should also implement a manual step that only triggers deployment to production (6) if a user pushes a button.
 
-image:/img/blog/deployment-pipeline-jenkins-gradle/model-build-pipeline.png[]
+image:/img/blog/jenkins-build-pipeline/model-build-pipeline.png[]
 
 _Figure 2. The build pipeline in theory_
 
@@ -71,7 +71,7 @@ As part of our pipeline, you'll use SonarCloud for static code analysis and Hero
 
 SonarCloud and Heroku provide an access token that can be retrieved from the setting page of the corresponding service after logging in. In Jenkins you can declare those access tokens as "Secret text" under "Jenkins > Credentials". For the purpose of this sample pipeline, we'll create the credentials with ID `SONARCLOUD_TOKEN` and `HEROKU_API_KEY`. Figure 3 shows the definition of the SonarCloud credentials.
 
-image:/img/blog/deployment-pipeline-jenkins-gradle/sonarcloud-credentials.png[]
+image:/img/blog/jenkins-build-pipeline/sonarcloud-credentials.png[]
 
 _Figure 3. Adding SonarCloud credentials_
 
@@ -177,7 +177,7 @@ As you can see in the listing, the code is very readable and understandable even
 
 Let's see what happens when we execute the job by triggering the "Build Now" action. Jenkins runs through all stages of the pipeline up until the point that requires manual execution. In the console view, you can confirm or abort the manual execution to trigger the deployment to production. Below you can find the standard view of the pipeline in the job.
 
-image:/img/blog/deployment-pipeline-jenkins-gradle/jenkins-stage-view.png[]
+image:/img/blog/jenkins-build-pipeline/jenkins-stage-view.png[]
 
 _Figure 4. Jenkins stage view_
 
@@ -187,19 +187,19 @@ You might have noticed that the standard job view of the pipeline does not rende
 
 In an earlier section, we installed the Blue Ocean plugin. On the left hand side, of your job screen you should see a "Open Blue Ocean" option. Executing the job shows a much richer representation of the pipeline. You can literally see how your change travels through each stage of the pipeline in real-time. The following screenshot shows the waiting state of the pipeline expecting user input on the promotion stage. The UI even gives you an option to proceed with the next stage or abort the flow of the pipeline.
 
-image:/img/blog/deployment-pipeline-jenkins-gradle/blue-ocean-input-wait.png[]
+image:/img/blog/jenkins-build-pipeline/blue-ocean-input-wait.png[]
 
 _Figure 5. Blue Ocean view of the pipeline waiting for user input_
 
 In the pipeline script above, we configured to wait for interactive input during the promotion step for one day. Jenkins automatically times out the manual operation after the defined waiting period. If you don't want to wait this long, then you can always abort the operation manually.
 
-image:/img/blog/deployment-pipeline-jenkins-gradle/blue-ocean-input-abort.png[]
+image:/img/blog/jenkins-build-pipeline/blue-ocean-input-abort.png[]
 
 _Figure 6. Aborting a manual step in Blue Ocean pipeline view_
 
 If you happen to actually want to deploy the WAR file to production, then all you need to do is to press the "Proceed" button. The pipeline will continue its operation immediately and move on with the next stage in line.
 
-image:/img/blog/deployment-pipeline-jenkins-gradle/blue-ocean-all-green.png[]
+image:/img/blog/jenkins-build-pipeline/blue-ocean-all-green.png[]
 
 _Figure 7. Triggering the deployment via manual step in Blue Ocean_
 
