@@ -18,7 +18,7 @@ highlight = true
 
 link:https://www.cloudbees.com/jenkinsworld/home[Jenkins World 2017] came to a close late September. Time to revisit the improvements that have been made to the support for build pipelines. I am no stranger to using Jenkins to model a Continuous Delivery pipeline. In the dark ages, you had to construct a pipeline with the help of different Jenkins plugins bit by bit. The approach was highly brittle, inconsistent and full of magical tips and tricks. You can find a discussion of the approach in my book link:https://www.manning.com/books/gradle-in-action[Gradle in Action].
 
-In this blog post, I am going to discuss how to construct and operate a link:https://jenkins.io/doc/book/pipeline/syntax/#declarative-pipeline[declarative pipeline with Jenkins]. The vehicle for the pipeline is a Java-based web application. To emulate a real-world scenario, every change made to the project travels through the full pipeline and is deployed to Heroku on demand. You can find the link:https://github.com/bmuschko/todo-spring-boot[full source code on GitHub].
+In this blog post, I am going to discuss how to construct and operate a link:https://jenkins.io/doc/book/pipeline/syntax/#declarative-pipeline[declarative pipeline with Jenkins]. The vehicle for the pipeline is a Java-based web application. To emulate a real-world scenario, every change made to the project travels through the full pipeline and is deployed to Heroku on demand. You can find the link:https://github.com/bmuschko/todo-spring-boot/tree/blog-post[full source code on GitHub].
 
 == The sample application
 
@@ -86,7 +86,7 @@ For pipeline definitions we have two options:
 1. Defining a pipeline script in the Jenkins job that can be edited on-the-fly.
 2. Referring to a pipeline script from SCM.
 
-In the light of link:https://en.wikipedia.org/wiki/Infrastructure_as_Code[Infrastructure as code], we'll go with option 2. The Github repository already link:https://github.com/bmuschko/todo-spring-boot/blob/master/Jenkinsfile[contains the file] defining the desired layout and configuration of the pipeline for our job. By default, this file is called `Jenkinsfile`. Listing 1 shows pipeline definition in its full beauty.
+In the light of link:https://en.wikipedia.org/wiki/Infrastructure_as_Code[Infrastructure as code], we'll go with option 2. The Github repository already link:https://github.com/bmuschko/todo-spring-boot/blob/blog-post/Jenkinsfile[contains the file] defining the desired layout and configuration of the pipeline for our job. By default, this file is called `Jenkinsfile`. Listing 1 shows pipeline definition in its full beauty.
 
 _Jenkinsfile_
 [source,groovy]
