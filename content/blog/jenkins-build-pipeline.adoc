@@ -16,13 +16,13 @@ highlight = true
 
 == Introduction
 
-link:https://www.cloudbees.com/jenkinsworld/home[Jenkins World 2017] came to a close late September. Time to revisit the improvements that have been made to the support for build pipelines. I am no stranger to using Jenkins to model a Continuous Delivery pipeline. In the dark ages, you had to construct a pipeline with the help of different Jenkins plugins bit by bit. The approach was highly brittle, inconsistent and full of magical tips and tricks. You can find a discussion of the approach in my book link:https://www.manning.com/books/gradle-in-action[Gradle in Action].
+link:https://www.cloudbees.com/jenkinsworld/home[Jenkins World 2017] came to a close in late September. Time to revisit the improvements that have been made to the support for build pipelines. I am no stranger to using Jenkins to model a Continuous Delivery pipeline. In the dark ages, you had to construct a pipeline with the help of different Jenkins plugins bit by bit. The approach was highly brittle, inconsistent and full of magical tips and tricks. You can find a discussion of the approach in my book link:https://www.manning.com/books/gradle-in-action[Gradle in Action].
 
 In this blog post, I am going to discuss how to construct and operate a link:https://jenkins.io/doc/book/pipeline/syntax/#declarative-pipeline[declarative pipeline with Jenkins]. The vehicle for the pipeline is a Java-based web application. To emulate a real-world scenario, every change made to the project travels through the full pipeline and is deployed to Heroku on demand. You can find the link:https://github.com/bmuschko/todo-spring-boot/tree/blog-post[full source code on GitHub].
 
 == The sample application
 
-The functionality of the sample application is straightforward. It allows the user to record to-do items that can completed by checking them off the list. A database stores the to-do items and their states. Figure 1 shows a screenshot of the deployed application. You can try out the link:https://todo-spring-boot.herokuapp.com/[deployed application] for yourself on Heroku.
+The functionality of the sample application is straightforward. It allows the user to record to-do items that can be completed by checking them off the list. A database stores the to-do items and their states. Figure 1 shows a screenshot of the deployed application. You can try out the link:https://todo-spring-boot.herokuapp.com/[deployed application] for yourself on Heroku.
 
 image:/img/blog/jenkins-build-pipeline/todo-app-screenshot.png[]
 
@@ -30,7 +30,7 @@ _Figure 1. A web-based application for managing to-do items_
 
 On the technical side, the web application was built with Java and Spring Boot. Automated tests use JUnit and link:https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html[Spring Boot's test utilities] for integration testing of Spring components. The actual work performed by the build pipeline is based on Gradle build logic.
 
-The main focus of this post is going to be on modeling capabilities of Jenkins. I'd encourage you to have a look at the Gradle build scripts available in the source code repository to learn more about the build logic. Before diving into Jenkins right away, let's first have a look at the different stages of build pipeline we are planning to model.
+The main focus of this post is going to be on modeling pipeline capabilities of Jenkins. I'd encourage you to have a look at the Gradle build scripts available in the source code repository to learn more about the build logic. Before diving into Jenkins right away, let's first have a look at the different stages of build pipeline you are about to model.
 
 == Modeling the build pipeline
 
@@ -55,7 +55,7 @@ The next section talks about the necessary prerequisites for implementing the sa
 
 == Setting up Jenkins
 
-You can literally get up and running with Jenkins in a matter of minutes. Uou can just follow these steps if you want to set up Jenkins on your local machine and install all relevant plugins.
+You can literally get up and running with Jenkins in a matter of minutes. Just follow the steps below if you want to set up Jenkins on your local machine and install all relevant plugins.
 
 === Installing Jenkins
 
@@ -67,7 +67,7 @@ In addition to the visualization provided by the standard pipeline plugin, I pre
 
 === Defining credentials
 
-As part of our pipeline, you'll use SonarCloud for static code analysis and Heroku for hosting the application. Both services have free tiers. Sign up for an account if you'd like to take advantage of these services. In this section, we'll configure the credentials for SonarCloud and Heroku in Jenkins. As a result, the pipeline will have access to environment variables that can be passed down to the Gradle build.
+As part of our pipeline, you'll use SonarCloud for static code analysis and Heroku for hosting the application. Both services have free tiers. Sign up for an account if you'd like to take advantage of these services. In this section, you'll configure the credentials for SonarCloud and Heroku in Jenkins. As a result, the pipeline will have access to environment variables that can be passed down to the Gradle build.
 
 SonarCloud and Heroku provide an access token that can be retrieved from the setting page of the corresponding service after logging in. In Jenkins you can declare those access tokens as "Secret text" under "Jenkins > Credentials". For the purpose of this sample pipeline, we'll create the credentials with ID `SONARCLOUD_TOKEN` and `HEROKU_API_KEY`. Figure 3 shows the definition of the SonarCloud credentials.
 
@@ -185,13 +185,13 @@ You might have noticed that the standard job view of the pipeline does not rende
 
 == A look at the Blue Ocean pipeline view
 
-In an earlier section, we installed the Blue Ocean plugin. On the left hand side, of your job screen you should see a "Open Blue Ocean" option. Executing the job shows a much richer representation of the pipeline. You can literally see how your change travels through each stage of the pipeline in real-time. The following screenshot shows the waiting state of the pipeline expecting user input on the promotion stage. The UI even gives you an option to proceed with the next stage or abort the flow of the pipeline.
+In an earlier section, you installed the Blue Ocean plugin. On the left hand side, of your job screen you should see a "Open Blue Ocean" option. Executing the job shows a much richer representation of the pipeline. You can literally see how your change travels through each stage of the pipeline in real-time. The following screenshot shows the waiting state of the pipeline expecting user input on the promotion stage. The UI even provides an option to proceed with the next stage or abort the flow of the pipeline.
 
 image:/img/blog/jenkins-build-pipeline/blue-ocean-input-wait.png[]
 
 _Figure 5. Blue Ocean view of the pipeline waiting for user input_
 
-In the pipeline script above, we configured to wait for interactive input during the promotion step for one day. Jenkins automatically times out the manual operation after the defined waiting period. If you don't want to wait this long, then you can always abort the operation manually.
+In the pipeline script above, you configured to wait for interactive input during the promotion step for one day. Jenkins automatically times out the manual operation after the defined waiting period. If you don't want to wait this long, then you can always abort the operation manually.
 
 image:/img/blog/jenkins-build-pipeline/blue-ocean-input-abort.png[]
 
