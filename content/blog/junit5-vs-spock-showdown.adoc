@@ -1,0 +1,696 @@
++++
+title = "JUnit 5 vs. Spock feature showdown"
+tags = [
+    "testing",
+    "mock",
+    "spock",
+    "junit5"
+]
+date = "2017-12-17"
+draft = true
+highlight = true
++++
+
+== Introduction
+
+_ArithmeticOperation.java_
+[source,java]
+----
+public class ArithmeticOperation {
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int substract(int a, int b) {
+        return a - b;
+    }
+
+    public int multiply(int a, int b) {
+        return a * b;
+    }
+
+    public double divide(int a, int b) {
+        return a / b;
+    }
+}
+----
+
+== Test execution
+
+_SimpleTest.java_
+[source,java]
+----
+public class SimpleTest {
+
+    private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
+
+    @Test
+    void canAdd() {
+        assertEquals(3, arithmeticOperation.add(1, 2));
+    }
+
+    @Test
+    void canSubstract() {
+        assertEquals(1, arithmeticOperation.substract(2, 1));
+    }
+
+    @Test
+    void canMultiply() {
+        assertEquals(6, arithmeticOperation.multiply(2, 3));
+    }
+
+    @Test
+    void canDivide() {
+        assertEquals(3, arithmeticOperation.divide(6, 2));
+    }
+}
+----
+
+_SimpleTest.groovy_
+[source,groovy]
+----
+class SimpleTest extends Specification {
+
+    @Subject def arithmeticOperation = new ArithmeticOperation()
+
+    def canAdd() {
+        expect:
+        arithmeticOperation.add(1, 2) == 3
+    }
+
+    def canSubstract() {
+        expect:
+        arithmeticOperation.substract(2, 1) == 1
+    }
+
+    def canMultiply() {
+        expect:
+        arithmeticOperation.multiply(2, 3) == 6
+    }
+
+    def canDivide() {
+        expect:
+        arithmeticOperation.divide(6, 2) == 3
+    }
+}
+----
+
+== Fixture set up and tear down
+
+_FixtureSetupCleanup.java_
+[source,java]
+----
+public class FixtureSetupCleanup {
+
+    private final DefaultFileReader fileReader = new DefaultFileReader();
+    private Path testFile;
+
+    @BeforeEach
+    void setup() throws IOException {
+        testFile = Files.createTempFile("junit5", ".tmp");
+    }
+
+    @AfterEach
+    void cleanup() {
+        testFile.toFile().delete();
+    }
+
+    @Test
+    void canReadFile() throws IOException {
+        String text = "hello";
+        Files.write(testFile, text.getBytes());
+        assertEquals(text, fileReader.readContent(testFile));
+    }
+}
+----
+
+_FixtureSetupCleanup.groovy_
+[source,groovy]
+----
+class FixtureSetupCleanup extends Specification {
+
+    @Subject def fileReader = new DefaultFileReader()
+    def testFile
+
+    def setup() {
+        testFile = Files.createTempFile("junit5", ".tmp")
+    }
+
+    def cleanup() {
+        testFile.toFile().delete()
+    }
+
+    def "can read file"() {
+        given:
+        def text = "hello"
+        testFile << text
+
+        when:
+        def content = fileReader.readContent(testFile)
+
+        then:
+        content == text
+    }
+}
+----
+
+== Descriptive test names
+
+_DescriptiveTest.java_
+[source,java]
+----
+public class DescriptiveTest {
+
+    private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
+
+    @Test
+    @DisplayName("can add two numbers")
+    void canAdd() {
+        assertEquals(3, arithmeticOperation.add(1, 2));
+    }
+
+    @Test
+    @DisplayName("can substract a number from another one")
+    void canSubstract() {
+        assertEquals(1, arithmeticOperation.substract(2, 1));
+    }
+
+    @Test
+    @DisplayName("can multiple two numbers")
+    void canMultiply() {
+        assertEquals(6, arithmeticOperation.multiply(2, 3));
+    }
+
+    @Test
+    @DisplayName("can divide two numbers")
+    void canDivide() {
+        assertEquals(3, arithmeticOperation.divide(6, 2));
+    }
+}
+----
+
+_DescriptiveTest.groovy_
+[source,groovy]
+----
+class DescriptiveTest extends Specification {
+
+    @Subject def arithmeticOperation = new ArithmeticOperation()
+
+    def "can add two numbers"() {
+        expect:
+        arithmeticOperation.add(1, 2) == 3
+    }
+
+    def "can substract a number from another one"() {
+        expect:
+        arithmeticOperation.substract(2, 1) == 1
+    }
+
+    def "can multiple two numbers"() {
+        expect:
+        arithmeticOperation.multiply(2, 3) == 6
+    }
+
+    def "can divide two numbers"() {
+        expect:
+        arithmeticOperation.divide(6, 2) == 3
+    }
+}
+----
+
+== Disabling tests
+
+_IgnoredTest.java_
+[source,java]
+----
+public class IgnoredTest {
+
+    private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
+
+    @Test
+    @Disabled("for demonstration purposes")
+    void canAdd() {
+        assertEquals(3, arithmeticOperation.add(1, 2));
+    }
+}
+----
+
+_IgnoredTest.groovy_
+[source,java]
+----
+class IgnoredTest extends Specification {
+
+    @Subject def arithmeticOperation = new ArithmeticOperation()
+
+    @Ignore("for demonstration purposes")
+    def canAdd() {
+        expect:
+        arithmeticOperation.add(1, 2) == 3
+    }
+}
+----
+
+== Expecting thrown exceptions
+
+_ExpectedExceptionTest.java_
+[source,java]
+----
+public class ExpectedExceptionTest {
+
+    private final DefaultFileReader fileReader = new DefaultFileReader();
+
+    @Test
+    void cannotReadNonExistentFile() {
+        assertThrows(IOException.class, () -> {
+            fileReader.readContent(Paths.get("hello.text"));
+        });
+    }
+}
+----
+
+_ExpectedExceptionTest.java_
+[source,groovy]
+----
+class ExpectedExceptionTest extends Specification {
+
+    @Subject def fileReader = new DefaultFileReader()
+
+    @FailsWith(IOException)
+    def "cannot read non-existent file"() {
+        expect:
+        fileReader.readContent(Paths.get('hello.text'))
+    }
+}
+----
+
+== Repeating test execution
+
+_RepetitionTest.java_
+[source,java]
+----
+public class RepetitionTest {
+
+    private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
+
+    @RepeatedTest(10)
+    void canAdd() {
+        assertEquals(3, arithmeticOperation.add(1, 2));
+    }
+
+    @RepeatedTest(value = 5, name = "Iteration {currentRepetition} of {totalRepetitions}")
+    void canSubstract() {
+        assertEquals(1, arithmeticOperation.substract(2, 1));
+    }
+}
+----
+
+_RepetitionTest.groovy_
+[source,groovy]
+----
+class RepetitionTest extends Specification {
+
+    @Subject def arithmeticOperation = new ArithmeticOperation()
+
+    @Unroll
+    def "can add"() {
+        expect:
+        arithmeticOperation.add(1, 2) == 3
+
+        where:
+        i << (1..10)
+    }
+
+    @Unroll
+    def "Iteration #i of 5"() {
+        expect:
+        arithmeticOperation.substract(2, 1) == 1
+
+        where:
+        i << (1..5)
+    }
+}
+----
+
+== Declaring timeouts
+
+_RepetitionTest.java_
+[source,java]
+----
+public class TimeoutTest {
+
+    private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
+
+    @Test
+    void canAdd() {
+        assertTimeout(ofSeconds(2), () -> {
+            assertEquals(3, arithmeticOperation.add(1, 2));
+        });
+    }
+}
+----
+
+_RepetitionTest.groovy_
+[source,groovy]
+----
+class TimeoutTest extends Specification {
+
+    @Subject def arithmeticOperation = new ArithmeticOperation()
+
+    @Timeout(2)
+    def canAdd() {
+        expect:
+        arithmeticOperation.add(1, 2) == 3
+    }
+}
+----
+
+== Conditional test execution
+
+_ConditionalExecutionTest.java_
+[source,java]
+----
+public class ConditionalExecutionTest {
+
+    private final static String SYS_PROP_KEY = "junit5.test.enabled";
+    private final static String SYS_PROP_TRUE_VALUE = "true";
+    private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
+
+    @Test
+    void testOnlyOnSystemSystemPropertySet() {
+        assumeTrue(SYS_PROP_TRUE_VALUE.equals(System.getProperty(SYS_PROP_KEY)));
+        assertEquals(3, arithmeticOperation.add(1, 2));
+    }
+}
+----
+
+_ConditionalExecutionTest.groovy_
+[source,groovy]
+----
+class ConditionalExecutionTest extends Specification {
+
+    private final static String SYS_PROP_KEY = "spock.test.enabled"
+    private final static String SYS_PROP_TRUE_VALUE = "true"
+    @Subject def arithmeticOperation = new ArithmeticOperation()
+
+    @Requires({ SYS_PROP_TRUE_VALUE == sys[SYS_PROP_KEY] })
+    def "can add"() {
+        expect:
+        arithmeticOperation.add(1, 2) == 3
+    }
+}
+----
+
+== Data-driven tests
+
+_DataDrivenTest.java_
+[source,java]
+----
+public class DataDrivenTest {
+
+    private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 3, 4, 5 })
+    void canAdd(int b) {
+        assertTrue(arithmeticOperation.add(1, b) >= 2);
+    }
+
+    @ParameterizedTest(name = "can add {0} to {1} and receive {2}")
+    @MethodSource("additionProvider")
+    void canAddAndAssertExactResult(int a, int b, int result) {
+        assertEquals(result, arithmeticOperation.add(a, b));
+    }
+
+    static Stream<Arguments> additionProvider() {
+        return Stream.of(
+            Arguments.of(1, 3, 4),
+            Arguments.of(3, 4, 7),
+            Arguments.of(10, 20, 30)
+        );
+    }
+}
+----
+
+_DataDrivenTest.groovy_
+[source,groovy]
+----
+class DataDrivenTest extends Specification {
+
+    @Subject def arithmeticOperation = new ArithmeticOperation()
+
+    def "can add"() {
+        expect:
+        arithmeticOperation.add(1, b) >= 2
+
+        where:
+        b << [1, 2, 3, 4, 5]
+    }
+
+    @Unroll
+    def "can add #a to #b and receive #result"() {
+        expect:
+        arithmeticOperation.add(a, b) == result
+
+        where:
+        a  | b  | result
+        1  | 3  | 4
+        3  | 4  | 7
+        10 | 20 | 30
+    }
+}
+----
+
+== Mocking
+
+_MockTest.java_
+[source,java]
+----
+public class MockTest {
+
+    private Path testFile;
+
+    @BeforeEach
+    void setup() throws IOException {
+        testFile = Files.createTempFile("junit5", ".tmp");
+    }
+
+    @AfterEach
+    void cleanup() {
+        testFile.toFile().delete();
+    }
+
+    @Test
+    void canMockFileReadOperation() throws IOException {
+        String text = "hello";
+        FileReader fileReader = mock(FileReader.class);
+        when(fileReader.readContent(testFile)).thenReturn(text);
+        FileManager fileManager = new DefaultFileManager(fileReader);
+        Files.write(testFile, text.getBytes());
+        assertEquals(text, fileManager.readContent(testFile));
+    }
+}
+----
+
+_MockTest.groovy_
+[source,groovy]
+----
+class MockTest extends Specification {
+
+    def fileReader = Mock(FileReader)
+    @Subject def fileManager = new DefaultFileManager(fileReader)
+    def testFile
+
+    void setup() {
+        testFile = Files.createTempFile("junit5", ".tmp")
+    }
+
+    void cleanup() {
+        testFile.toFile().delete()
+    }
+
+    def "can mock file read operation"() {
+        given:
+        def text = "hello"
+        Files.write(testFile, text.getBytes())
+
+        when:
+        def content = fileManager.readContent(testFile)
+
+        then:
+        1 * fileReader.readContent(testFile) >> text
+        content == text
+    }
+}
+----
+
+== Filtering test execution
+
+_FilteredFastTest.java_
+[source,java]
+----
+@RunWith(JUnitPlatform.class)
+@SelectPackages("com.bmuschko.test.comparison.junit5.tagged")
+@IncludeTags("fast")
+public class FilteredFastTest {
+}
+----
+
+_TaggedTest.java_
+[source,java]
+----
+public class TaggedTest {
+
+    private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
+
+    @Tag("slow")
+    @Test
+    void runsSlowly() {
+        assertEquals(3, arithmeticOperation.add(1, 2));
+    }
+
+    @Tag("fast")
+    @Test
+    void runsFast() {
+        assertEquals(1, arithmeticOperation.substract(2, 1));
+    }
+}
+----
+
+_Fast.groovy_
+[source,groovy]
+----
+@Retention(RetentionPolicy.RUNTIME)
+@Target([ElementType.TYPE, ElementType.METHOD])
+@interface Fast {
+}
+----
+
+_Slow.groovy_
+[source,groovy]
+----
+@Retention(RetentionPolicy.RUNTIME)
+@Target([ElementType.TYPE, ElementType.METHOD])
+@interface Slow {
+}
+----
+
+_TaggedTest.groovy_
+[source,groovy]
+----
+class TaggedTest extends Specification {
+
+    @Subject def arithmeticOperation = new ArithmeticOperation()
+
+    @Slow
+    def "runs slowly"() {
+        expect:
+        arithmeticOperation.add(1, 2) == 3
+    }
+
+    @Fast
+    def "runs fast"() {
+        expect:
+        arithmeticOperation.substract(2, 1) == 1
+    }
+}
+----
+
+_SpockConfig.groovy_
+[source,groovy]
+----
+import com.bmuschko.test.comparison.spock.tagged.Fast
+
+runner {
+    include Fast
+}
+----
+
+== Extending the test framework
+
+_BeforeAfterLoggingExtension.java_
+[source,java]
+----
+public class BeforeAfterLoggingExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
+
+    @Override
+    public void beforeTestExecution(ExtensionContext context) {
+        Method testMethod = context.getRequiredTestMethod();
+        System.out.println(String.format("Starting test method %s.%s", testMethod.getDeclaringClass(), testMethod.getName()));
+    }
+
+    @Override
+    public void afterTestExecution(ExtensionContext context) {
+        Method testMethod = context.getRequiredTestMethod();
+        System.out.println(String.format("Finishing test method %s.%s", testMethod.getDeclaringClass(), testMethod.getName()));
+    }
+}
+----
+
+_LoggingTest.java_
+[source,java]
+----
+@ExtendWith(BeforeAfterLoggingExtension.class)
+public class LoggingTest {
+
+    private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
+
+    @Test
+    void canAdd() {
+        assertEquals(3, arithmeticOperation.add(1, 2));
+    }
+}
+----
+
+_BeforeAfterEventListener.groovy_
+[source,groovy]
+----
+class BeforeAfterEventListener extends AbstractRunListener {
+
+    @Override
+    void beforeFeature(FeatureInfo feature) {
+        println "Starting test method ${feature.description.className}.${feature.description.methodName}"
+    }
+
+    @Override
+    void afterFeature(FeatureInfo feature) {
+        println "Finishing test method ${feature.description.className}.${feature.description.methodName}"
+    }
+}
+----
+
+_BeforeAfterLogging.groovy_
+[source,groovy]
+----
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@ExtensionAnnotation(BeforeAfterLoggingExtension.class)
+@interface BeforeAfterLogging {
+}
+----
+
+_BeforeAfterLoggingExtension.groovy_
+[source,groovy]
+----
+class BeforeAfterLoggingExtension extends AbstractAnnotationDrivenExtension<BeforeAfterLogging> {
+
+    @Override
+    void visitSpecAnnotation(BeforeAfterLogging annotation, SpecInfo spec) {
+        spec.addListener(new BeforeAfterEventListener())
+    }
+}
+----
+
+_LoggingTest.groovy_
+[source,groovy]
+----
+@BeforeAfterLogging
+class LoggingTest extends Specification {
+
+    @Subject def arithmeticOperation = new ArithmeticOperation()
+
+    def canAdd() {
+        expect:
+        arithmeticOperation.add(1, 2) == 3
+    }
+}
+----
