@@ -9,11 +9,11 @@ install:
 
 before_script:
   - gem install asciidoctor
-  - git clone --branch v2 https://github.com/go-yaml/yaml $GOPATH/src/gopkg.in/yaml.v2
-  - go get -u -v github.com/spf13/hugo
+  - wget https://github.com/gohugoio/hugo/releases/download/v0.31.1/hugo_0.31.1_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
   - wget https://github.com/bmuschko/link-verifier/releases/download/v0.3/link-verifier-0.3-linux64.tar.gz -O /tmp/link-verifier.tar.gz
+  - tar -xvf /tmp/hugo.tar.gz
   - tar -xvf /tmp/link-verifier.tar.gz
-  - export PATH=$PATH:$PWD/link-verifier/
+  - export PATH=$PATH:$PWD/hugo/:$PWD/link-verifier/
 
 # Build the website
 script:
