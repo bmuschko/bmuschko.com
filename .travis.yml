@@ -17,8 +17,8 @@ before_script:
 
 # Build the website
 script:
-  - ./link-verifier -rootDirs content,data -includePatterns=*.yml -timeout 60
-  - hugo
+  - ./link-verifier -rootDirs content,data -includePatterns=*.yml -timeout 90
+  - ./hugo
   - echo bmuschko.com >> public/CNAME
 
 # Deploy to GitHub pages
