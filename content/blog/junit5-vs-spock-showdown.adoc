@@ -1,10 +1,11 @@
 +++
 title = "JUnit 5 vs. Spock feature showdown"
 tags = [
+    "junit5",
+    "spock",
     "testing",
     "mock",
-    "spock",
-    "junit5"
+    "mockito"
 ]
 date = "2017-12-17"
 draft = true
@@ -12,6 +13,14 @@ highlight = true
 +++
 
 == Introduction
+
+link:http://junit.org/junit4/[JUnit 4] has been the go-to test framework for JVM-based software projects for over a decade. You can find the use of JUnit across the board in organizations from big entprises to startups. Despite its popularity, the test framework's functionality and features barely moved with the times. Due to its deep penetration into the industry, evolutionary changes became harder and harder to implement without introducing inevidable breakages to the API. 
+
+With the rise of other JVM languages like Groovy and Kotlin, new, feature-rich test frameworks emerged. The test framework link:http://spockframework.org/[Spock] became a welcome alternative to JUnit for many projects fearless to adopt Groovy as part of their polyglot software stack. With the link:http://junit.org/junit5/docs/current/user-guide/#release-notes-5.0.0[first GA release of JUnit 5] in September 2017, the JUnit team brought real innovation to the established space of testing JVM code. Not only is the release packed with new features comparable to the ones provided by Spock, JUnit 5 also serves as a platform for launching other test frameworks on the JVM.
+
+In this blog post, I am going to compare typical usage patterns and features implemented as JUnit 5 and Spock-based tests. You can find all sample code in a link:https://github.com/bmuschko/junit5-vs-spock-feature-comparison[dedicated repository on Github].
+
+== Code under test
 
 _ArithmeticOperation.java_
 [source,java]
@@ -35,13 +44,70 @@ public class ArithmeticOperation {
 }
 ----
 
+_Listing 1. Class implementing artithmetic operations_
+
+_FileReader.java_
+[source,java]
+----
+public interface FileReader {
+    String readContent(Path path) throws IOException;
+}
+----
+
+_Listing 2. File reader interface_
+
+_DefaultFileReader.java_
+[source,java]
+----
+public class DefaultFileReader implements FileReader {
+    @Override
+    public String readContent(Path path) throws IOException {
+        if (Files.notExists(path)) {
+            throw new IOException("File does not exist");
+        }
+
+        return new String(Files.readAllBytes(path));
+    }
+}
+----
+
+_Listing 3. Default file reader implementation_
+
+_FileManager.java_
+[source,java]
+----
+public interface FileManager {
+    String readContent(Path path) throws IOException;
+}
+----
+
+_Listing 4. File manager interface_
+
+_DefaultFileManager.java_
+[source,java]
+----
+public class DefaultFileManager implements FileManager {
+    private final FileReader fileReader;
+
+    public DefaultFileManager(FileReader fileReader) {
+        this.fileReader = fileReader;
+    }
+
+    @Override
+    public String readContent(Path path) throws IOException {
+        return fileReader.readContent(path);
+    }
+}
+----
+
+_Listing 5. Default file manager implementation_
+
 == Test execution
 
 _SimpleTest.java_
 [source,java]
 ----
 public class SimpleTest {
-
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @Test
@@ -66,11 +132,13 @@ public class SimpleTest {
 }
 ----
 
+_Listing 6. Using annotation to indicate test execution_
+
+
 _SimpleTest.groovy_
 [source,groovy]
 ----
 class SimpleTest extends Specification {
-
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     def canAdd() {
@@ -95,13 +163,15 @@ class SimpleTest extends Specification {
 }
 ----
 
+_Listing 7. Extending from Specification_
+
+
 == Fixture set up and tear down
 
 _FixtureSetupCleanup.java_
 [source,java]
 ----
 public class FixtureSetupCleanup {
-
     private final DefaultFileReader fileReader = new DefaultFileReader();
     private Path testFile;
 
@@ -124,11 +194,13 @@ public class FixtureSetupCleanup {
 }
 ----
 
+_Listing 8. Using annotations for setting up and tearing down fixtures_
+
+
 _FixtureSetupCleanup.groovy_
 [source,groovy]
 ----
 class FixtureSetupCleanup extends Specification {
-
     @Subject def fileReader = new DefaultFileReader()
     def testFile
 
@@ -154,13 +226,15 @@ class FixtureSetupCleanup extends Specification {
 }
 ----
 
+_Listing 9. Fixture methods in Spock_
+
+
 == Descriptive test names
 
 _DescriptiveTest.java_
 [source,java]
 ----
 public class DescriptiveTest {
-
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @Test
@@ -189,11 +263,13 @@ public class DescriptiveTest {
 }
 ----
 
+_Listing 10. Providing a descriptive test name by annotation_
+
+
 _DescriptiveTest.groovy_
 [source,groovy]
 ----
 class DescriptiveTest extends Specification {
-
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     def "can add two numbers"() {
@@ -218,13 +294,15 @@ class DescriptiveTest extends Specification {
 }
 ----
 
+_Listing 11. Using a String to provide a readable test description_
+
+
 == Disabling tests
 
 _IgnoredTest.java_
 [source,java]
 ----
 public class IgnoredTest {
-
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @Test
@@ -235,11 +313,13 @@ public class IgnoredTest {
 }
 ----
 
+_Listing 12. Disabling test methods by annotation_
+
+
 _IgnoredTest.groovy_
 [source,java]
 ----
 class IgnoredTest extends Specification {
-
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     @Ignore("for demonstration purposes")
@@ -250,13 +330,15 @@ class IgnoredTest extends Specification {
 }
 ----
 
+_Listing 13. Using the Ignore annotation to disable a method_
+
+
 == Expecting thrown exceptions
 
 _ExpectedExceptionTest.java_
 [source,java]
 ----
 public class ExpectedExceptionTest {
-
     private final DefaultFileReader fileReader = new DefaultFileReader();
 
     @Test
@@ -268,11 +350,13 @@ public class ExpectedExceptionTest {
 }
 ----
 
+_Listing 14. Asserting that a code block throws an expected exception_
+
+
 _ExpectedExceptionTest.java_
 [source,groovy]
 ----
 class ExpectedExceptionTest extends Specification {
-
     @Subject def fileReader = new DefaultFileReader()
 
     @FailsWith(IOException)
@@ -283,13 +367,15 @@ class ExpectedExceptionTest extends Specification {
 }
 ----
 
+_Listing 15. Declaring an expected exception by annotation_
+
+
 == Repeating test execution
 
 _RepetitionTest.java_
 [source,java]
 ----
 public class RepetitionTest {
-
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @RepeatedTest(10)
@@ -304,11 +390,13 @@ public class RepetitionTest {
 }
 ----
 
+_Listing 16. Repeating a test method by annotation_
+
+
 _RepetitionTest.groovy_
 [source,groovy]
 ----
 class RepetitionTest extends Specification {
-
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     @Unroll
@@ -331,13 +419,15 @@ class RepetitionTest extends Specification {
 }
 ----
 
+_Listing 17. Repeating a test method by counter_
+
+
 == Declaring timeouts
 
 _RepetitionTest.java_
 [source,java]
 ----
 public class TimeoutTest {
-
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @Test
@@ -349,11 +439,13 @@ public class TimeoutTest {
 }
 ----
 
+_Listing 18. Fail a test if it doesn't finish in expected timeout threshold_
+
+
 _RepetitionTest.groovy_
 [source,groovy]
 ----
 class TimeoutTest extends Specification {
-
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     @Timeout(2)
@@ -364,13 +456,15 @@ class TimeoutTest extends Specification {
 }
 ----
 
+_Listing 19. Convenient timeout definition by annotation_
+
+
 == Conditional test execution
 
 _ConditionalExecutionTest.java_
 [source,java]
 ----
 public class ConditionalExecutionTest {
-
     private final static String SYS_PROP_KEY = "junit5.test.enabled";
     private final static String SYS_PROP_TRUE_VALUE = "true";
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
@@ -383,11 +477,12 @@ public class ConditionalExecutionTest {
 }
 ----
 
+_Listing 20. Conditional test execution by expression_
+
 _ConditionalExecutionTest.groovy_
 [source,groovy]
 ----
 class ConditionalExecutionTest extends Specification {
-
     private final static String SYS_PROP_KEY = "spock.test.enabled"
     private final static String SYS_PROP_TRUE_VALUE = "true"
     @Subject def arithmeticOperation = new ArithmeticOperation()
@@ -400,13 +495,14 @@ class ConditionalExecutionTest extends Specification {
 }
 ----
 
+_Listing 21. Expression-based test execution defined as annotation parameter_
+
 == Data-driven tests
 
 _DataDrivenTest.java_
 [source,java]
 ----
 public class DataDrivenTest {
-
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @ParameterizedTest
@@ -431,11 +527,12 @@ public class DataDrivenTest {
 }
 ----
 
+_Listing 22. Declaring a value source and provider to provide data to test_
+
 _DataDrivenTest.groovy_
 [source,groovy]
 ----
 class DataDrivenTest extends Specification {
-
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     def "can add"() {
@@ -460,13 +557,14 @@ class DataDrivenTest extends Specification {
 }
 ----
 
+_Listing 23. Providing data to test execution by table_
+
 == Mocking
 
 _MockTest.java_
 [source,java]
 ----
 public class MockTest {
-
     private Path testFile;
 
     @BeforeEach
@@ -491,11 +589,13 @@ public class MockTest {
 }
 ----
 
+_Listing 24. Using Mockito to inject mock instance_
+
+
 _MockTest.groovy_
 [source,groovy]
 ----
 class MockTest extends Specification {
-
     def fileReader = Mock(FileReader)
     @Subject def fileManager = new DefaultFileManager(fileReader)
     def testFile
@@ -523,6 +623,9 @@ class MockTest extends Specification {
 }
 ----
 
+_Listing 25. Built-in mock capabilities_
+
+
 == Filtering test execution
 
 _FilteredFastTest.java_
@@ -535,11 +638,12 @@ public class FilteredFastTest {
 }
 ----
 
+_Listing 26. Test suite executing fast tests_
+
 _TaggedTest.java_
 [source,java]
 ----
 public class TaggedTest {
-
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @Tag("slow")
@@ -556,6 +660,8 @@ public class TaggedTest {
 }
 ----
 
+_Listing 27. Tagged test methods_
+
 _Fast.groovy_
 [source,groovy]
 ----
@@ -564,6 +670,8 @@ _Fast.groovy_
 @interface Fast {
 }
 ----
+
+_Listing 28. Interface annotation indicating fast tests_
 
 _Slow.groovy_
 [source,groovy]
@@ -574,11 +682,12 @@ _Slow.groovy_
 }
 ----
 
+_Listing 29. Interface annotation indicating slow tests_
+
 _TaggedTest.groovy_
 [source,groovy]
 ----
 class TaggedTest extends Specification {
-
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     @Slow
@@ -595,6 +704,8 @@ class TaggedTest extends Specification {
 }
 ----
 
+_Listing 30. Annotated test methods_
+
 _SpockConfig.groovy_
 [source,groovy]
 ----
@@ -605,13 +716,14 @@ runner {
 }
 ----
 
+_Listing 31. Spock runner configuration to filter annotated tests_
+
 == Extending the test framework
 
 _BeforeAfterLoggingExtension.java_
 [source,java]
 ----
 public class BeforeAfterLoggingExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
-
     @Override
     public void beforeTestExecution(ExtensionContext context) {
         Method testMethod = context.getRequiredTestMethod();
@@ -626,12 +738,13 @@ public class BeforeAfterLoggingExtension implements BeforeTestExecutionCallback,
 }
 ----
 
+_Listing 32. Test execution callback handler_
+
 _LoggingTest.java_
 [source,java]
 ----
 @ExtendWith(BeforeAfterLoggingExtension.class)
 public class LoggingTest {
-
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @Test
@@ -641,11 +754,12 @@ public class LoggingTest {
 }
 ----
 
+_Listing 33. Using extension in test class_
+
 _BeforeAfterEventListener.groovy_
 [source,groovy]
 ----
 class BeforeAfterEventListener extends AbstractRunListener {
-
     @Override
     void beforeFeature(FeatureInfo feature) {
         println "Starting test method ${feature.description.className}.${feature.description.methodName}"
@@ -658,6 +772,8 @@ class BeforeAfterEventListener extends AbstractRunListener {
 }
 ----
 
+_Listing 34. Event listener implementation in Spock_
+
 _BeforeAfterLogging.groovy_
 [source,groovy]
 ----
@@ -668,11 +784,12 @@ _BeforeAfterLogging.groovy_
 }
 ----
 
+_Listing 35. Exposing an annotation evaluated by extension_
+
 _BeforeAfterLoggingExtension.groovy_
 [source,groovy]
 ----
 class BeforeAfterLoggingExtension extends AbstractAnnotationDrivenExtension<BeforeAfterLogging> {
-
     @Override
     void visitSpecAnnotation(BeforeAfterLogging annotation, SpecInfo spec) {
         spec.addListener(new BeforeAfterEventListener())
@@ -680,12 +797,13 @@ class BeforeAfterLoggingExtension extends AbstractAnnotationDrivenExtension<Befo
 }
 ----
 
+_Listing 36. Registering the listener by extension_
+
 _LoggingTest.groovy_
 [source,groovy]
 ----
 @BeforeAfterLogging
 class LoggingTest extends Specification {
-
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     def canAdd() {
@@ -694,3 +812,7 @@ class LoggingTest extends Specification {
     }
 }
 ----
+
+_Listing 37. Using the logging extension in a test class_
+
+== Conclusion
