@@ -18,9 +18,11 @@ link:http://junit.org/junit4/[JUnit 4] has been the go-to test framework for JVM
 
 With the rise of other JVM languages like Groovy and Kotlin, new, feature-rich test frameworks emerged. The test framework link:http://spockframework.org/[Spock] became a welcome alternative to JUnit for many projects fearless to adopt Groovy as part of their polyglot software stack. With the link:http://junit.org/junit5/docs/current/user-guide/#release-notes-5.0.0[first GA release of JUnit 5] in September 2017, the JUnit team brought real innovation to the established space of testing JVM code. Not only is the release packed with new features comparable to the ones provided by Spock, JUnit 5 also serves as a platform for launching other test frameworks on the JVM.
 
-In this blog post, I am going to compare typical usage patterns and features implemented as JUnit 5 and Spock-based tests. You can find all sample code in a link:https://github.com/bmuschko/junit5-vs-spock-feature-comparison[dedicated repository on Github].
+In this blog post, I am going to compare typical usage patterns and features implemented as JUnit 5 and Spock-based tests. Spock follows the link:https://en.wikipedia.org/wiki/Behavior-driven_development[behavior-driven development (BDD)] methodology. This post is not going to discuss the fundamental differences between JUnit 5 and Spock in this regard. You can find all sample code in a link:https://github.com/bmuschko/junit5-vs-spock-feature-comparison[dedicated repository on Github].
 
 == Code under test
+
+For the purpose of demonstrating the testing capabilities of both test frameworks, we'll use two sets of classes and/or interfaces. The simplest class provides methods for executing arithmetic operations as shown in listing 1. Most test framework features can be demonstrates with the help of `ArithmeticOperation.java`.
 
 _ArithmeticOperation.java_
 [source,java]
@@ -46,6 +48,8 @@ public class ArithmeticOperation {
 
 _Listing 1. Class implementing artithmetic operations_
 
+More advanced testing capabilities e.g. code that throws an exception require a slightly more complex setup. The following interface and class read the contents of a file for a given `Path` instance.
+
 _FileReader.java_
 [source,java]
 ----
@@ -55,6 +59,8 @@ public interface FileReader {
 ----
 
 _Listing 2. File reader interface_
+
+The implementation of the interface throws an `IOException` if the provided `Path` does not exist.
 
 _DefaultFileReader.java_
 [source,java]
@@ -73,36 +79,15 @@ public class DefaultFileReader implements FileReader {
 
 _Listing 3. Default file reader implementation_
 
-_FileManager.java_
-[source,java]
-----
-public interface FileManager {
-    String readContent(Path path) throws IOException;
-}
-----
-
-_Listing 4. File manager interface_
-
-_DefaultFileManager.java_
-[source,java]
-----
-public class DefaultFileManager implements FileManager {
-    private final FileReader fileReader;
-
-    public DefaultFileManager(FileReader fileReader) {
-        this.fileReader = fileReader;
-    }
-
-    @Override
-    public String readContent(Path path) throws IOException {
-        return fileReader.readContent(path);
-    }
-}
-----
-
-_Listing 5. Default file manager implementation_
+You will find that another class is referenced in some of the test cases described below: `FileManager`. `FileManager` is just a wrapper around `FileReader` to demonstrate mocking capabilities for each test framework. You can find the link:https://github.com/bmuschko/junit5-vs-spock-feature-comparison/blob/master/src/main/java/com/bmuschko/test/comparison/FileManager.java[code for the class] in the source code repository.
 
 == Test execution
+
+Let's start with the most simplistic use case: marking test methods or the whole class for execution with the test framework. 
+
+=== JUnit 5
+
+In JUnit 5 you use the annotation `org.junit.jupiter.api.Test` to indicate that a method should be executed as a test. JUnit 5 takes a different approach than JUnit 4. The annotation is only applicable to a method but not the class. The annotated test method must not be `private` or `static`. Test methods do not return a value.
 
 _SimpleTest.java_
 [source,java]
@@ -132,8 +117,11 @@ public class SimpleTest {
 }
 ----
 
-_Listing 6. Using annotation to indicate test execution_
+_Listing 4. Using annotation to indicate test execution_
 
+=== Spock
+
+Spock takes a different approach than JUnit 5. To indicate that all methods of a class should be treated as test methods, you'll need to extend from `spock.lang.Specification`. On the one hand, extending from a class requires less work on your end to turn all methods into test methods. On the other hand, it makes it harder to create a hierarchy of parent classes in case you want to formalize reusable fixtures through inheritance. In case you do not want all methods to execute as tests then you can always <<disabling-tests,disable them>>.
 
 _SimpleTest.groovy_
 [source,groovy]
@@ -163,16 +151,18 @@ class SimpleTest extends Specification {
 }
 ----
 
-_Listing 7. Extending from Specification_
+_Listing 5. Extending from Specification_
 
 
 == Fixture set up and tear down
+
+=== JUnit 5
 
 _FixtureSetupCleanup.java_
 [source,java]
 ----
 public class FixtureSetupCleanup {
-    private final DefaultFileReader fileReader = new DefaultFileReader();
+    private final FileReader fileReader = new DefaultFileReader();
     private Path testFile;
 
     @BeforeEach
@@ -194,8 +184,9 @@ public class FixtureSetupCleanup {
 }
 ----
 
-_Listing 8. Using annotations for setting up and tearing down fixtures_
+_Listing 6. Using annotations for setting up and tearing down fixtures_
 
+=== Spock
 
 _FixtureSetupCleanup.groovy_
 [source,groovy]
@@ -226,10 +217,12 @@ class FixtureSetupCleanup extends Specification {
 }
 ----
 
-_Listing 9. Fixture methods in Spock_
+_Listing 7. Fixture methods in Spock_
 
 
 == Descriptive test names
+
+=== JUnit 5
 
 _DescriptiveTest.java_
 [source,java]
@@ -263,8 +256,9 @@ public class DescriptiveTest {
 }
 ----
 
-_Listing 10. Providing a descriptive test name by annotation_
+_Listing 8. Providing a descriptive test name by annotation_
 
+=== Spock
 
 _DescriptiveTest.groovy_
 [source,groovy]
@@ -294,10 +288,12 @@ class DescriptiveTest extends Specification {
 }
 ----
 
-_Listing 11. Using a String to provide a readable test description_
+_Listing 9. Using a String to provide a readable test description_
 
-
+[[disabling-tests]]
 == Disabling tests
+
+=== JUnit 5
 
 _IgnoredTest.java_
 [source,java]
@@ -313,8 +309,9 @@ public class IgnoredTest {
 }
 ----
 
-_Listing 12. Disabling test methods by annotation_
+_Listing 10. Disabling test methods by annotation_
 
+=== Spock
 
 _IgnoredTest.groovy_
 [source,java]
@@ -330,16 +327,18 @@ class IgnoredTest extends Specification {
 }
 ----
 
-_Listing 13. Using the Ignore annotation to disable a method_
+_Listing 11. Using the Ignore annotation to disable a method_
 
 
 == Expecting thrown exceptions
+
+=== JUnit 5
 
 _ExpectedExceptionTest.java_
 [source,java]
 ----
 public class ExpectedExceptionTest {
-    private final DefaultFileReader fileReader = new DefaultFileReader();
+    private final FileReader fileReader = new DefaultFileReader();
 
     @Test
     void cannotReadNonExistentFile() {
@@ -350,8 +349,9 @@ public class ExpectedExceptionTest {
 }
 ----
 
-_Listing 14. Asserting that a code block throws an expected exception_
+_Listing 12. Asserting that a code block throws an expected exception_
 
+=== Spock
 
 _ExpectedExceptionTest.java_
 [source,groovy]
@@ -367,10 +367,12 @@ class ExpectedExceptionTest extends Specification {
 }
 ----
 
-_Listing 15. Declaring an expected exception by annotation_
+_Listing 13. Declaring an expected exception by annotation_
 
 
 == Repeating test execution
+
+=== JUnit 5
 
 _RepetitionTest.java_
 [source,java]
@@ -390,8 +392,9 @@ public class RepetitionTest {
 }
 ----
 
-_Listing 16. Repeating a test method by annotation_
+_Listing 14. Repeating a test method by annotation_
 
+=== Spock
 
 _RepetitionTest.groovy_
 [source,groovy]
@@ -419,10 +422,12 @@ class RepetitionTest extends Specification {
 }
 ----
 
-_Listing 17. Repeating a test method by counter_
+_Listing 15. Repeating a test method by counter_
 
 
 == Declaring timeouts
+
+=== JUnit 5
 
 _RepetitionTest.java_
 [source,java]
@@ -439,8 +444,9 @@ public class TimeoutTest {
 }
 ----
 
-_Listing 18. Fail a test if it doesn't finish in expected timeout threshold_
+_Listing 16. Fail a test if it doesn't finish in expected timeout threshold_
 
+=== Spock
 
 _RepetitionTest.groovy_
 [source,groovy]
@@ -456,10 +462,12 @@ class TimeoutTest extends Specification {
 }
 ----
 
-_Listing 19. Convenient timeout definition by annotation_
+_Listing 17. Convenient timeout definition by annotation_
 
 
 == Conditional test execution
+
+=== JUnit 5
 
 _ConditionalExecutionTest.java_
 [source,java]
@@ -477,7 +485,9 @@ public class ConditionalExecutionTest {
 }
 ----
 
-_Listing 20. Conditional test execution by expression_
+_Listing 18. Conditional test execution by expression_
+
+=== Spock
 
 _ConditionalExecutionTest.groovy_
 [source,groovy]
@@ -495,9 +505,11 @@ class ConditionalExecutionTest extends Specification {
 }
 ----
 
-_Listing 21. Expression-based test execution defined as annotation parameter_
+_Listing 19. Expression-based test execution defined as annotation parameter_
 
 == Data-driven tests
+
+=== JUnit 5
 
 _DataDrivenTest.java_
 [source,java]
@@ -527,7 +539,9 @@ public class DataDrivenTest {
 }
 ----
 
-_Listing 22. Declaring a value source and provider to provide data to test_
+_Listing 20. Declaring a value source and provider to provide data to test_
+
+=== Spock
 
 _DataDrivenTest.groovy_
 [source,groovy]
@@ -557,9 +571,11 @@ class DataDrivenTest extends Specification {
 }
 ----
 
-_Listing 23. Providing data to test execution by table_
+_Listing 21. Providing data to test execution by table_
 
 == Mocking
+
+=== JUnit 5
 
 _MockTest.java_
 [source,java]
@@ -589,8 +605,9 @@ public class MockTest {
 }
 ----
 
-_Listing 24. Using Mockito to inject mock instance_
+_Listing 22. Using Mockito to inject mock instance_
 
+=== Spock
 
 _MockTest.groovy_
 [source,groovy]
@@ -623,10 +640,12 @@ class MockTest extends Specification {
 }
 ----
 
-_Listing 25. Built-in mock capabilities_
+_Listing 23. Built-in mock capabilities_
 
 
 == Filtering test execution
+
+=== JUnit 5
 
 _FilteredFastTest.java_
 [source,java]
@@ -638,7 +657,7 @@ public class FilteredFastTest {
 }
 ----
 
-_Listing 26. Test suite executing fast tests_
+_Listing 24. Test suite executing fast tests_
 
 _TaggedTest.java_
 [source,java]
@@ -660,7 +679,9 @@ public class TaggedTest {
 }
 ----
 
-_Listing 27. Tagged test methods_
+_Listing 25. Tagged test methods_
+
+=== Spock
 
 _Fast.groovy_
 [source,groovy]
@@ -671,7 +692,7 @@ _Fast.groovy_
 }
 ----
 
-_Listing 28. Interface annotation indicating fast tests_
+_Listing 26. Interface annotation indicating fast tests_
 
 _Slow.groovy_
 [source,groovy]
@@ -682,7 +703,7 @@ _Slow.groovy_
 }
 ----
 
-_Listing 29. Interface annotation indicating slow tests_
+_Listing 27. Interface annotation indicating slow tests_
 
 _TaggedTest.groovy_
 [source,groovy]
@@ -704,7 +725,7 @@ class TaggedTest extends Specification {
 }
 ----
 
-_Listing 30. Annotated test methods_
+_Listing 28. Annotated test methods_
 
 _SpockConfig.groovy_
 [source,groovy]
@@ -716,9 +737,11 @@ runner {
 }
 ----
 
-_Listing 31. Spock runner configuration to filter annotated tests_
+_Listing 29. Spock runner configuration to filter annotated tests_
 
 == Extending the test framework
+
+=== JUnit 5
 
 _BeforeAfterLoggingExtension.java_
 [source,java]
@@ -738,7 +761,7 @@ public class BeforeAfterLoggingExtension implements BeforeTestExecutionCallback,
 }
 ----
 
-_Listing 32. Test execution callback handler_
+_Listing 30. Test execution callback handler_
 
 _LoggingTest.java_
 [source,java]
@@ -754,7 +777,9 @@ public class LoggingTest {
 }
 ----
 
-_Listing 33. Using extension in test class_
+_Listing 31. Using extension in test class_
+
+=== Spock
 
 _BeforeAfterEventListener.groovy_
 [source,groovy]
@@ -772,7 +797,7 @@ class BeforeAfterEventListener extends AbstractRunListener {
 }
 ----
 
-_Listing 34. Event listener implementation in Spock_
+_Listing 32. Event listener implementation in Spock_
 
 _BeforeAfterLogging.groovy_
 [source,groovy]
@@ -784,7 +809,7 @@ _BeforeAfterLogging.groovy_
 }
 ----
 
-_Listing 35. Exposing an annotation evaluated by extension_
+_Listing 33. Exposing an annotation evaluated by extension_
 
 _BeforeAfterLoggingExtension.groovy_
 [source,groovy]
@@ -797,7 +822,7 @@ class BeforeAfterLoggingExtension extends AbstractAnnotationDrivenExtension<Befo
 }
 ----
 
-_Listing 36. Registering the listener by extension_
+_Listing 34. Registering the listener by extension_
 
 _LoggingTest.groovy_
 [source,groovy]
@@ -813,6 +838,6 @@ class LoggingTest extends Specification {
 }
 ----
 
-_Listing 37. Using the logging extension in a test class_
+_Listing 35. Using the logging extension in a test class_
 
 == Conclusion
