@@ -18,7 +18,7 @@ link:http://junit.org/junit4/[JUnit 4] has been the go-to test framework for JVM
 
 With the rise of other JVM languages like Groovy and Kotlin, new, feature-rich test frameworks emerged. The test framework link:http://spockframework.org/[Spock] became a welcome alternative to JUnit for many projects fearless to adopt Groovy as part of their polyglot software stack. With the link:http://junit.org/junit5/docs/current/user-guide/#release-notes-5.0.0[first GA release of JUnit 5] in September 2017, the JUnit team brought real innovation to the established space of testing JVM code. Not only is the release packed with new features comparable to the ones provided by Spock, JUnit 5 also serves as a platform for launching other test frameworks on the JVM.
 
-In this blog post, I am going to compare typical usage patterns and features implemented as JUnit 5 and Spock-based tests. Spock follows the link:https://en.wikipedia.org/wiki/Behavior-driven_development[behavior-driven development (BDD)] methodology. This post is not going to discuss the fundamental differences between JUnit 5 and Spock in this regard. You can find all sample code in a link:https://github.com/bmuschko/junit5-vs-spock-feature-comparison[dedicated repository on Github].
+In this blog post, I am going to compare typical usage patterns and features implemented as JUnit 5 and Spock-based tests. Spock follows the link:https://en.wikipedia.org/wiki/Behavior-driven_development[behavior-driven development (BDD)] methodology. This post is not going to discuss the fundamental differences between JUnit 5 and Spock in this regard. You can find all sample code in a link:https://github.com/bmuschko/junit5-vs-spock-feature-comparison[dedicated repository on Github]. The sample code is based on JUnit 5.0.2 and Spock 1.1.
 
 == Code under test
 
@@ -153,10 +153,15 @@ class SimpleTest extends Specification {
 
 _Listing 5. Extending from Specification_
 
-
 == Fixture set up and tear down
 
+Many tests require fixtures to be set up before any of the test methods can successfully run. A fixture lays out the expected environment, class composition or services that need to be available for the test to run properly. Fixtures can be costly to create e.g. if a service endpoint needs to be spawned up. After the test method finishes the fixture may need to be cleaned up. JUnit 5 and Spock provide ways to create fixtures before individual test methods or just once per test class. Equivalent hooks are available for clean up functionality.
+
 === JUnit 5
+
+JUnit 5 supports fixture set up and tear down through annotations. The responsible method names for the operations can have an arbitrary name. The relevant annotation are `@BeforeEach`, `@BeforeAll`, `@AfterEach` and `@AfterAll`. You can find more information about link:http://junit.org/junit5/docs/current/user-guide/#writing-tests-annotations[those annotations] in the user guide. Using annotations to indicate fixture set up and tear down fills quite natural.
+
+The following test demonstrates the use of `@BeforeEach` and `@AfterEach` to create and delete a temporary file so that the code under test, `FileReader`, can read from it.
 
 _FixtureSetupCleanup.java_
 [source,java]
@@ -187,6 +192,8 @@ public class FixtureSetupCleanup {
 _Listing 6. Using annotations for setting up and tearing down fixtures_
 
 === Spock
+
+Spock does not provide annotations to indicate fixture set up and tear down. If a test class implements the methods `setup()`, `setupSpec()`, `cleanup()`, and `cleanupSpec()` then Spock will automatically use the method body to handle fixtures. You can find more information about those methods in the link:http://spockframework.org/spock/docs/1.1/spock_primer.html[documentation].
 
 _FixtureSetupCleanup.groovy_
 [source,groovy]
@@ -219,10 +226,13 @@ class FixtureSetupCleanup extends Specification {
 
 _Listing 7. Fixture methods in Spock_
 
-
 == Descriptive test names
 
+Test cases should clearly indicate its intent. Using a method name to describe what has been tests proves to be a weak concept in practice. JUnit 5 and Spock support directly or indirectly provide ways to make test cases descriptive.
+
 === JUnit 5
+
+In JUnit 4 you could only rely on the actual method name to identify the test case. JUnit 5 introduces the annotation `@DisplayName` that allows users to provide a description of the intent. Check out the link:http://junit.org/junit5/docs/current/user-guide/#writing-tests-display-names[user guide] for more information on display names.
 
 _DescriptiveTest.java_
 [source,java]
@@ -258,7 +268,15 @@ public class DescriptiveTest {
 
 _Listing 8. Providing a descriptive test name by annotation_
 
+The executing environment takes the test description into account and uses it instead of the method name. The following screenshot shows the test execution in IntelliJ.
+
+image:/img/blog/junit5-vs-spock-showdown/descriptive-names-junit5.png[]
+
+_Figure 1. Descriptive test names in IntelliJ_
+
 === Spock
+
+Spock does not introduce an annotation to support descriptive test names. Instead it simply uses Groovy to do the heavy lifting. In Groovy you can provide any String as method name.
 
 _DescriptiveTest.groovy_
 [source,groovy]
@@ -290,8 +308,16 @@ class DescriptiveTest extends Specification {
 
 _Listing 9. Using a String to provide a readable test description_
 
+The execution environment properly evaluates the provided String as method name at runtime. The following screenshot shows how IntelliJ renders the executed test cases.
+
+image:/img/blog/junit5-vs-spock-showdown/descriptive-names-spock.png[]
+
+_Figure 2. Descriptive test names in IntelliJ_
+
 [[disabling-tests]]
 == Disabling tests
+
+Under certain conditions you might want to disable specific test methods. That's typically the case if the test is failing and you need to disable the test temporarily or if the test covers functionality that hasn't been implemented yet.
 
 === JUnit 5
 
