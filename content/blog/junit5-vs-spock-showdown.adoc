@@ -87,11 +87,13 @@ Let's start with the most simplistic use case: marking test methods or the whole
 
 === JUnit 5
 
-In JUnit 5 you use the annotation `org.junit.jupiter.api.Test` to indicate that a method should be executed as a test. JUnit 5 takes a different approach than JUnit 4. The annotation is only applicable to a method but not the class. The annotated test method must not be `private` or `static`. Test methods do not return a value.
+In JUnit 5 you use the annotation `@Test` to indicate that a method should be executed as a test. JUnit 5 takes a different approach than JUnit 4. The annotation is only applicable to a method but not the class. The annotated test method must not be `private` or `static`. Test methods do not return a value.
 
 _SimpleTest.java_
 [source,java]
 ----
+import org.junit.jupiter.api.Test;
+
 public class SimpleTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
@@ -166,6 +168,9 @@ The following test demonstrates the use of `@BeforeEach` and `@AfterEach` to cre
 _FixtureSetupCleanup.java_
 [source,java]
 ----
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 public class FixtureSetupCleanup {
     private final FileReader fileReader = new DefaultFileReader();
     private Path testFile;
@@ -237,6 +242,8 @@ In JUnit 4 you could only rely on the actual method name to identify the test ca
 _DescriptiveTest.java_
 [source,java]
 ----
+import org.junit.jupiter.api.DisplayName;
+
 public class DescriptiveTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
@@ -321,9 +328,13 @@ Under certain conditions you might want to disable specific test methods. That's
 
 === JUnit 5
 
+JUnit 5 provides the annotation `@Disabled` to either disable all tests in a test class or individual test methods. A user can provide an optional reason to explain why the test was disabled. The following example demonstrates how to disable the test case `canAdd()`. More details can be found in the link:http://junit.org/junit5/docs/current/user-guide/#writing-tests-disabling[user guide].
+
 _IgnoredTest.java_
 [source,java]
 ----
+import org.junit.jupiter.api.Disabled;
+
 public class IgnoredTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
@@ -339,9 +350,13 @@ _Listing 10. Disabling test methods by annotation_
 
 === Spock
 
+Disabling a test in Spock following the same pattern as JUnit 5. It introduces the annotation `@Ignore` which can apply to a type or a method and allows for providing an optional reason.
+
 _IgnoredTest.groovy_
 [source,java]
 ----
+import spock.lang.Ignore
+
 class IgnoredTest extends Specification {
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
@@ -358,11 +373,17 @@ _Listing 11. Using the Ignore annotation to disable a method_
 
 == Expecting thrown exceptions
 
+Under certain conditions methods can throw an exception. Being a good citizen you'll want to test those cases as well to verify that the "sad path".
+
 === JUnit 5
+
+The JUnit 5 API provides fine-grained control over testing thrown exceptions. Any portions of code can be wrapped with the method `assertThrows`. The test will fail in case the wrapped code block does not thrown the expected exception. The link:http://junit.org/junit5/docs/current/user-guide/#writing-tests-nested[user guide] provides an even more elaborate sample.
 
 _ExpectedExceptionTest.java_
 [source,java]
 ----
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class ExpectedExceptionTest {
     private final FileReader fileReader = new DefaultFileReader();
 
@@ -379,9 +400,13 @@ _Listing 12. Asserting that a code block throws an expected exception_
 
 === Spock
 
+In Spock-based tests a class or method can be annotated with `@FailsWith` to indicate that a declared exception should be thrown. If you want more fine-grained control over which portion of the code should throw the exception then you'll have to implement a `try`/`catch` block and assert the exception type.
+
 _ExpectedExceptionTest.java_
 [source,groovy]
 ----
+import spock.lang.FailsWith
+
 class ExpectedExceptionTest extends Specification {
     @Subject def fileReader = new DefaultFileReader()
 
@@ -395,14 +420,23 @@ class ExpectedExceptionTest extends Specification {
 
 _Listing 13. Declaring an expected exception by annotation_
 
-
 == Repeating test execution
 
+Sometimes you'll want to verify that the execution of logic leads to the same result if executed more than once. There are various examples that come in mind where repeating a test is useful:
+
+- verifying that functionality is idempotent
+- ensuring that a service endpoint can handle subsequent requests
+- caching of data works as expected
+
 === JUnit 5
+
+Test cases can be executed multiple times in a row by using the `@RepeatedTest` annotation. In addition to the value declaring the number of repetitions you can also build a custom test name with the help of built-in variables. Check the link:http://junit.org/junit5/docs/current/user-guide/#writing-tests-repeated-tests[user guide] for more information.
 
 _RepetitionTest.java_
 [source,java]
 ----
+import org.junit.jupiter.api.RepeatedTest;
+
 public class RepetitionTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
@@ -421,6 +455,8 @@ public class RepetitionTest {
 _Listing 14. Repeating a test method by annotation_
 
 === Spock
+
+Spock doesn't not support test repetition out-of-the-box. You will need to implement your own mechanism. The following example code uses a `where` statement to repeat the test execution multiple times.
 
 _RepetitionTest.groovy_
 [source,groovy]
@@ -453,11 +489,18 @@ _Listing 15. Repeating a test method by counter_
 
 == Declaring timeouts
 
+Code under test may take some time to finish execution. Operations can be very costly, calls across network boundaries can take a longer than expected due to latency, load tests should finish in an predefined amount of time. JUnit 5 and Spock provide adequate support for declaring a timeout. The test fails if it doesn't finish in the expected time frame.
+
 === JUnit 5
+
+A timeout in JUnit 5 is represented as assertion method. The timeout expects a `Duration` instance and the code block that should return in the expected time frame. You can learn more about the timeout assertion in the link:http://junit.org/junit5/docs/current/user-guide/#writing-tests-assertions[user guide].
 
 _RepetitionTest.java_
 [source,java]
 ----
+import static java.time.Duration.ofSeconds;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
+
 public class TimeoutTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
@@ -474,9 +517,13 @@ _Listing 16. Fail a test if it doesn't finish in expected timeout threshold_
 
 === Spock
 
+Spock takes the route of providing an annotation to declare a timeout. The annotation can be assigned to the whole test class or individual test methods. The assigned value declares a timeout in seconds by default. However, you can provide a different `TimeUnit` if needed.
+
 _RepetitionTest.groovy_
 [source,groovy]
 ----
+import spock.lang.Timeout
+
 class TimeoutTest extends Specification {
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
@@ -490,14 +537,19 @@ class TimeoutTest extends Specification {
 
 _Listing 17. Convenient timeout definition by annotation_
 
-
 == Conditional test execution
 
+In a large test suite you don't necessarily want to execute all tests in all environment. For example you could have tests that should just run in a Windows environment but not on Linux. Or you might implement test that should only run with a specific JDK. Being able to control test execution proves to be extremely valuable if your test coverage looks more complex.
+
 === JUnit 5
+
+JUnit 5 introduces the assertion method `assumeTrue`. If the expression evaluates to `true` then any code that follows will be executed. Should it validate to `false` then the test logic that follows is skipped. Internally, JUnit throws an exception that needs to be handled by the runtime environment.
 
 _ConditionalExecutionTest.java_
 [source,java]
 ----
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 public class ConditionalExecutionTest {
     private final static String SYS_PROP_KEY = "junit5.test.enabled";
     private final static String SYS_PROP_TRUE_VALUE = "true";
@@ -513,11 +565,21 @@ public class ConditionalExecutionTest {
 
 _Listing 18. Conditional test execution by expression_
 
+IntelliJ properly handles conditional execution. The console will render the message `org.opentest4j.TestAbortedException: Assumption failed: assumption is not true`. The following screenshot shows the skipped method.
+
+image:/img/blog/junit5-vs-spock-showdown/conditional-execution-junit5.png[]
+
+_Figure 3. IntelliJ handles a TestAbortedException thrown by JUnit 5_
+
 === Spock
+
+Conditional test execution represents one of the features where Spock really shines. In Spock you can define the condition with the help of a closure containing any expression you'd like to define. The closure is assigned to either the annotation `@Requires` or `@IgnoreIf`. Overall Spock's support for conditional test execution feels more flexible than JUnit's capabilities. The following example shows the use of the `@Requires` annotation.
 
 _ConditionalExecutionTest.groovy_
 [source,groovy]
 ----
+import spock.lang.Requires
+
 class ConditionalExecutionTest extends Specification {
     private final static String SYS_PROP_KEY = "spock.test.enabled"
     private final static String SYS_PROP_TRUE_VALUE = "true"
@@ -533,7 +595,15 @@ class ConditionalExecutionTest extends Specification {
 
 _Listing 19. Expression-based test execution defined as annotation parameter_
 
+The following screenshot shows the handling in IntelliJ.
+
+image:/img/blog/junit5-vs-spock-showdown/conditional-execution-spock.png[]
+
+_Figure 4. Conditional test execution by annotation in IntelliJ_
+
 == Data-driven tests
+
+I personally use it all the time.
 
 === JUnit 5
 
