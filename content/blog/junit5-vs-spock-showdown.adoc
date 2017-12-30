@@ -603,13 +603,24 @@ _Figure 4. Conditional test execution by annotation in IntelliJ_
 
 == Data-driven tests
 
-I personally use it all the time.
+Production source code might behave differently at runtime if provided with varying inputs. Copy-pasting the same test case over and over again but using different data leads to unmaintainable test classes. The better option is to run the same test case multiple times but with different inputs. I personally use this feature in almost every project I am working on and wouldn't want to miss it.
 
 === JUnit 5
+
+You have various options to feed data to a test case. First of all, you'll need to mark the method with the annotation `@ParameterizedTest` to indicate that it receives data and should be executed multiple times. The annotation also allows for building a custom test description based on the parameter values.
+
+One way to feed the data is with the help of the annotation `@ValueSource`. I don't find this annotation very helpful as it can only provide a flat list of single input values. To make the functionality useful you'll most likely also need to provide a second or third input value, a corresponding result value and potentially a textual description that represents the test case. The annotation `@MethodSource` can refer to a method returning a more complex matrix combination of values. Unfortunately, there's no way to provide a description to any of the values making it hard to parse and understand.
 
 _DataDrivenTest.java_
 [source,java]
 ----
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.stream.Stream;
+
 public class DataDrivenTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
@@ -637,14 +648,25 @@ public class DataDrivenTest {
 
 _Listing 20. Declaring a value source and provider to provide data to test_
 
+IntelliJ groups data-driven execution per test method making it very readable. The IDE also renders the type for each input value in parathesis next to the test name.
+
+image:/img/blog/junit5-vs-spock-showdown/data-driven-test-junit5.png[]
+
+_Figure 5. JUnit 5 data-driven test execution in IntelliJ_
+
 === Spock
+
+Spock solves data-driven test in a very elegant way. First of all, the data is provided as a table with descriptive headers in a `where` clause. Each line in the data table represents a single execution of the test making all of the values available with the corresponding named identifier. Each named identifier can be referenced in the method name with the pound character (`#`) to build a meaningful test case description. The `@Unroll` annotation tells Spock to treat each test execution as individual test case. From my perspective data-driven tests are the Spock killer feature.
 
 _DataDrivenTest.groovy_
 [source,groovy]
 ----
+import spock.lang.Unroll
+
 class DataDrivenTest extends Specification {
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
+    @Unroll
     def "can add"() {
         expect:
         arithmeticOperation.add(1, b) >= 2
@@ -669,13 +691,26 @@ class DataDrivenTest extends Specification {
 
 _Listing 21. Providing data to test execution by table_
 
+For Spock-based tests IntelliJ only renders a flat list of test executions.
+
+image:/img/blog/junit5-vs-spock-showdown/data-driven-test-spock.png[]
+
+_Figure 6. IntelliJ renders each data line for Spock-based tests_
+
 == Mocking
 
+Classes rarely work in isolation. Most classes call off to other class instances, services or subsystem. link:https://en.wikipedia.org/wiki/Mock_object[Mocking] lets you cut off those integration points, replace it by a stand-in object and make it respond as needed for the test case.
+
 === JUnit 5
+
+JUnit 5 does not come with any mocking capabilities. Many users resort to the popular mocking library link:http://site.mockito.org/[Mockito]. The following example demonstrates the use of Mockito as part of a test case. As you can see the Mockito API calls nicely blend into the test cases logic. Beginners to testing might have a hard time at first to visually separate test code from mocking expectations.
 
 _MockTest.java_
 [source,java]
 ----
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class MockTest {
     private Path testFile;
 
@@ -704,6 +739,8 @@ public class MockTest {
 _Listing 22. Using Mockito to inject mock instance_
 
 === Spock
+
+Spock ships with an API for creating mock objects as well as stubs. It's appealing that you do not have to pull in yet another external dependency to fulfill all the needs of your project. From my experience mock objects in Spock work great and are very readable. You can learn more about Spock's link:http://spockframework.org/spock/docs/1.0/interaction_based_testing.html[interaction based testing] in the user guide.
 
 _MockTest.groovy_
 [source,groovy]
@@ -739,25 +776,19 @@ class MockTest extends Specification {
 _Listing 23. Built-in mock capabilities_
 
 
-== Filtering test execution
+== Labeling and filtering test execution
+
+With an increasing number of tests you'll want to group test with a common purpose and run them separately. For example you might want to split slow- from fast-running tests, unit from integration tests or set up a test suite for load testing. Both test frameworks provide functionality for labeling tests and running them in dedicated test runs.
 
 === JUnit 5
 
-_FilteredFastTest.java_
-[source,java]
-----
-@RunWith(JUnitPlatform.class)
-@SelectPackages("com.bmuschko.test.comparison.junit5.tagged")
-@IncludeTags("fast")
-public class FilteredFastTest {
-}
-----
-
-_Listing 24. Test suite executing fast tests_
+In JUnit you can label tests with so-called link:http://junit.org/junit5/docs/current/user-guide/#writing-tests-tagging-and-filtering[tags]. To tag a test class or method use the `@Tag` annotation and provide a short description as String. The example below separates slow- from fast-running tests.
 
 _TaggedTest.java_
 [source,java]
 ----
+import org.junit.jupiter.api.Tag;
+
 public class TaggedTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
@@ -775,20 +806,30 @@ public class TaggedTest {
 }
 ----
 
-_Listing 25. Tagged test methods_
+_Listing 24. Tagged test methods_
 
-=== Spock
+Tagging tests is not very helpful by itself. You might give an indication to other developers about the purpose or runtime behavior of the test. However, there's no special treatment for tagged tests in JUnit. Only in combination with test filtering, tagging becomes really useful. The following example sets up a test suite for running "fast" tests only. Filtering tests requires the dependency `org.junit.platform:junit-platform-runner` to be available on the test compilation classpath.
 
-_Fast.groovy_
-[source,groovy]
+_FilteredFastTest.java_
+[source,java]
 ----
-@Retention(RetentionPolicy.RUNTIME)
-@Target([ElementType.TYPE, ElementType.METHOD])
-@interface Fast {
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.IncludeTags;
+import org.junit.platform.suite.api.SelectPackages;
+import org.junit.runner.RunWith;
+
+@RunWith(JUnitPlatform.class)
+@SelectPackages("com.bmuschko.test.comparison.junit5.tagged")
+@IncludeTags("fast")
+public class FilteredFastTest {
 }
 ----
 
-_Listing 26. Interface annotation indicating fast tests_
+_Listing 25. Test suite executing fast tests_
+
+=== Spock
+
+The Spock API does not define the concept of a tag. However, it's very easy to set it up yourself. The following two annotation classes serve the purpose of implying slow- and fast-running tests. You can put the annotation classes anywhere on the classpath with your test classes.
 
 _Slow.groovy_
 [source,groovy]
@@ -799,7 +840,20 @@ _Slow.groovy_
 }
 ----
 
-_Listing 27. Interface annotation indicating slow tests_
+_Listing 26. Interface annotation indicating slow-running tests_
+
+_Fast.groovy_
+[source,groovy]
+----
+@Retention(RetentionPolicy.RUNTIME)
+@Target([ElementType.TYPE, ElementType.METHOD])
+@interface Fast {
+}
+----
+
+_Listing 27. Interface annotation indicating fast-running tests_
+
+Labeling test case methods with the annotations is straight forward. The example below uses both annotations. Using types to tag test methods also prevents misspelling the label.
 
 _TaggedTest.groovy_
 [source,groovy]
@@ -823,6 +877,8 @@ class TaggedTest extends Specification {
 
 _Listing 28. Annotated test methods_
 
+Labeled test cases can be filtered with the help of a Spock configuration file. Spock searches for a file with the name `SpockConfig.groovy` on the classpath. The configuration file can tell the test runner which test suite to execute. The approach it less convenient than the one provided by JUnit 5 especially if you have more than one test suite that you want to run independently on a regular basis from the IDE. Please be aware that you can also provide the configuration to the test JVM with the system property `spock.configuration`.
+
 _SpockConfig.groovy_
 [source,groovy]
 ----
@@ -837,11 +893,21 @@ _Listing 29. Spock runner configuration to filter annotated tests_
 
 == Extending the test framework
 
+JUnit 5 and Spock are powerful tools. Nevertheless, a test framework cannot foresee all potential use cases out there. You can enhance the base functionality with an extension in case you need custom logic that ties into the API. This blog post won't go very deep into the available options for each test framework. I'd encourage you to explore the API yourself.
+
+The simple example below demonstrates the extension capabilities. The implementation reacts to lifecycle events emitted before and after executing a test case. Each event logs the name of test method to the standard output stream.
+
 === JUnit 5
+
+The test framework's link:http://junit.org/junit5/docs/current/user-guide/#extensions[extension model] provides callback interfaces that allow you to react to certain events. As you can see in listing 30, the extension class implements `BeforeTestExecutionCallback` and `AfterTestExecutionCallback`. The callback interface provide a context object of type `ExtensionContext` giving you access to information about the test method.
 
 _BeforeAfterLoggingExtension.java_
 [source,java]
 ----
+import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
+import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
 public class BeforeAfterLoggingExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
     @Override
     public void beforeTestExecution(ExtensionContext context) {
@@ -859,9 +925,13 @@ public class BeforeAfterLoggingExtension implements BeforeTestExecutionCallback,
 
 _Listing 30. Test execution callback handler_
 
+Extensions can be applied to test classes or methods with the help of the annotation `@ExtendWith`. That's it!
+
 _LoggingTest.java_
 [source,java]
 ----
+import org.junit.jupiter.api.extension.ExtendWith;
+
 @ExtendWith(BeforeAfterLoggingExtension.class)
 public class LoggingTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
@@ -877,9 +947,14 @@ _Listing 31. Using extension in test class_
 
 === Spock
 
+Spock takes a link:http://spockframework.org/spock/docs/1.1/extensions.html[similar approach] as JUnit 5. You need to implement the listener interface `IRunListener` to intercept test lifecycle events. Thankfully, the API already provides a stub implementation `AbstractRunListener` so you only have to implement the event methods you are interested in.
+
 _BeforeAfterEventListener.groovy_
 [source,groovy]
 ----
+import org.spockframework.runtime.AbstractRunListener
+import org.spockframework.runtime.model.FeatureInfo
+
 class BeforeAfterEventListener extends AbstractRunListener {
     @Override
     void beforeFeature(FeatureInfo feature) {
@@ -895,9 +970,13 @@ class BeforeAfterEventListener extends AbstractRunListener {
 
 _Listing 32. Event listener implementation in Spock_
 
+In our example, the extension should only be available for the test class. Listing 33 implements annotation class for that purpose.
+
 _BeforeAfterLogging.groovy_
 [source,groovy]
 ----
+import org.spockframework.runtime.extension.ExtensionAnnotation
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @ExtensionAnnotation(BeforeAfterLoggingExtension.class)
@@ -907,9 +986,14 @@ _BeforeAfterLogging.groovy_
 
 _Listing 33. Exposing an annotation evaluated by extension_
 
+With the listener and the annotation in place, you can now create a new extension implementation. Spock provides a convenient abstract implementation named `AbstractAnnotationDrivenExtension` for registering the listener.
+
 _BeforeAfterLoggingExtension.groovy_
 [source,groovy]
 ----
+import org.spockframework.runtime.extension.AbstractAnnotationDrivenExtension
+import org.spockframework.runtime.model.SpecInfo
+
 class BeforeAfterLoggingExtension extends AbstractAnnotationDrivenExtension<BeforeAfterLogging> {
     @Override
     void visitSpecAnnotation(BeforeAfterLogging annotation, SpecInfo spec) {
@@ -919,6 +1003,8 @@ class BeforeAfterLoggingExtension extends AbstractAnnotationDrivenExtension<Befo
 ----
 
 _Listing 34. Registering the listener by extension_
+
+Any test class can use the annotation to automatically apply the logic implemented by the extension.
 
 _LoggingTest.groovy_
 [source,groovy]
