@@ -432,6 +432,8 @@ _Listing 12. Asserting that a code block throws an expected exception_
 
 In Spock-based tests a class or method can be annotated with `@FailsWith` to signal that a declared exception should be thrown. If you want more fine-grained control over which portion of the code should throw the exception then you'll have to implement a `try`/`catch` block and assert the exception type.
 
+Alternatively, you can also use the method `thrown(Class)` to assert a thrown exception. The return value of the method grants access to the exception for further inspection.
+
 _ExpectedExceptionTest.java_
 [source,groovy]
 ----
@@ -441,9 +443,18 @@ class ExpectedExceptionTest extends Specification {
     @Subject def fileReader = new DefaultFileReader()
 
     @FailsWith(IOException)
-    def "cannot read non-existent file"() {
+    def "throws exception if file contents cannot be read"() {
         expect:
         fileReader.readContent(Paths.get('hello.text'))
+    }
+
+    def "throws exception if file contents cannot be read and assert exception message"() {
+        when:
+        fileReader.readContent(Paths.get('hello.text'))
+
+        then:
+        def t = thrown(IOException)
+        t.message == 'File does not exist'
     }
 }
 ----
