@@ -586,7 +586,7 @@ In a large test suite you don't necessarily want to execute all tests in every r
 
 === JUnit 5
 
-JUnit 5 introduces the assertion method `assumeTrue`. If the expression evaluates to `true` then any code that follows will be executed. Should the expression validate to `false` then any test logic that follows is skipped. Internally, JUnit throws an exception that needs to be handled by the runtime environment.
+JUnit 5 offers the assertion method `assumeTrue`. If the expression evaluates to `true` then any code that follows will be executed. Should the expression validate to `false` then any test logic that follows is skipped. Internally, JUnit throws an exception that needs to be handled by the runtime environment.
 
 _ConditionalExecutionTest.java_
 [source,java]
