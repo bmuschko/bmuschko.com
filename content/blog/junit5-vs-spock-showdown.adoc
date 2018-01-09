@@ -614,6 +614,8 @@ image:/img/blog/junit5-vs-spock-showdown/conditional-execution-junit5.png[]
 
 _Figure 3. IntelliJ handles a TestAbortedException thrown by JUnit 5_
 
+For capturing more complex expressions, the JUnit API also allows for writing an implementation of link:http://junit.org/junit5/docs/current/user-guide/#extensions-conditions[`ExecutionCondition`]. The interface represents an extension to the test framework and can only be applied on the class-level which makes its use somewhat limiting. You can find an example for an `ExecutionCondition` in the source code on GitHub. For more information about <<extending-test-framework,extending the test framework>>, see the section below.
+
 === Spock
 
 Spock really shines when it comes to conditional test execution. You can define the condition with the help of a closure return any arbitrary expression. The closure is assigned to either the annotation `@Requires` or `@IgnoreIf`. Overall Spock's support for conditional test execution feels more flexible than JUnit's capabilities. The following example shows the use of the `@Requires` annotation.
