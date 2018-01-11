@@ -606,7 +606,7 @@ public class ConditionalExecutionTest {
 }
 ----
 
-_Listing 18. Conditional test execution by expression_
+_Listing 18. Conditional test execution using assumeTrue_
 
 IntelliJ properly handles conditional execution for JUnit 5. The console renders the message `org.opentest4j.TestAbortedException: Assumption failed: assumption is not true` for an expression that evaluates to `false` and records the method as skipped.
 
@@ -614,7 +614,49 @@ image:/img/blog/junit5-vs-spock-showdown/conditional-execution-junit5.png[]
 
 _Figure 3. IntelliJ handles a TestAbortedException thrown by JUnit 5_
 
-For capturing more complex expressions, the JUnit API also allows for writing an implementation of link:http://junit.org/junit5/docs/current/user-guide/#extensions-conditions[`ExecutionCondition`]. The interface represents an extension to the test framework and can only be applied on the class-level which makes its use somewhat limiting. You can find an example for an `ExecutionCondition` in the source code on GitHub. For more information about <<extending-test-framework,extending the test framework>>, see the section below.
+For capturing more complex expressions, the JUnit API also allows for writing an implementation of link:http://junit.org/junit5/docs/current/user-guide/#extensions-conditions[`ExecutionCondition`]. The interface represents an extension to the test framework and can be applied on the class- and method-level. For more information about <<extending-test-framework,extending the test framework>>, see the section below.
+
+_ConditionalExecutionTest.java_
+[source,java]
+----
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+import org.junit.jupiter.api.extension.ExecutionCondition;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
+import static org.junit.jupiter.api.extension.ConditionEvaluationResult.disabled;
+import static org.junit.jupiter.api.extension.ConditionEvaluationResult.enabled;
+
+public class ConditionalExecutionTest {
+    ...
+
+    @ExtendWith(SystemPropertyConditionalExtension.class)
+    @Test
+    void testOnlyOnSystemSystemPropertySetByExtension() {
+        assertEquals(3, arithmeticOperation.add(1, 2));
+    }
+
+    private static class SystemPropertyConditionalExtension 
+        implements ExecutionCondition {
+        @Override
+        public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext 
+            context) {
+            String sysPropValue = System.getProperty(SYS_PROP_KEY);
+            boolean enabled = SYS_PROP_TRUE_VALUE.equals(sysPropValue);
+
+            if (enabled) {
+                return enabled(String.format("System property '%s' evaluates to true", 
+                    SYS_PROP_KEY));
+            }
+
+            return disabled(String.format("System property '%s' evaluates to false", 
+                SYS_PROP_KEY));
+        }
+    }
+}
+----
+
+_Listing 19. Conditional test execution using ExecutionCondition_
 
 === Spock
 
@@ -638,7 +680,7 @@ class ConditionalExecutionTest extends Specification {
 }
 ----
 
-_Listing 19. Expression-based test execution defined as annotation parameter_
+_Listing 20. Expression-based test execution defined as annotation parameter_
 
 The following screenshot shows the handling in IntelliJ.
 
@@ -692,7 +734,7 @@ public class DataDrivenTest {
 }
 ----
 
-_Listing 20. Declaring a value source and provider to provide data to test_
+_Listing 21. Declaring a value source and provider to provide data to test_
 
 IntelliJ groups data-driven execution per test method. The result is very readable. Furthermore, the IDE also renders the type for each input value in parathesis next to the test name.
 
@@ -735,7 +777,7 @@ class DataDrivenTest extends Specification {
 }
 ----
 
-_Listing 21. Providing data to test execution by table_
+_Listing 22. Providing data to test execution by table_
 
 For Spock-based tests IntelliJ only renders a flat list of test executions.
 
@@ -783,7 +825,7 @@ public class MockTest {
 }
 ----
 
-_Listing 22. Using Mockito to inject mock instance_
+_Listing 23. Using Mockito to inject mock instance_
 
 === Spock
 
@@ -820,7 +862,7 @@ class MockTest extends Specification {
 }
 ----
 
-_Listing 23. Built-in mock capabilities_
+_Listing 24. Built-in mock capabilities_
 
 [[labeling-filtering]]
 == Labeling and filtering test execution
@@ -853,7 +895,7 @@ public class TaggedTest {
 }
 ----
 
-_Listing 24. Tagged test methods_
+_Listing 25. Tagged test methods_
 
 The description of a tagged test can serve as documentation for other developers. However, only in combination with test filtering, tagging becomes really beneficial. The following example sets up a test suite for running "fast" tests. Filtering tests requires the dependency link:http://junit.org/junit5/docs/current/user-guide/#dependency-metadata-junit-platform[`org.junit.platform:junit-platform-runner`] to be available on the test compilation classpath.
 
@@ -872,7 +914,7 @@ public class FilteredFastTest {
 }
 ----
 
-_Listing 25. Test suite executing fast tests_
+_Listing 26. Test suite executing fast tests_
 
 === Spock
 
@@ -887,7 +929,7 @@ _Slow.groovy_
 }
 ----
 
-_Listing 26. Interface annotation indicating slow-running tests_
+_Listing 27. Interface annotation indicating slow-running tests_
 
 _Fast.groovy_
 [source,groovy]
@@ -898,7 +940,7 @@ _Fast.groovy_
 }
 ----
 
-_Listing 27. Interface annotation indicating fast-running tests_
+_Listing 28. Interface annotation indicating fast-running tests_
 
 Labeling test case methods with the annotations is straightforward. The example below uses both custom annotations.
 
@@ -922,7 +964,7 @@ class TaggedTest extends Specification {
 }
 ----
 
-_Listing 28. Annotated test methods_
+_Listing 29. Annotated test methods_
 
 Labeled test cases can be filtered with the help of a Spock configuration file. Spock searches for a file with the name `SpockConfig.groovy` on the classpath. The configuration file can tell the test runner which test suite to execute.
 
@@ -936,7 +978,7 @@ runner {
 }
 ----
 
-_Listing 29. Spock runner configuration to filter annotated tests_
+_Listing 30. Spock runner configuration to filter annotated tests_
 
 The approach is less convenient than the one provided by JUnit 5 especially if you have to deal with more than one test suite. Please be aware that you can also provide the configuration to the test JVM with the system property `spock.configuration`.
 
@@ -949,7 +991,7 @@ The simple example below demonstrates basic extension capabilities. The implemen
 
 === JUnit 5
 
-The test framework's link:http://junit.org/junit5/docs/current/user-guide/#extensions[extension model] provides callback interfaces to react to prominent lifecycle events. As you can see in listing 30, the extension class implements the interfaces `BeforeTestExecutionCallback` and `AfterTestExecutionCallback`. The callback interfaces provide a context object of type `ExtensionContext` giving you access to detailed information about the executed test method.
+The test framework's link:http://junit.org/junit5/docs/current/user-guide/#extensions[extension model] provides callback interfaces to react to prominent lifecycle events. As you can see in listing 31, the extension class implements the interfaces `BeforeTestExecutionCallback` and `AfterTestExecutionCallback`. The callback interfaces provide a context object of type `ExtensionContext` giving you access to detailed information about the executed test method.
 
 _BeforeAfterLoggingExtension.java_
 [source,java]
@@ -973,7 +1015,7 @@ public class BeforeAfterLoggingExtension implements BeforeTestExecutionCallback,
 }
 ----
 
-_Listing 30. Test execution callback handler_
+_Listing 31. Test execution callback handler_
 
 Extensions can be applied to test classes or methods with the help of the annotation `@ExtendWith`. That's it! You implemented your first extension.
 
@@ -993,7 +1035,7 @@ public class LoggingTest {
 }
 ----
 
-_Listing 31. Using extension in test class_
+_Listing 32. Using extension in test class_
 
 === Spock
 
@@ -1018,9 +1060,9 @@ class BeforeAfterEventListener extends AbstractRunListener {
 }
 ----
 
-_Listing 32. Event listener implementation in Spock_
+_Listing 33. Event listener implementation in Spock_
 
-In our example, the extension should only be available for the test class. Listing 33 implements an annotation class for that very purpose.
+In our example, the extension should only be available for the test class. Listing 34 implements an annotation class for that very purpose.
 
 _BeforeAfterLogging.groovy_
 [source,groovy]
@@ -1034,7 +1076,7 @@ import org.spockframework.runtime.extension.ExtensionAnnotation
 }
 ----
 
-_Listing 33. Exposing an annotation evaluated by extension_
+_Listing 34. Exposing an annotation evaluated by extension_
 
 With the listener and the annotation in place, you can now create a new extension implementation. Spock provides a convenient abstract implementation named `AbstractAnnotationDrivenExtension` for registering the listener.
 
@@ -1052,7 +1094,7 @@ class BeforeAfterLoggingExtension extends AbstractAnnotationDrivenExtension<Befo
 }
 ----
 
-_Listing 34. Registering the listener by extension_
+_Listing 35. Registering the listener by extension_
 
 Any test class can use the annotation to automatically apply the logic implemented by the extension.
 
@@ -1070,7 +1112,7 @@ class LoggingTest extends Specification {
 }
 ----
 
-_Listing 35. Using the logging extension in a test class_
+_Listing 36. Using the logging extension in a test class_
 
 == Conclusion
 
