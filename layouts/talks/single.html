@@ -23,8 +23,12 @@
     
             <p>{{ $talk.description | markdownify }}</p>
     
-            <p><a href="{{ $talk.slides }}">Slides</a> | <a href="{{ $talk.video }}">Video</a></p>
-    
+            <p>
+                <a href="{{ $talk.slides }}">Slides</a> 
+                {{ if $talk.video }}
+                | <a href="{{ $talk.video }}">Video</a>
+                 {{ end }}
+            </p>
             {{ if lt (add $i 1) $len }}<hr />{{ end }}
             {{ end }}
             </div>
