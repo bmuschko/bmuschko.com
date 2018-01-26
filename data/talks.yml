@@ -1,5 +1,15 @@
 name: Talks
 source:
+  - title: Building Go projects made easy with Gradle
+    tags:
+      - golang
+      - build
+      - gradle
+    description: "For many Go projects, Make and shell scripts are the predominant tools of choice for automating the process of building source code as well as assembling and distributing binaries. While powerful tools, they do not provide any higher level abstractions like conventions and generalized concepts to minimize the burden on maintainability and readability. There must be a better way to avoid copy-pasting the same automation code from project to project!
+\n\n
+In this demo-driven talk, we will discuss how the build tool Gradle can help with bootstrapping and streamlining the automation of Go projects. In the process, we’ll identify some typical challenges with the help of a sample project and how to overcome them with GoGradle, a community plugin for Gradle."
+    slides: https://speakerdeck.com/bmuschko/building-go-projects-made-easy-with-gradle
+
   - title: Designing and writing Gradle plugins
     tags:
       - plugins
