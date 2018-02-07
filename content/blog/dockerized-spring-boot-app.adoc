@@ -3,7 +3,7 @@ title = "Dockerizing a Spring Boot application"
 tags = [
     "build",
     "docker",
-    "container"
+    "container",
     "spring",
     "boot",
     "gradle",
