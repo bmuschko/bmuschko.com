@@ -1,0 +1,183 @@
++++
+title = "Dockerizing a Spring Boot application"
+tags = [
+    "build",
+    "docker",
+    "container"
+    "spring",
+    "boot",
+    "gradle",
+    "travis"
+]
+date = "2018-02-03"
+draft = true
+highlight = true
++++
+
+The use of Docker has become widespread among companies big and small for a variety scenarios. Executing Docker from the command line for simple tasks is easy and little repetative. Having to enter Docker commands for a whole workflow can become tedious. It seems obvious that you might want to integrate Docker into an automated process for convenience and reproducibility. Gradle can help with defining and executing such a process with the help of the link:https://github.com/bmuschko/gradle-docker-plugin[Docker plugin].
+
+This blog post is the first installment of a series on using Docker from Gradle. As a starting point for our journey, we want to package a Spring Boot application as a Docker image and push it to the cloud-based registry service link:https://docs.docker.com/docker-hub/[Docker Hub]. In this blog post, you will also learn how to automate the process as a Continuous Integration job on link:https://travis-ci.org/[Travis CI]. You can find the link:https://github.com/bmuschko/dockerized-spring-boot-app[full source code] used in this post on GitHub.
+
+== Configuring the Docker plugin
+
+The Docker plugin for Gradle provides two main sets of functionality out-of-the-box. It comes with a link:https://github.com/bmuschko/gradle-docker-plugin#remote-api-plugin[base plugin] for modeling and executing typical Docker commands e.g. for creating an image or a container. The base plugin gives you full control over the process you'd like to define.
+
+Additionally, it ships with a convenience link:https://github.com/bmuschko/gradle-docker-plugin#java-application-plugin[abstraction for packaging Java applications as a Docker image]. Unfortunately, the Java application abstraction won't quite work for building Spring Boot applications. In the future, I might implement an abstraction suited for this specific use case. For now, we'll just use the most basic functionality giving us the most freedom in defining the process we need.
+
+Getting started with the Docker plugin is straightforward. You just have to apply the plugin with the identifier `com.bmuschko.docker-remote-api` and the concrete version. Furthermore, you will also have to provides the credentials for the registry we'll want to use for hosting our image. As you can see in listing 1, the credentials have not been hard-coded in the build script. They can either be provided as environment variables or as project properties (e.g. in a `gradle.properties` file in your user home directory).
+
+_.build.gradle_
+[source,groovy]
+----
+plugins {
+    id 'com.bmuschko.docker-remote-api' version '3.2.3'
+}
+
+docker {
+    registryCredentials {
+        username = getConfigurationProperty('DOCKER_USERNAME', 'docker.username')
+        password = getConfigurationProperty('DOCKER_PASSWORD', 'docker.password')
+        email = getConfigurationProperty('DOCKER_EMAIL', 'docker.email')
+    }
+}
+
+String getConfigurationProperty(String envVar, String sysProp) {
+    System.getenv(envVar) ?: project.findProperty(sysProp)
+}
+----
+
+_Listing 1. Configuring the Docker plugin_
+
+With this build script, you just layed the ground work for defining the Docker process. As part of the Docker process, we'll want to achieve the following tasks:
+
+- Create a Dockerfile containing the instructions for the Docker image
+- Use the Dockerfile to build an image
+- Try out the image locally by starting a container to verify that it works as expected
+- Push the image to Docker Hub
+
+Let's get started by creating the Dockerfile.
+
+== Creating the Dockerfile
+
+The Docker plugins provides custom task types for implementing the most common operations in the Docker world. One of the operations is the creation of a Dockerfile. The task type `Dockerfile` exposes methods for populating a Dockerfile with the necessary instructions for an image.
+
+Listing 2 demonstrates the use of the task type in a build script. Let me point you to a couple of interesting assignments. The most important aspect of the task definition is that we'll want to copy the WAR file when creating the image. When starting the image inside of a container, the application's main class is started by executing the `java` command. As soon as the application is up and running, the Docker container will expose its functionality through port 8080. You can also see that we run a health check on the service to indicate its readiness to serve requests. The health check can be achived via `curl`. Notice that there are more link:https://blog.sixeyed.com/docker-healthchecks-why-not-to-use-curl-or-iwr/[light-weight approaches] available.
+
+_.build.gradle_
+[source,groovy]
+----
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+task createDockerfile(type: Dockerfile) {
+    group = 'Docker'
+    destFile = project.file('build/docker/Dockerfile')
+    from 'openjdk:8-jre-alpine'
+    maintainer 'Benjamin Muschko "benjamin.muschko@gmail.com"'
+    copyFile war.archiveName, '/app/account-web-service.war'
+    entryPoint 'java'
+    defaultCommand '-jar', '/app/account-web-service.war'
+    exposePort 8080
+    runCommand 'apk --update --no-cache add curl'
+    instruction 'HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1'
+}
+
+task syncWebAppArchive(type: Sync) {
+    dependsOn assemble
+    from war.archivePath
+    into createDockerfile.destFile.parentFile
+}
+
+createDockerfile.dependsOn syncWebAppArchive
+----
+
+_Listing 2. Creating the Dockerfile_
+
+Executing the task `createDockerfile` should produce the following contents in the Dockerfile under the directory `build/docker`:
+
+_.build/docker/Dockerfile_
+[source,text]
+----
+FROM openjdk:8-jre-alpine
+MAINTAINER Benjamin Muschko "benjamin.muschko@gmail.com"
+COPY account-web-service-1.0.0.war /app/account-web-service.war
+ENTRYPOINT ["java"]
+CMD ["-jar", "/app/account-web-service.war"]
+EXPOSE 8080
+RUN apk --update --no-cache add curl
+HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1
+----
+
+_Listing 3. The generated Dockerfile_
+
+== Building the Docker image
+
+_.build.gradle_
+[source,groovy]
+----
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+task syncWebAppArchive(type: Sync) {
+    dependsOn assemble
+    from war.archivePath
+    into createDockerfile.destFile.parentFile
+}
+
+createDockerfile.dependsOn syncWebAppArchive
+
+task buildImage(type: DockerBuildImage) {
+    group = 'Docker'
+    dependsOn createDockerfile
+    inputDir = createDockerfile.destFile.parentFile
+    tag = "bmuschko/account-web-service:$war.version"
+}
+----
+
+_Listing 1. Building the Docker image_
+
+== Running the image in a container
+
+== Pushing the Docker image to a registry
+
+_.build.gradle_
+[source,groovy]
+----
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+task pushImage(type: DockerPushImage) {
+    group = 'Docker'
+    dependsOn buildImage
+    conventionMapping.imageName = { buildImage.getTag() }
+}
+----
+
+_Listing 1. Pushing the Docker image to Dockerhub_
+
+== Creating and pushing the image on Travis CI
+
+_.travis.yml_
+[source,yaml]
+----
+language: java
+install: true
+sudo: required
+
+services:
+  - docker
+
+jdk:
+  - oraclejdk8
+
+script:
+  - ./gradlew pushImage -s
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+----
+
+_Listing 1. Creating and pushing the image on Travis CI_
