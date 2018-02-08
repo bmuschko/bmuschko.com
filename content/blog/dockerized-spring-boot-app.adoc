@@ -1,5 +1,5 @@
 +++
-title = "Dockerizing a Spring Boot application"
+title = "Dockerizing a Spring Boot application with Gradle"
 tags = [
     "build",
     "docker",
@@ -7,25 +7,29 @@ tags = [
     "spring",
     "boot",
     "gradle",
+    "ci",
     "travis"
 ]
-date = "2018-02-03"
-draft = true
+date = "2018-02-08"
+draft = false
 highlight = true
 +++
 
-The use of Docker has become widespread among companies big and small for a variety scenarios. Executing Docker from the command line for simple tasks is easy and little repetative. Having to enter Docker commands for a whole workflow can become tedious. It seems obvious that you might want to integrate Docker into an automated process for convenience and reproducibility. Gradle can help with defining and executing such a process with the help of the link:https://github.com/bmuschko/gradle-docker-plugin[Docker plugin].
+The use of Docker has become widespread among companies big and small for a variety scenarios. Executing Docker from the command line for simple tasks is easy and becomes routine as soon as you get a hang of it. Having to enter Docker commands for a whole workflow can become tedious. It seems obvious that you might want to integrate Docker into an automated process for convenience and reproducibility. Gradle can help with defining and executing such a process with the help of the link:https://github.com/bmuschko/gradle-docker-plugin[Docker plugin].
 
-This blog post is the first installment of a series on using Docker from Gradle. As a starting point for our journey, we want to package a Spring Boot application as a Docker image and push it to the cloud-based registry service link:https://docs.docker.com/docker-hub/[Docker Hub]. In this blog post, you will also learn how to automate the process as a Continuous Integration job on link:https://travis-ci.org/[Travis CI]. You can find the link:https://github.com/bmuschko/dockerized-spring-boot-app[full source code] used in this post on GitHub.
+This blog post is the first installment of a series on using Docker from Gradle. As a starting point for our journey, we'll want to package a Spring Boot application as a Docker image and push it to the cloud-based registry service link:https://docs.docker.com/docker-hub/[Docker Hub]. You will also learn how to automate the process as a Continuous Integration job on link:https://travis-ci.org/[Travis CI]. You can find the link:https://github.com/bmuschko/dockerized-spring-boot-app[full source code] used in this post on GitHub.
+
+---
 
 == Configuring the Docker plugin
 
-The Docker plugin for Gradle provides two main sets of functionality out-of-the-box. It comes with a link:https://github.com/bmuschko/gradle-docker-plugin#remote-api-plugin[base plugin] for modeling and executing typical Docker commands e.g. for creating an image or a container. The base plugin gives you full control over the process you'd like to define.
+The Docker plugin for Gradle provides two main sets of functionality out-of-the-box. It comes with a link:https://github.com/bmuschko/gradle-docker-plugin#remote-api-plugin[base plugin] for modeling and executing typical Docker commands e.g. for creating an image or starting a container. The base plugin gives you full control over the process you'd like to define.
 
 Additionally, it ships with a convenience link:https://github.com/bmuschko/gradle-docker-plugin#java-application-plugin[abstraction for packaging Java applications as a Docker image]. Unfortunately, the Java application abstraction won't quite work for building Spring Boot applications. In the future, I might implement an abstraction suited for this specific use case. For now, we'll just use the most basic functionality giving us the most freedom in defining the process we need.
 
-Getting started with the Docker plugin is straightforward. You just have to apply the plugin with the identifier `com.bmuschko.docker-remote-api` and the concrete version. Furthermore, you will also have to provides the credentials for the registry we'll want to use for hosting our image. As you can see in listing 1, the credentials have not been hard-coded in the build script. They can either be provided as environment variables or as project properties (e.g. in a `gradle.properties` file in your user home directory).
+Getting started with the Docker plugin is straightforward. You just have to apply the plugin with the identifier `com.bmuschko.docker-remote-api` and the concrete version. Furthermore, you will also have to provide the credentials for the registry we'll want to use for hosting our image. As you can see in listing 1, the credentials have not been hard-coded in the build script. They can either be provided as environment variables or as project properties (e.g. in a `gradle.properties` file in your user home directory). In this workflow, we want to push an image to Docker Hub. The Docker plugin uses the Docker Hub registry by default so no additional configuration is required. 
 
+[[listing1]]
 _build.gradle_
 [source,groovy]
 ----
@@ -50,6 +54,7 @@ _Listing 1. Configuring the Docker plugin_
 
 With this build script, you just layed the ground work for defining the Docker process. As part of the Docker process, we'll want to achieve the following tasks:
 
+- Assemble the Spring Boot application WAR file
 - Create a Dockerfile containing the instructions for the Docker image
 - Use the Dockerfile to build an image
 - Try out the image locally by starting a container to verify that it works as expected
@@ -57,11 +62,13 @@ With this build script, you just layed the ground work for defining the Docker p
 
 Let's get started by creating the Dockerfile.
 
+---
+
 == Creating the Dockerfile
 
-The Docker plugins provides custom task types for implementing the most common operations in the Docker world. One of the operations is the creation of a Dockerfile. The task type `Dockerfile` exposes methods for populating a Dockerfile with the necessary instructions for an image.
+The Docker plugins provides custom task types for implementing the most common operations in the Docker world. One of the operations is the creation of a link:https://docs.docker.com/engine/reference/builder/[Dockerfile]. The task type `Dockerfile` exposes methods for populating a Dockerfile with the necessary instructions for an image.
 
-Listing 2 demonstrates the use of the task type in a build script. Let me point you to a couple of interesting assignments. The most important aspect of the task definition is that we'll want to copy the WAR file when creating the image. When starting the image inside of a container, the application's main class is started by executing the `java` command. As soon as the application is up and running, the Docker container will expose its functionality through port 8080. You can also see that we run a health check on the service to indicate its readiness to serve requests. The health check can be achived via `curl`. Notice that there are more link:https://blog.sixeyed.com/docker-healthchecks-why-not-to-use-curl-or-iwr/[light-weight approaches] available.
+Listing 2 demonstrates the use of the task type in a build script. An important aspect of the task definition is that we'll want to copy the WAR file when creating the image. When starting the image inside of a container, the application's main class is automatically executed with the `java` command. As soon as the application is up and running, the Docker container will expose its functionality through port 8080. You can also see that the Dockerfile performs a health check on the service to indicate its readiness to serve requests. The health check can be achived by calling a `curl` command. Notice that there are more link:https://blog.sixeyed.com/docker-healthchecks-why-not-to-use-curl-or-iwr/[light-weight approaches] available.
 
 _build.gradle_
 [source,groovy]
@@ -109,9 +116,11 @@ _Listing 3. The generated Dockerfile_
 
 The task automatically translates its declarative syntax into the underlying Docker instructions. For the most part (except for the `HEALTHCHECK`) you don't even have to know how they need to look like in Docker lingo.
 
+---
+
 == Building the Docker image
 
-Now that you have a Dockerfile in place, you can use the definition to build an image. The task type `DockerBuildImage` takes care of the underlying implementation details. You just need to point to the directory holding the necessary files (Dockerfile and War file) and provide a tag. The tag is a combination of the target repository and the version of the project. You will need to have Docker running to produce the image.
+Now that you have a Dockerfile in place, you can use the definition to build an image. The task type `DockerBuildImage` takes care of the underlying implementation details. You just need to point it to the directory holding the necessary files (Dockerfile and War file) and provide a tag. The tag is a combination of the target repository and the version of the project. You will need to have Docker running to be able to produce the image.
 
 _build.gradle_
 [source,groovy]
@@ -127,9 +136,13 @@ task buildImage(type: DockerBuildImage) {
 
 _Listing 4. Building the Docker image_
 
+---
+
 == Running the image in a container
 
-Before pushing the image to the public repository, you should make sure that it is working as expected. First, we'll want to identify that the image exists and then start up the container to see if the Spring Boot application behaves as expected. For now, we'll just run the plain Docker command. Alternatively, you can also create a task of type `DockerListImages` in your build script.
+Before pushing the image to the public repository, you should make sure that it is working as expected. First, we'll want to identify that the image exists and then start up the container to see if the Spring Boot application behaves as expected. For now, we'll just run the plain Docker commands. 
+
+The `images` command lists the available images. Alternatively, you can also create a task of type `DockerListImages` in your build script.
 
 ----
 $ docker images
@@ -137,14 +150,16 @@ REPOSITORY                     TAG                 IMAGE ID            CREATED  
 bmuschko/account-web-service   1.0.0               91db93d1be41        5 days ago          98.5MB
 ----
 
-Great, the image is available for consumption. Next, you will start a container for the image. You start a container with the `run` command. The Docker plugin also supports task types creating, starting and stopping containers. However, it makes more sense to explain the task types with the help of a more specific use case (covered in a different blog post).
+Great, the image is available for consumption. Next, you will start a container for the image. You start a container with the `run` command. The command renders the container ID in the console for future reference.
 
 ----
 $ docker run -d -p 8080:8080 bmuschko/account-web-service:1.0.0
 670757d71ccc94b044946497c721dac956a837392c87497027af06244e5fd853
 ----
 
-The `run` command renders the container ID in the console for future reference. You can also discover all running containers with by listing them.
+The Docker plugin also supports link:https://github.com/bmuschko/gradle-docker-plugin#containers[task types] for creating, starting and stopping containers. However, it makes more sense to explain the task types with the help of a more specific use case (covered in the next blog post).
+
+You can also discover all running containers by listing them with the `container ls` command.
 
 ----
 $ docker container ls
@@ -152,7 +167,7 @@ CONTAINER ID        IMAGE                                COMMAND                
 670757d71ccc        bmuschko/account-web-service:1.0.0   "java -jar /app/acco…"   32 minutes ago      Up 32 minutes (healthy)   0.0.0.0:8080->8080/tcp   angry_einstein
 ----
 
-The application is ready for use as soon as the status turns into "healthy". In practice that means that the `curl` command could successfully resolve the URL in the Dockerfile. We can verify one of the application's endpoints by calling the URL `http://localhost:8080/accounts?id=1` in a browser. The HTTP response returns a JSON structure representing a bank account.
+The application is ready for use as soon as the status turns "healthy". In practice that means that the `curl` command could successfully resolve the URL in the Dockerfile. We can verify one of the application's endpoints by calling the URL `http://localhost:8080/accounts?id=1` in a browser. The HTTP response returns a JSON structure representing a bank account.
 
 ----
 {
@@ -164,11 +179,13 @@ The application is ready for use as soon as the status turns into "healthy". In 
 
 We know that the application works properly within a Docker container. Next, you will push the image for consumption by other users.
 
+---
+
 == Pushing the Docker image to a registry
 
-A Docker registry allows you to store and share images. Docker Hub is a free, cloud-based solution for anyone that doesn't mind making images publicly-available. Think Github for Docker images. Of course you can also configure the Docker plugin to use a private registry. See the link:https://github.com/bmuschko/gradle-docker-plugin#extension-properties[plugin documentation] for more information.
+A Docker registry allows you to store and share images. Docker Hub is a free, cloud-based solution for anyone that willing to make images publicly-available. Think Github for Docker images. Of course you can also configure the Docker plugin to use a private registry. See the link:https://github.com/bmuschko/gradle-docker-plugin#extension-properties[plugin documentation] for more information.
 
-In this workflow, we want to push an image to Docker Hub. The Docker plugin uses the Docker Hub registry by default so no additional configuration is required. Below you can find the task for push the image we created earlier. Providing the tag of the image is the key aspect of configuring the task.
+Below you can find the task for pushing the image we created earlier. Providing the tag of the image is the key aspect of configuring the task.
 
 _build.gradle_
 [source,groovy]
@@ -185,11 +202,13 @@ _Listing 5. Pushing the Docker image to Dockerhub_
 
 This task represents the main entry point for our worflow. You might have noticed that we established task dependencies between the tasks shown in the previous sections. Executing `pushImage` will create the Dockerfile, produce the image with the latest changes in the WAR file and push the image to Docker Hub.
 
+---
+
 == Creating and pushing the image on Travis CI
 
-You may want to integrate this workflow on a CI server to enable Continuous Deployment for your project. In this example, you will learn how to achieve this with Travis CI. Travis CI can build Docker images and push them to a registry. To use Docker, you will need to link:https://docs.travis-ci.com/user/docker/[enable the service].
+You may want to integrate this workflow on a CI server to enable Continuous Deployment for your project. In this section, you will learn how to achieve this with Travis CI. Travis CI can build Docker images and push them to a registry. To use Docker, you will need to link:https://docs.travis-ci.com/user/docker/[enable the service].
 
-With the Travis CI configuration shown in listing 6, you will automatically build a new image of the application and push it to Docker Hub - with every single commit!
+With the Travis CI configuration shown in listing 6, you will automatically build a new image of the application and push it to Docker Hub - with every single commit! Remember that you'll need to create the <<listing1,environment variables>> for the Docker Hub credentials and your email.
 
 _.travis.yml_
 [source,yaml]
