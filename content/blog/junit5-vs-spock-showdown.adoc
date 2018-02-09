@@ -37,6 +37,8 @@ For a quick reference, you can directly jump to a specific test framework featur
 * <<labeling-filtering,Labeling and filtering test execution>>
 * <<extending-test-framework,Extending the test framework>>
 
+---
+
 == Code under test
 
 For the purpose of demonstrating the capabilities of both test frameworks, we'll use two sets of classes and/or interfaces. The simplest class provides methods for executing arithmetic operations shown in listing 1. Most test framework features in this post can be demonstrated with the help of `ArithmeticOperation.java`.
@@ -103,6 +105,8 @@ public class DefaultFileReader implements FileReader {
 _Listing 3. Default file reader implementation_
 
 You will find that the class `FileManager` is referenced in some of the test cases described below. `FileManager` is just a wrapper around `FileReader` to demonstrate mocking capabilities. You can find the link:https://github.com/bmuschko/junit5-vs-spock-feature-comparison/blob/master/src/main/java/com/bmuschko/test/comparison/FileManager.java[code for the class] in the source code repository.
+
+---
 
 [[test-execution]]
 == Test execution
@@ -180,6 +184,8 @@ class SimpleTest extends Specification {
 ----
 
 _Listing 5. Extending from abstract class Specification_
+
+---
 
 [[fixture-setup-teardown]]
 == Fixture set up and tear down
@@ -259,6 +265,8 @@ class FixtureSetupCleanup extends Specification {
 ----
 
 _Listing 7. Fixture methods in Spock_
+
+---
 
 [[descriptive-test-names]]
 == Descriptive test names
@@ -351,6 +359,8 @@ image:/img/blog/junit5-vs-spock-showdown/descriptive-names-spock.png[]
 
 _Figure 2. Descriptive test names in IntelliJ_
 
+---
+
 [[disabling-tests]]
 == Disabling tests
 
@@ -399,6 +409,8 @@ class IgnoredTest extends Specification {
 ----
 
 _Listing 11. Using the Ignore annotation to disable a method_
+
+---
 
 [[expecting-thrown-exceptions]]
 == Expecting thrown exceptions
@@ -460,6 +472,8 @@ class ExpectedExceptionTest extends Specification {
 ----
 
 _Listing 13. Declaring an expected exception by annotation_
+
+---
 
 [[repeating-test-execution]]
 == Repeating test execution
@@ -528,6 +542,8 @@ class RepetitionTest extends Specification {
 
 _Listing 15. Repeating a test method by counter_
 
+---
+
 [[declaring-timeouts]]
 == Declaring test execution timeouts
 
@@ -578,6 +594,8 @@ class TimeoutTest extends Specification {
 ----
 
 _Listing 17. Convenient timeout definition by annotation_
+
+---
 
 [[conditional-test-execution]]
 == Conditional test execution
@@ -688,6 +706,8 @@ image:/img/blog/junit5-vs-spock-showdown/conditional-execution-spock.png[]
 
 _Figure 4. Conditional test execution by annotation in IntelliJ_
 
+---
+
 [[data-driven-tests]]
 == Data-driven tests
 
@@ -785,6 +805,8 @@ image:/img/blog/junit5-vs-spock-showdown/data-driven-test-spock.png[]
 
 _Figure 6. IntelliJ renders each data line for Spock-based tests_
 
+---
+
 [[mocking]]
 == Mocking
 
@@ -863,6 +885,8 @@ class MockTest extends Specification {
 ----
 
 _Listing 24. Built-in mock capabilities_
+
+---
 
 [[labeling-filtering]]
 == Labeling and filtering test execution
@@ -981,6 +1005,8 @@ runner {
 _Listing 30. Spock runner configuration to filter annotated tests_
 
 The approach is less convenient than the one provided by JUnit 5 especially if you have to deal with more than one test suite. Please be aware that you can also provide the configuration to the test JVM with the system property `spock.configuration`.
+
+---
 
 [[extending-test-framework]]
 == Extending the test framework
@@ -1113,6 +1139,8 @@ class LoggingTest extends Specification {
 ----
 
 _Listing 36. Using the logging extension in a test class_
+
+---
 
 == Conclusion
 
