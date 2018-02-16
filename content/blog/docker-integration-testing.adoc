@@ -1,0 +1,127 @@
++++
+title = "Integration testing with Gradle and Docker"
+tags = [
+    "testing",
+    "spock",
+    "build",
+    "docker",
+    "container",
+    "gradle",
+    "ci",
+    "travis"
+]
+date = "2018-02-12"
+draft = true
+highlight = true
++++
+
+In the link:http://bmuschko.com/blog/dockerized-spring-boot-app/[first blog post] on "Docker with Gradle", you learned how to package a Spring Boot application into a Docker image. After verifying that the image works as expected by running it in a container, you pushed the image to a registry. Having a Docker image available in a registry and being able to push image updates with every commit enables the implementation of other workflows.
+
+Integration testing represents an important activity to ensure functional and non-funtional requirements of your project. More complex enterprise projects almost never function just by itself. With the rise of microservices, we see an increasing number of projects that reach out to other services e.g. by performing a HTTP call. During integration testing, external services and endpoints need to be available. It can be very tedious, time-consuming and error-prone to bring up multiple services just for the purpose of integration testing especially during development. Docker containers make it very easy and fast to start up services on demand.
+
+In this blog post, you will learn how to pull a specific version of a Docker image from a registry and use it as fixture for integration testing. You will also learn how to automate the process as a Continuous Integration job on link:https://travis-ci.org/[Travis CI]. You can find the link:https://github.com/bmuschko/docker-integration-testing[full source code] used on GitHub.
+
+== Configuring the Docker plugin
+
+_gradle/integration-test.gradle_
+[source,groovy]
+----
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:3.2.3'
+    }
+}
+
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+----
+
+== Setting up integration testing
+
+== Pulling the image from a registry
+
+_gradle/integration-test.gradle_
+[source,groovy]
+----
+import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
+
+task pullImage(type: DockerPullImage) {
+    repository = 'bmuschko/account-web-service'
+    tag = '1.0.0'
+}
+----
+
+== Starting and stopping the container
+
+_gradle/integration-test.gradle_
+[source,groovy]
+----
+import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
+import com.bmuschko.gradle.docker.tasks.container.extras.DockerWaitHealthyContainer
+
+task createContainer(type: DockerCreateContainer) {
+    dependsOn pullImage
+    targetImageId { pullImage.getImageId() }
+    portBindings = ['8080:8080']
+}
+
+task startContainer(type: DockerStartContainer) {
+    dependsOn createContainer
+    targetContainerId { createContainer.getContainerId() }
+}
+
+task waitOnHealthyContainer(type: DockerWaitHealthyContainer) {
+    dependsOn startContainer
+    timeout = 60
+    targetContainerId { createContainer.getContainerId() }
+}
+
+task stopContainer(type: DockerStopContainer) {
+    targetContainerId { createContainer.getContainerId() }
+}
+----
+
+== Starting and stopping the container as fixture
+
+_gradle/integration-test.gradle_
+[source,groovy]
+----
+integrationTest {
+    dependsOn startContainer, waitOnHealthyContainer
+    finalizedBy stopContainer
+}
+----
+
+== Performing integration testing on Travis CI
+
+_.travis.yml_
+[source,yaml]
+----
+language: java
+install: true
+sudo: required
+
+services:
+  - docker
+
+jdk:
+  - oraclejdk8
+
+script:
+  - ./gradlew integrationTest -s
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+----
