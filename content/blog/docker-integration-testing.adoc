@@ -10,7 +10,7 @@ tags = [
     "ci",
     "travis"
 ]
-date = "2018-02-12"
+date = "2018-02-18"
 draft = true
 highlight = true
 +++
@@ -21,7 +21,56 @@ Integration testing represents an important activity to ensure functional and no
 
 In this blog post, you will learn how to pull a specific version of a Docker image from a registry and use it as fixture for integration testing. You will also learn how to automate the process as a Continuous Integration job on link:https://travis-ci.org/[Travis CI]. You can find the link:https://github.com/bmuschko/docker-integration-testing[full source code] used on GitHub.
 
+---
+
+== Setting up integration testing
+
+The code under test in this example builds upon the account management application created in an earlier blog post. The class link:https://github.com/bmuschko/docker-integration-testing/blob/master/src/main/java/com/bmuschko/consumer/DefaultAccountManager.java[`DefaultAccountManager`] implements a method for retrieving account information via HTTP(s) and crediting a monetary amount to the existing balance. The test link:https://github.com/bmuschko/docker-integration-testing/blob/master/src/integrationTest/groovy/com/bmuschko/consumer/DefaultAccountManagerIntegrationTest.groovy[`DefaultAccountManagerIntegrationTest`] requires the account management service to be up and running to verify the integration point.
+
+It's considered good practice to separate the source code of different test types by dedicated directories. Furthermore, different types of tests should be runnable with the help of specific tasks. For example sometimes you might want to just run unit tests, other times you might want to run integration tests. Listing 1 demonstrates how to create a dedicated source set and `Test` task for the purpose of integration testing as part of a script plugin. Keeping the setup for integration testing separate from the main build script enables maintainability and readability of the build.
+
+_gradle/integration-test.gradle_
+[source,groovy]
+----
+sourceSets {
+    integrationTest {
+        groovy.srcDir file('src/integrationTest/groovy')
+        resources.srcDir file('src/integrationTest/resources')
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    mustRunAfter test
+}
+
+check.dependsOn integrationTest
+----
+
+_Listing 1. Creating an integration test source set and task_
+
+The `build.gradle` file in turn applies the integration test script plugin.
+
+_build.gradle_
+[source,groovy]
+----
+apply from: 'gradle/integration-test.gradle'
+----
+
+_Listing 2. Applying the integration test script plugin_
+
+With this setup in place, any source code under `src/integTest/groovy` can be compiled and executed by running the `integrationTest` task from the command line. In the next sections, you will learn how to set up the Docker plugin to retrieve the Docker image of the account management application and use to start and stop a Docker container as fixture for integration testing.
+
+---
+
 == Configuring the Docker plugin
+
+The Gradle Docker plugin performs the heavy lifting of communicating with Docker from the build. The plugin is available on the link:https://plugins.gradle.org/plugin/com.bmuschko.docker-remote-api[Gradle plugin portal]. Because of a known link:https://github.com/gradle/gradle/issues/1262[limitation of applying third-party plugins from a script plugin], the Docker plugin needs to be applied by type as shown in listing 3.
 
 _gradle/integration-test.gradle_
 [source,groovy]
@@ -40,9 +89,15 @@ buildscript {
 apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin
 ----
 
-== Setting up integration testing
+_Listing 3. Applying the Docker plugin_
+
+Next, you will use the a custom task type of the plugin to pull an image from a registry by tag.
+
+---
 
 == Pulling the image from a registry
+
+By default, the Docker plugin resolves images from Docker Hub. The image of the account management application is available from link:https://hub.docker.com/r/bmuschko/account-web-service/[`bmuschko/account-web-service`]. The following code snippet creates a task of type `DockerPullImage` for pulling the tag `1.0.0` of the image.
 
 _gradle/integration-test.gradle_
 [source,groovy]
@@ -55,7 +110,21 @@ task pullImage(type: DockerPullImage) {
 }
 ----
 
+_Listing 4. Pulling the Docker image for a specific tag_
+
+Downloading the image might take a while depending on your network bandwidth. The compressed size of the image is 71 MB. The following section explains how to start and stop a container running the image.
+
+---
+
 == Starting and stopping the container
+
+Starting and stopping the container running the account management application is existential to be able to successfully execute integration tests. Below you can find the tasks for managing the fixture. Starting the container can be broken down into three different steps:
+
+1. Creating a container from the image exposing a port binding.
+2. Starting the container with an identifier.
+3. Waiting until the application running within the container is accessible.
+
+Point number 3 is extremely important to ensure that the integration tests do not start executing before the application can be served. The task `startAndWaitOnHealthyContainer` inspects the starting container periodically and only proceeds if the health check returns a "ready state".
 
 _gradle/integration-test.gradle_
 [source,groovy]
@@ -76,7 +145,7 @@ task startContainer(type: DockerStartContainer) {
     targetContainerId { createContainer.getContainerId() }
 }
 
-task waitOnHealthyContainer(type: DockerWaitHealthyContainer) {
+task startAndWaitOnHealthyContainer(type: DockerWaitHealthyContainer) {
     dependsOn startContainer
     timeout = 60
     targetContainerId { createContainer.getContainerId() }
@@ -87,18 +156,34 @@ task stopContainer(type: DockerStopContainer) {
 }
 ----
 
-== Starting and stopping the container as fixture
+_Listing 5. Creating tasks for starting and stopping a container_
+
+Next, you will hook the container tasks into the task executing integration tests.
+
+---
+
+== Using the container fixture for integration testing
+
+Integrations tests may or may not fail. Independent of the outcome of the test execution the container running the account management application needs to be teared down. The method link:https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#finalizedBy-java.lang.Object...-[`Task.finalizedBy(Object...)`] behaves like a Java try/finally block.
 
 _gradle/integration-test.gradle_
 [source,groovy]
 ----
 integrationTest {
-    dependsOn startContainer, waitOnHealthyContainer
+    dependsOn startAndWaitOnHealthyContainer
     finalizedBy stopContainer
 }
 ----
 
+_Listing 6. Modeling the integration test fixture setup_
+
+The workflow is fully set up and ready to use. Running integration tests as part of a deployment pipeline ensures that every commit is automatically verified.
+
+---
+
 == Performing integration testing on Travis CI
+
+In this section, you will learn how to achieve run integration tests with Travis CI. To use Docker, you will need to link:https://docs.travis-ci.com/user/docker/[enable the service]. The fixture setup logic is encapsulated in the build script. In practice, you can just call off to the `integrationTest` task without having to configure any Docker-related steps as part of the CI definition. That approach will make it extremly easy to switch CI products if needed.
 
 _.travis.yml_
 [source,yaml]
@@ -125,3 +210,5 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 ----
+
+_Listing 7. Executing the integration test workflow on Travis CI_
