@@ -1,5 +1,5 @@
 +++
-title = "Dockerizing a Spring Boot application with Gradle"
+title = "Docker with Gradle: Dockerizing a Spring Boot application"
 tags = [
     "build",
     "docker",

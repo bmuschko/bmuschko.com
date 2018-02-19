@@ -1,5 +1,5 @@
 +++
-title = "Integration testing with Gradle and Docker"
+title = "Docker with Gradle: Integration testing using containers"
 tags = [
     "testing",
     "spock",
