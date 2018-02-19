@@ -157,7 +157,7 @@ $ docker run -d -p 8080:8080 bmuschko/account-web-service:1.0.0
 670757d71ccc94b044946497c721dac956a837392c87497027af06244e5fd853
 ----
 
-The Docker plugin also supports link:https://github.com/bmuschko/gradle-docker-plugin#containers[task types] for creating, starting and stopping containers. However, it makes more sense to explain the task types with the help of a more specific use case (covered in the next blog post).
+The Docker plugin also supports link:https://github.com/bmuschko/gradle-docker-plugin#containers[task types] for creating, starting and stopping containers. However, it makes more sense to explain the task types with the help of a more specific use case (covered in the link:http://bmuschko.com/blog/docker-integration-testing/[next blog post]).
 
 You can also discover all running containers by listing them with the `container ls` command.
 
