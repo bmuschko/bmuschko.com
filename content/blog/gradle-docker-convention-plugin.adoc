@@ -1,0 +1,298 @@
++++
+title = "Docker with Gradle: Writing a convention plugin"
+tags = [
+    "build",
+    "docker",
+    "container",
+    "nodejs",
+    "javascript",
+    "gradle",
+    "plugin"
+]
+date = "2018-03-15"
+draft = true
+highlight = true
++++
+
+The Gradle Docker plugin can fulfill various use cases. In the two previous blog posts of the series "Docker with Gradle", we looked at creating a link:http://bmuschko.com/blog/dockerized-spring-boot-app/[Docker image for a Spring Boot application] and how to use the image as link:http://bmuschko.com/blog/docker-integration-testing/[fixture for integration testing]. If you have read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. This approach can easily become tedious if you want to use it across multiple, independent projects. Gradle promotes the idea of reusibility and encapsulation. Plugins present the preferred way to implement those non-functionality requirements.
+
+In this post, you will learn how to enhance the basic capabilities of the Gradle Docker plugin to establish conventions for your own projects. As an example, we will have a look at a very simpilistic Node.js application built and run by Gradle and package it into a Docker image. It is not necessary to fully understand Node.js nor Javascript. The main objective is to demonstrate the concepts link:https://guides.gradle.org/designing-gradle-plugins/#capabilities-vs-conventions[plugin composition] and the introduction of opinionated conventions. You can find the link:https://github.com/bmuschko/gradle-docker-convention-plugin[full source code] on GitHub. I would recommend reading up on the most important design considerations and implementation concepts if you are not too deep into plugin development.
+
+== Building a Node.js application with Gradle
+
+Grade is a polyglot build tool and can supports other languages than just Java as long as there's a plugin for it. The link:https://github.com/srs/gradle-node-plugin[Node plugin] supports the full lifecycle of a modern Javascript application. It even takes care of installing Node.js and NPM packages at runtime. The following build script shows how to apply the plugin, configure it to use a specific Node.js version and adds a task for executing a Node.js script.
+
+_application/build.gradle_
+[source,groovy]
+----
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+    }
+}
+
+apply plugin: 'com.moowork.node'
+
+version = '1.0.0'
+group = 'com.bmuschko'
+
+node {
+    version = '9.8.0'
+    download = true
+}
+
+task helloWorld(type: NodeTask) {
+    dependsOn npmInstall
+    script = file('src/node/index.js')
+}
+----
+
+_Listing 1. Applying and configuring the Gradle Node plugin_
+
+The task `helloWorld` points to the Javascript file `src/node/index.js` when executed. Presumabily, it prints a "Hello World" message to the console when executed. Let's check it out. You can find in listing 2 that the Javascript doesn't just print the message to the console. It actually uses the link:https://www.npmjs.com/package/figlet[NPM package `figlet`] to make the output visually appealing.
+
+_application/src/node.index.js_
+[source,javascript]
+----
+const figlet = require('figlet');
+
+var out = figlet.textSync('Hello World!', {
+    font: 'Standard'
+});
+
+console.log(out);
+----
+
+_Listing 2. A simple Node.js application_
+
+Executing the task produces the following output. Neat, you got your first Node.js application up and running without having to resort to a Javascript-based build tool like Grunt or Gulp.
+
+[source,shell]
+----
+./gradlew helloWorld
+
+> Task :helloWorld
+  _   _      _ _        __        __         _     _ _
+ | | | | ___| | | ___   \ \      / /__  _ __| | __| | |
+ | |_| |/ _ \ | |/ _ \   \ \ /\ / / _ \| '__| |/ _` | |
+ |  _  |  __/ | | (_) |   \ V  V / (_) | |  | | (_| |_|
+ |_| |_|\___|_|_|\___/     \_/\_/ \___/|_|  |_|\__,_(_)
+ 
+ BUILD SUCCESSFUL in 3s
+ 3 actionable tasks: 1 executed, 2 up-to-date
+----
+
+Let's also inspect the application's `package.json` file. As you can see in the listing below, we provide a name, version and description for the application. Most importantly, the file also declares the NPM dependency. Now, it's a good idea to also provide a link:https://github.com/bmuschko/gradle-docker-convention-plugin/blob/master/application/package-lock.json[package lock file] to ensure the same dependency version is resolved at runtime whenver the build is executed.
+
+_application/package.json_
+[source,json]
+----
+{
+  "name": "nodejs-hello-world",
+  "version": "1.0.0",
+  "description": "Prints hello world message",
+  "private": true,
+  "license": "Apache License 2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bmuschko/gradle-docker-convention-plugin"
+  },
+  "dependencies": {
+    "figlet": "^1.2.0"
+  }
+}
+----
+
+_Listing 3. The application's package file_
+
+So far the application has no touch point with Docker. In the next section, you will set up the infrastructure for building a Gradle plugin for the purpose of creating a Docker image for the application and pushing it to DockerHub.
+
+== Creating the basic plugin infrastructure
+
+It's a good idea to implement a Gradle plugin as a standalone project to simplify the process of publishing it to a binary repository later. As part of this blog post, you are only going to build the plugin as part of a composite build so that you can apply it in the `application` project. Usually, you'd go the additional mile and publish to so that it can be reused by other, independent projects. You should end up with the following directory structure.
+
+----
+$ tree
+.
+├── application
+└── plugin
+----
+
+Getting started with writing a plugin looks very similar in most cases: create a `build.gradle` file, apply the link:https://guides.gradle.org/implementing-gradle-plugins/#plugin-development-plugin[Java Gradle Plugin Development plugin] and declare any dependencies needed to build the project. In this case, you will want to build upon the capabilities provided by the Gradle Docker plugin. The build script declare a dependency on version 3.2.5. You might have guessed that the plugin code will be writting in the language Groovy as the `groovy` plugin is applied as well.
+
+_plugin/build.gradle_
+[source,groovy]
+----
+apply plugin: 'groovy'
+apply plugin: 'java-gradle-plugin'
+
+version = '0.1'
+group = 'com.bmuschko'
+
+ext.compatibilityVersion = '1.6'
+sourceCompatibility = compatibilityVersion
+targetCompatibility = compatibilityVersion
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.bmuschko:gradle-docker-plugin:3.2.5'
+}
+----
+
+_Listing 4. Setting up the plugin's build script_
+
+== Implementing the plugin class
+
+Let's talk about the requirements for the plugin before we get down to the actual implementation.
+
+* The plugin should be able to use task types provided by the Docker plugin.
+* The modeled process should be able to create a Dockerfile, build an image and push it to DockerHub.
+* The plugin should introduce convention so that the user can work with sensitive defaults.
+* A user should be able to configure essential runtime aspects like the used based image or the exposed ports.
+
+Listing 5 shows a plugin class that fulfills all of those requirements. We will disect the most important aspects of this rather lengthy code snippet. First of all, the plugin applies the `DockerRemoteApiPlugin` which brings the basic Docker capabilities. Most of the task created by the plugin rely on the task types introduced by the Docker plugin. The extension `DockerNodeJsApplication` exposes a link:https://guides.gradle.org/implementing-gradle-plugins/#modeling_dsl_like_apis[custom DSL] for re-configuring the default value. We'll have a deeper look at it below.
+
+_DockerNodeJsApplicationPlugin.groovy_
+[source,groovy]
+----
+package com.bmuschko.gradle.docker
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.api.tasks.Sync
+
+class DockerNodeJsApplicationPlugin implements Plugin<Project> {
+    public static final String NODE_JS_APPLICATION_EXTENSION_NAME = 'nodeJsApplication'
+    public static final String DOCKERFILE_TASK_NAME = 'createDockerfile'
+    public static final String SYNC_DIST_RESOURCES_TASK_NAME = 'syncNodeFiles'
+    public static final String BUILD_IMAGE_TASK_NAME = 'buildImage'
+    public static final String PUSH_IMAGE_TASK_NAME = 'pushImage'
+    
+    @Override
+    void apply(Project project) {
+        project.apply(plugin: DockerRemoteApiPlugin)
+        
+        DockerExtension dockerExtension = project.extensions.getByType(DockerExtension)
+        DockerNodeJsApplication dockerNodeJsApplication = dockerExtension.extensions.create(NODE_JS_APPLICATION_EXTENSION_NAME, DockerNodeJsApplication)
+        
+        Dockerfile createDockerfileTask = createDockerfileTask(project, dockerNodeJsApplication)
+        Sync distSyncTask = createDistSyncResourcesTask(project, createDockerfileTask)
+        createDockerfileTask.dependsOn distSyncTask
+        DockerBuildImage dockerBuildImageTask = createBuildImageTask(project, createDockerfileTask, dockerNodeJsApplication)
+        createPushImageTask(project, dockerBuildImageTask)
+    }
+    
+    private Dockerfile createDockerfileTask(Project project, DockerNodeJsApplication dockerNodeJsApplication) {
+        project.task(DOCKERFILE_TASK_NAME, type: Dockerfile) {
+            description = 'Creates the Docker image for the Node.js application.'
+            from { dockerNodeJsApplication.baseImage }
+            copyFile('package*.json', './')
+            copyFile('index.js', '/index.js')
+            runCommand('npm install')
+            entryPoint('node', 'index.js')
+            exposePort { dockerNodeJsApplication.ports }
+        }
+    }
+    
+    private Sync createDistSyncResourcesTask(Project project, Dockerfile createDockerfileTask) {
+        project.task(SYNC_DIST_RESOURCES_TASK_NAME, type: Sync) {
+            description = "Copies the distribution resources to a temporary directory."
+            from('.') {
+                include 'package*.json'
+            }
+            from 'src/node'
+            into createDockerfileTask.destFile.parentFile
+        }
+    }
+    
+    private DockerBuildImage createBuildImageTask(Project project, Dockerfile createDockerfileTask, DockerNodeJsApplication dockerNodeJsApplication) {
+        project.task(BUILD_IMAGE_TASK_NAME, type: DockerBuildImage) {
+            description = 'Builds the Docker image for the Node.js application.'
+            dependsOn createDockerfileTask
+            conventionMapping.inputDir = { createDockerfileTask.destFile.parentFile }
+            conventionMapping.tag = { dockerNodeJsApplication.getTag() }
+        }
+    }
+    
+    private void createPushImageTask(Project project, DockerBuildImage dockerBuildImageTask) {
+        project.task(PUSH_IMAGE_TASK_NAME, type: DockerPushImage) {
+            description = 'Pushes created Docker image to the repository.'
+            dependsOn dockerBuildImageTask
+            conventionMapping.imageName = { dockerBuildImageTask.getTag() }
+        }
+    }
+}
+----
+
+_Listing 5. The convention plugin implementation_
+
+The plugin creates four tasks and established the proper dependencies between those tasks to form a meaninful lifecycle.
+
+* `createDockerfile`: Creates the Dockerfile using default conventions.
+* `syncNodeFiles`: Synchronizes the Node.js files of the application with a target directory for packaging.
+* `buildImage`: Builds the image of the Node.js application from the Dockerfile.
+* `pushImage`: Pushes the image to DockerHub.
+
+> You might be familiar with the concept of convention mapping used by this plugin. Convention mapping is an internal Gradle API which allows plugin developers to defer evaluating a property value until needed. At the time of writing, the Docker plugin does not use the public and recommended link:https://docs.gradle.org/current/userguide/lazy_configuration.html[Provider API] yet. For more information please follow this link:https://github.com/bmuschko/gradle-docker-plugin/issues/561[issue].
+
+== Exposing a custom DSL for configuring runtime behavior
+
+
+
+_DockerNodeJsApplication.groovy_
+[source,groovy]
+----
+package com.bmuschko.gradle.docker
+
+class DockerNodeJsApplication {
+    String baseImage = 'node:9'
+    Set<Integer> ports = [8080]
+    String tag
+}
+----
+
+== Using the plugin in the application project
+
+_application/build.gradle_
+[source,groovy]
+----
+buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-nodejs-plugin:0.1'
+    }
+}
+
+apply plugin: 'com.bmuschko.docker-nodejs-application'
+
+docker {
+    registryCredentials {
+        username = getConfigurationProperty('DOCKER_USERNAME', 'docker.username')
+        password = getConfigurationProperty('DOCKER_PASSWORD', 'docker.password')
+        email = getConfigurationProperty('DOCKER_EMAIL', 'docker.email')
+    }
+    
+    nodeJsApplication {
+        tag = "bmuschko/nodejs-hello-world:$project.version"
+    }
+}
+
+String getConfigurationProperty(String envVar, String sysProp) {
+    System.getenv(envVar) ?: project.findProperty(sysProp)
+}
+----
