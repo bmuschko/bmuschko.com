@@ -1,5 +1,5 @@
 +++
-title = "Docker with Gradle: Writing a convention plugin"
+title = "Docker with Gradle: Writing a Node.js convention plugin"
 tags = [
     "build",
     "docker",
