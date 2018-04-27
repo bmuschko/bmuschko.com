@@ -76,7 +76,7 @@ _Listing 2. A simple Node.js application_
 
 Executing the task produces the following output.
 
-[source,shell]
+[source,text]
 ----
 ./gradlew helloWorld
 
@@ -297,7 +297,6 @@ DockerNodeJsApplication dockerNodeJsApplication = dockerExtension.extensions.cre
 ----
 
 _Listing 7. Enhancing the extension of the Docker plugin_
-
 
 Next, you will see how simple the actual build script looks like to the end user.
 
