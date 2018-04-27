@@ -1,0 +1,211 @@
++++
+title = "Docker with Gradle: Getting started with Docker Compose"
+tags = [
+    "build",
+    "docker",
+    "compose",
+    "container",
+    "python",
+    "redis",
+    "gradle"
+]
+date = "2018-04-26"
+draft = true
+highlight = true
++++
+
+link:https://docs.docker.com/compose/[Docker Compose] is a tool for defining and running entire application stacks in containers. Gradle plays well with Docker Compose and can automate the bootstrapping of those containers from the build process. In a previous post, I discussed how to use Gradle to link:http://bmuschko.com/blog/docker-integration-testing/[start and stop a Docker container for integration testing]. In this blog post, I want to continue the discussion by explaining how to manage multiple containers with Compose. You can find the link:https://github.com/bmuschko/docker-compose-integration-testing[full source code] on Github.
+
+---
+
+== Managing an application stack with Compose
+
+The sample project used to discuss the functionality is a Python + Redis application stack explained on the link:https://docs.docker.com/compose/gettingstarted/[official Docker Compose page]. It starts a web application that increments a counter whenever the main entry point is called and renders a message on screen. The counter is stored in the Redis database.
+
+image:/img/blog/gradle-docker-compose/application-counter.png[]
+
+_Figure 1. A simple Python web application capturing the number of visits to the page_
+
+For the purpose of demomstrating Compose, I took over the sample code almost entirely. I enhanced the service configuration by adding health checks and service dependencies to ensure that everything is up and running before the first request is made.
+
+Starting and stopping the Docker Compose application stack represent the obvious operations you will want to run on a regular basis. One of the Gradle plugins providing such functionality is the link:https://github.com/avast/gradle-docker-compose-plugin[Docker Compose plugin]. Listing 1 shows the minimal configuration required to get started.
+
+_build.gradle_
+[source,groovy]
+----
+plugins {
+    id 'com.avast.gradle.docker-compose' version '0.7.1'
+}
+
+dockerCompose {
+    useComposeFiles = ['docker-compose.yml']
+}
+----
+
+_Listing 1. Applying and configuring the Gradle Docker Compose plugin_
+
+Simply run the task `composeUp` to bring up the application stack. The following console output ensures that the Redis database becomes healthy first before starting the Python application. As soon as the full stack is ready, requests can be served by opening the URL `http://localhost:5000` in a browser.
+
+[source,text]
+----
+$ ./gradlew composeUp
+
+> Task :composeUp
+redis uses an image, skipping
+Building web
+Creating network "dockercomposeintegrationtesting_counter-net" with the default driver
+Creating volume "dockercomposeintegrationtesting_counter-vol" with default driver
+Creating dockercomposeintegrationtesting_redis_1 ... done
+Creating dockercomposeintegrationtesting_web_1 ... done
+Will use localhost as host of redis
+Will use localhost as host of web
+Waiting for redis_1 to become healthy (it's starting)
+Waiting for redis_1 to become healthy (it's starting)
+Waiting for redis_1 to become healthy (it's starting)
+redis_1 health state reported as 'healthy' - continuing...
+Waiting for web_1 to become healthy (it's starting)
+Waiting for web_1 to become healthy (it's starting)
+Waiting for web_1 to become healthy (it's starting)
+web_1 health state reported as 'healthy' - continuing...
+Probing TCP socket on localhost:5000 of service 'web_1'
+TCP socket on localhost:5000 of service 'web_1' is ready
+
+BUILD SUCCESSFUL in 1m 48s
+1 actionable task: 1 executed
+----
+
+You can shut down the whole application stack once the services are not needed anymore. Executing the task `composeDown` will take care of the job.
+
+[source,text]
+----
+$ ./gradlew composeDown
+
+> Task :composeDown
+Stopping dockercomposeintegrationtesting_web_1 ... done
+Stopping dockercomposeintegrationtesting_redis_1  ... done
+Removing dockercomposeintegrationtesting_web_1 ... done
+Removing dockercomposeintegrationtesting_redis_1  ... done
+Removing network dockercomposeintegrationtesting_counter-net
+Removing volume dockercomposeintegrationtesting_counter-vol
+
+BUILD SUCCESSFUL in 3s
+1 actionable task: 1 executed
+----
+
+Managing Compose via Gradle tasks is helpful for manually testing or experimenting with an application stack. In some situations, you may want to bind the operations to more complex workflows. In the next section, you will learn how to use an application stack as a fixture for integration testing.
+
+---
+
+== Using Compose as fixture for integration testing
+
+Microservice applications represent a collection of individual services communicating with each other. It's common for a developer to work on one or many services to implement new features or bugfixes. Testing those changes in conjunction with other services needed at runtime requires all dependencies to be available. The Gradle Docker compose plugin makes it really easy to bootstrap an application stack and tie it into the task execution lifecycle of a test task.
+
+We'll pick Java and the test framework JUnit 5 for writing integration tests. In listing 2, you can see that the test case calls the expected service endpoint using the incubating link:https://developer.oracle.com/java/jdk-http-client[JDK HTTP Client]. The assertion logic verifies the expected response from the HTTP call with every iteration of the test case.
+
+_src/test/java/com/bmuschko/ApplicationIntegrationTest.java_
+[source,java]
+----
+package com.bmuschko;
+
+import jdk.incubator.http.HttpClient;
+import jdk.incubator.http.HttpRequest;
+import jdk.incubator.http.HttpResponse;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.io.IOException;
+import java.net.URI;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class ApplicationIntegrationTest {
+    @ParameterizedTest(name = "can resolve application URL {0} times")
+    @ValueSource(ints = { 1, 2, 3 })
+    void canResolveApplicationUrl(int times) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:5000/"))
+            .GET()
+            .build();
+        HttpResponse<String> response = HttpClient.newHttpClient()
+            .send(request, HttpResponse.BodyHandler.asString());
+        assertTrue(response.body().contains(String.format("Welcome to this awesome page! You've visited me %s times.", times)));
+    }
+}
+----
+
+_Listing 2. Test class calling service endpoint_
+
+Listing 3 demonstrates the application of the Java plugin and the necessary configuration required to use Compose as fixture for the `test` task. The convenience method `isRequiredBy` establishes a task dependency on `composeUp` with the help of link:https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#dependsOn-java.lang.Object...-[`dependsOn`] and another task dependency on `composeDown` via link:https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#finalizedBy-java.lang.Object...-[`finalizedBy`].
+
+_build.gradle_
+[source,groovy]
+----
+plugins {
+    id 'java'
+}
+
+dockerCompose {
+    isRequiredBy(project.tasks.test)
+}
+----
+
+_Listing 3. Using Compose as fixture for test task_
+
+JDK's HTTP Client has been introduced with Java 9. You'll have to explicitly configure the build to use the incubating module for compilation and test execution. Furthermore, the build has to declare the module dependencies on JUnit 5 and indicate that the test task should use this particular test framework.
+
+_build.gradle_
+[source,groovy]
+----
+sourceCompatibility = 9
+targetCompatibility = 9
+
+def httpclientModuleJvmArg = '--add-modules=jdk.incubator.httpclient'
+
+compileTestJava {
+    options.compilerArgs.add(httpclientModuleJvmArg)
+}
+
+test {
+    useJUnitPlatform()
+    jvmArgs httpclientModuleJvmArg
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    def junitJupiterVersion = '5.1.1'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+}
+----
+
+_Listing 4. Setting up JUnit 5 for test task_
+
+Execute `./gradlew test` from the command line to test drive the integration test. The console output below should give you a rough overview on which tasks are run and in what order.
+
+[source,text]
+----
+$ ./gradlew test --console=verbose
+
+> Task :compileJava NO-SOURCE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava
+> Task :processTestResources NO-SOURCE
+> Task :testClasses
+> Task :composeUp
+> Task :test
+> Task :composeDown
+
+BUILD SUCCESSFUL in 1m 57s
+4 actionable tasks: 4 executed
+----
+
+---
+
+== Summary
+
+Gradle does a fantastic job in managing Compose application stacks. With its built-in capabilities, Compose operations can be integrated into the task execution lifecycle with little effort. In one of my next blog posts, I am planning to compare the build-level approach with one that manages the container management from the test class implementation e.g. as provided by link:https://www.testcontainers.org/[TestContainers].
