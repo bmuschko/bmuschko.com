@@ -851,7 +851,7 @@ _Listing 23. Using Mockito to inject mock instance_
 
 === Spock
 
-Mocks and stubs are an integrated part of the Spock API. You do not have to pull in yet another external dependency to fulfill all testing needs. Creating mock objects and defining expected interactions in Spock is straightforward. You can learn more about Spock's link:http://spockframework.org/spock/docs/1.0/interaction_based_testing.html[interaction based testing] in the user guide.
+Mocks and stubs are an integrated part of the Spock API. You do not have to pull in yet another external dependency to fulfill all testing needs. Creating mock objects and defining expected interactions in Spock is straightforward. You can learn more about Spock's link:http://spockframework.org/spock/docs/1.1/interaction_based_testing.html[interaction based testing] in the user guide.
 
 _MockTest.groovy_
 [source,groovy]
