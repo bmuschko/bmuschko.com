@@ -28,7 +28,7 @@ _Figure 1. A simple Python web application capturing the number of visits to the
 
 For the purpose of demomstrating Compose, I took over the sample code almost entirely. I enhanced the service configuration by adding health checks and service dependencies to ensure that everything is up and running before the first request is made.
 
-Starting and stopping the Docker Compose application stack represent the obvious operations you will want to run on a regular basis. One of the Gradle plugins providing such functionality is the link:https://github.com/avast/gradle-docker-compose-plugin[Docker Compose plugin]. Listing 1 shows the minimal configuration required to get started.
+Starting and stopping the Docker Compose application stack represent the obvious operations you will want to run on a regular basis. One of the Gradle plugins providing such functionality is the link:https://github.com/avast/gradle-docker-compose-plugin[Avast Docker Compose plugin]. Listing 1 shows the minimal configuration required to get started.
 
 _build.gradle_
 [source,groovy]
@@ -100,7 +100,7 @@ Managing Compose via Gradle tasks is helpful for manually testing or experimenti
 
 Microservice applications represent a collection of individual services communicating with each other. It's common for a developer to work on one or many services to implement new features or bugfixes. Testing those changes in conjunction with other services needed at runtime requires all dependencies to be available. The Gradle Docker compose plugin makes it really easy to bootstrap an application stack and tie it into the task execution lifecycle of a test task.
 
-We'll pick Java and the test framework JUnit 5 for writing integration tests. In listing 2, you can see that the test case calls the expected service endpoint using the incubating link:https://developer.oracle.com/java/jdk-http-client[JDK HTTP Client]. The assertion logic verifies the expected response from the HTTP call with every iteration of the test case.
+We'll pick Java and the test framework JUnit 5 for writing integration tests. In listing 2, you can see that the test case calls the expected service endpoint using the incubating link:https://developer.oracle.com/java/jdk-http-client[JDK HTTP Client]. You'll make the service endpoint host name and port available through system properties passed in by the build. The assertion logic verifies the expected response from the HTTP call with every iteration of the test case.
 
 _src/test/java/com/bmuschko/ApplicationIntegrationTest.java_
 [source,java]
@@ -119,11 +119,15 @@ import java.net.URI;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ApplicationIntegrationTest {
+    private static final String WEB_SERVICE_HOST = System.getProperty("web.host");
+    private static final Integer WEB_SERVICE_PORT = Integer.getInteger("web.tcp.5000");
+    private static final String WEB_SERVICE_URI = "http://" + WEB_SERVICE_HOST + ":" + WEB_SERVICE_PORT + "/";
+
     @ParameterizedTest(name = "can resolve application URL {0} times")
     @ValueSource(ints = { 1, 2, 3 })
     void canResolveApplicationUrl(int times) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:5000/"))
+            .uri(URI.create(WEB_SERVICE_URI))
             .GET()
             .build();
         HttpResponse<String> response = HttpClient.newHttpClient()
@@ -135,7 +139,7 @@ public class ApplicationIntegrationTest {
 
 _Listing 2. Test class calling service endpoint_
 
-Listing 3 demonstrates the application of the Java plugin and the necessary configuration required to use Compose as fixture for the `test` task. The convenience method `isRequiredBy` establishes a task dependency on `composeUp` with the help of link:https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#dependsOn-java.lang.Object...-[`dependsOn`] and another task dependency on `composeDown` via link:https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#finalizedBy-java.lang.Object...-[`finalizedBy`].
+Listing 3 demonstrates the application of the Java plugin and the necessary configuration required to use Compose as fixture for the `test` task. The convenience method `isRequiredBy` establishes a task dependency on `composeUp` with the help of link:https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#dependsOn-java.lang.Object...-[`dependsOn`] and another task dependency on `composeDown` via link:https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#finalizedBy-java.lang.Object...-[`finalizedBy`]. Furthermore, the method `exposeAsSystemProperties` automatically provides system properties `<service-name>.host` and `<service-name>.tcp.<exposed-port>` to the test JVM process. For more information, see the link:https://github.com/avast/gradle-docker-compose-plugin/blob/master/README.md[plugin documentation].
 
 _build.gradle_
 [source,groovy]
@@ -146,6 +150,7 @@ plugins {
 
 dockerCompose {
     isRequiredBy(project.tasks.test)
+    exposeAsSystemProperties(project.tasks.test)
 }
 ----
 
