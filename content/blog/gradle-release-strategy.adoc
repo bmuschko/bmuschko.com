@@ -1,0 +1,140 @@
++++
+title = "Implementing a user-friendly release and versioning strategy"
+tags = [
+    "build",
+    "gradle",
+    "release",
+    "versioning",
+    "git",
+    "ci",
+    "travis"
+]
+date = "2018-05-12"
+draft = true
+highlight = true
++++
+
+---
+
+== Assembling the artifact
+
+_build.gradle_
+[source,groovy]
+----
+plugins {
+    id 'java'
+}
+
+group = 'com.bmuschko'
+----
+
+_Listing 1. Building a Java project_
+
+== Defining a versioning strategy
+
+_build.gradle_
+[source,groovy]
+----
+plugins {
+    id 'org.ajoberstar.grgit' version '1.7.2'
+    id 'org.ajoberstar.release-opinion' version '1.7.2'
+}
+
+import org.ajoberstar.gradle.git.release.opinion.Strategies
+
+release {
+    versionStrategy Strategies.FINAL
+    defaultVersionStrategy Strategies.SNAPSHOT
+    tagStrategy {
+        generateMessage = { version -> "Version $project.version" }
+    }
+}
+----
+
+_Listing 2. Declaring a versioning and release strategy_
+
+== Publishing the artifact
+
+_build.gradle_
+[source,groovy]
+----
+plugins {
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.8.0'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+bintray {
+    user = resolveProperty('BINTRAY_USER', 'bintrayUser')
+    key = resolveProperty('BINTRAY_KEY', 'bintrayKey')
+    publications = ['mavenJava']
+    publish = true
+
+    pkg {
+        repo = 'experimental'
+        name = 'com.bmuschko:gradle-release-strategy'
+        desc = 'Release strategy interfering project version from latest Git tag.'
+        websiteUrl = "https://github.com/bmuschko/${project.name}"
+        issueTrackerUrl = "https://github.com/bmuschko/${project.name}/issues"
+        vcsUrl = "https://github.com/bmuschko/${project.name}.git"
+        licenses = ['Apache-2.0']
+        labels = ['gradle', 'release']
+        publicDownloadNumbers = true
+        githubRepo = "bmuschko/${project.name}"
+
+        version {
+            released = new Date()
+            vcsTag = "v$project.version"
+        }
+    }
+}
+
+String resolveProperty(String envVarKey, String projectPropKey) {
+    String propValue = System.getenv()[envVarKey]
+
+    if (propValue) {
+        return propValue
+    }
+
+    hasProperty(projectPropKey) ? getProperty(projectPropKey) : null
+}
+----
+
+_Listing 3. Publishing to Bintray JCenter_
+
+== Release artifact from CI
+
+_.travis.yml_
+[source,yaml]
+----
+language: java
+install: true
+
+jdk: oraclejdk8
+
+jobs:
+  include:
+    - stage: build
+      script: ./gradlew build -s
+    - stage: release
+      script: skip
+      deploy:
+        provider: script
+        script: ./gradlew bintrayUpload -s
+        on:
+          tags: true
+----
+
+_Listing 4. Build stages defined in Travis CI_
+
+image:/img/blog/gradle-release-strategy/travis-build-stages.png[]
+
+_Figure 1. A tagged commit on CI triggering the release stage_
+
