@@ -1,5 +1,5 @@
 +++
-title = "Implementing a user-friendly release and versioning strategy"
+title = "Implementing a practical versioning and release strategy"
 tags = [
     "build",
     "gradle",
@@ -16,21 +16,44 @@ highlight = true
 
 ---
 
+Implementing a versioning and release strategy for build can be daunting task. An effective strategy can be elegant and require little manual intervention. When forming a strategy the following factors need to be taken under consideration.
+
+* What kind of artifact(s) does your project produce? Maybe you are writing just a library or a full-fledged application comprised of multiple components.
+* How often do you usually release your project? Do you trigger a release only once every six months or multiple times daily?
+* Are the produced artifact(s) available as preview versions during development for early adopters? How does the version of the release indicate this status?
+* Is the version scheme based on semantic versioning or a custom versioning scheme?
+* When starting a new release cycle does a developer or release engineer have to "bump up" a version in a file manually and check it into version control?
+* How well does the worflow tie into the mechanics of your Continuous Delivery pipeline?
+
+In this blog, I would like to present you with a practical versioning and release strategy that works well for small, self-contained projects. You will learn how to use Git tags to derive link:https://semver.org/[semantic versioning] for the project, how to trigger a new release cycle with a single execution of a task and conditionally release the outgoing artifact to link:https://bintray.com/bintray/jcenter[Bintray JCenter] from a multi-stage job on Travis CI.
+
+This post uses Gradle as the underlying build tool driving the release process. With little effort, you should be able to apply the same principles to other build tools. The link:https://github.com/bmuschko/gradle-release-strategy[full source code] is available on GitHub.
+
 == Assembling the artifact
+
+The versioning and release strategy is best demonstrated by starting with a small and self-contained project. You will start by setting up a Java-based project hosting source code under `src/main/java`. The Gradle build script applies the link:https://docs.gradle.org/current/userguide/java_library_plugin.html[Java library plugin] producing a JAR file under `build/libs` whenever the task `assemble` is executed.
 
 _build.gradle_
 [source,groovy]
 ----
 plugins {
-    id 'java'
+    id 'java-library'
 }
 
 group = 'com.bmuschko'
 ----
 
-_Listing 1. Building a Java project_
+_Listing 1. Building a Java library project_
+
+By convention Gradle takes into account the project name and version to form the JAR file name. The project name is either derived of the directory name or specified in the `settings.gradle` file. The project version needs to be assigned explicitly by providing a value to the property link:https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:version[`Project.version`]. Listing 1 does not assign a project version. Therefore, the produced artifact will be named `gradle-release-strategy.jar`.
+
+Let's change the naming convention and reflect the project version in the artifact name without having to explicitly hard-code a value.
 
 == Defining a versioning strategy
+
+Hard-coded project versions have a major drawback. Starting a new release cycle by modifying the version number requires manual intervention. To make matters worse, the change has to be persisted (most likely by committing and pushing to version control) so that other team members use the same, consistent version. Furthermore, the team has to establish a common understanding of a version under development vs. a final version indicate production-readiness.
+
+The link:https://github.com/ajoberstar/gradle-git[Gradle Git plugins] implemented by Andrew Oberstar simplify the process of forming a opinionated versioning strategy. Listing 2 applies the relevant plugins and configures them to produce a desired versioning scheme. Under the covers, the plugins derive the project version based on latest Git tag of the project and the provided strategy configured through the plugin extension named `release`.
 
 _build.gradle_
 [source,groovy]
@@ -53,7 +76,76 @@ release {
 
 _Listing 2. Declaring a versioning and release strategy_
 
+How does the plugin determine the project version at runtime? The plugin looks at the latest tag for this repository and uses it as the basis for the determining the project version. If you are just starting out with the project and no tag has been set yet then the version `0.0.1` is used. The default strategy appends the `SNAPSHOT` suffix whenever an uncommitted change is detected in your local repository.
+
+The following console output shows that the plugin picks the version `1.0.4-SNAPSHOT` for a project that has been tagged with `v1.0.3` as its latest release.
+
+----
+$ git tag
+v1.0.0
+v1.0.1
+v1.0.2
+v1.0.3
+
+$ ./gradlew assemble
+
+> Configure project :
+Inferred project: gradle-release-strategy, version: 1.0.4-SNAPSHOT
+
+BUILD SUCCESSFUL in 0s
+2 actionable tasks: 2 up-to-date
+
+$ ls build/libs
+gradle-release-strategy-1.0.4-SNAPSHOT.jar
+----
+
+The plugin exposes a task named `release` to trigger a release. Upon execution, the task creates a new, final tag and pushes it to the remote repository. The user needs to decide on the subsequent project version by incrementing major, minor or patch attribute. Let's say you'd want to make a production-ready release with the version `1.1.0`.
+
+----
+./gradlew release -Prelease.stage=final -Prelease.scope=minor
+
+> Configure project :
+Inferred project: gradle-release-strategy, version: 1.1.0
+
+> Task :release
+Tagging repository as v1.1.0
+Pushing changes in [refs/heads/master, v1.1.0] to origin
+
+BUILD SUCCESSFUL in 6s
+2 actionable tasks: 2 executed
+
+$ git tag
+v1.0.0
+v1.0.1
+v1.0.2
+v1.0.3
+v1.1.0
+
+$ ./gradlew assemble
+
+BUILD SUCCESSFUL in 0s
+2 actionable tasks: 2 up-to-date
+
+$ ls build/libs
+gradle-release-strategy-1.1.0.jar
+----
+
+As you can see in the console output, the project version is still 1.1.0. The project will continue to use the final version for as long as there have been no local changes to the source code. The inferred project version switches to the next reasonable SNAPSHOT version immediately after any of the source files have been changed. Refer to the link:https://github.com/ajoberstar/gradle-git/wiki/Release%20Plugins#example-usage[plugin documentation] to learn about the algorithm used to determine the next version.
+
+----
+$ echo "description = 'hello'" >> build.gradle
+
+$ ./gradlew assemble
+
+> Configure project :
+Inferred project: gradle-release-strategy, version: 1.1.1-SNAPSHOT
+----
+
+Formally, this process releases a new version of the artifact. In practice we haven't told Gradle what to do when the release process has been triggered apart from tagging the source code with a specific version. The desired state for this project should be to publish the JAR file to the binary repository JCenter. Next, you'll learn how to create the necessary setup.
+
 == Publishing the artifact
+
+Publishing one or many artifact with Gradle is relatively straightforward. The project applies the necessary publishing plugins and provides additional metadata. You can set up Maven repositories on JCenter to host your released artifacts. Listing 3 shows how publish the JAR file produced by the project to the link:https://bintray.com/bmuschko/experimental[repository named "experimental"]. Credentials can either either be provided through environment variables or project properties.
 
 _build.gradle_
 [source,groovy]
@@ -98,18 +190,21 @@ bintray {
 
 String resolveProperty(String envVarKey, String projectPropKey) {
     String propValue = System.getenv()[envVarKey]
-
-    if (propValue) {
-        return propValue
-    }
-
-    hasProperty(projectPropKey) ? getProperty(projectPropKey) : null
+    propValue ?: findProperty(projectPropKey)
 }
 ----
 
 _Listing 3. Publishing to Bintray JCenter_
 
-== Release artifact from CI
+In the next section, you will learn how to publish the artifact whenever the release process tags a commit.
+
+== Automating the release process on CI
+
+Optimally, you do not want to require your developers to think deeply about the release process. In the best case scenario, a developer triggers the release process and CI takes care of the rest. This section focuses on the use of Travis CI. Of course, you can implement similar workflows with other CI products.
+
+Travis CI is helpful for formalizing deployment pipelines for open source projects. In the past, I have used the product extensively for building and publishing Gradle plugins as well as plain libraries written in Java and Golang.
+
+The CI jobs consists of two build stages: "build" and "release". The stage "build" simply compiles the code, runs the tests and assembles the artifact. "release" takes care of publishing the artifact to JCenter. You can see in listing 4 that the "release" stage is only executes the assigned script if the commit was previously tagged. In all other cases, Travis will skip the depploy instructions.
 
 _.travis.yml_
 [source,yaml]
@@ -134,7 +229,29 @@ jobs:
 
 _Listing 4. Build stages defined in Travis CI_
 
+Travis CI clearly indicates a tagged build as shown in figure 1. The tag `v1.1.3` has been previously created by executing the `release` task from the developers' machine. Alternatively, you could also set up a CI job as a mean to implement a push button-release.
+
 image:/img/blog/gradle-release-strategy/travis-build-stages.png[]
 
 _Figure 1. A tagged commit on CI triggering the release stage_
+
+If you dig deeper into the log files of the "release" stage, you'd find a section called "Deploying application". It contains detailed information on the deployment process.
+
+----
+Deploying application
+> Task :generatePomFileForMavenJavaPublication
+> Task :compileJava
+> Task :processResources NO-SOURCE
+> Task :classes
+> Task :jar
+> Task :publishMavenJavaPublicationToMavenLocal
+> Task :bintrayUpload
+
+BUILD SUCCESSFUL in 10s
+5 actionable tasks: 5 executed
+----
+
+== Summary
+
+Using Git tags to derive the project version is a clever way to avoid manual intervention. Gone are the days of having to "bump up" the version number in a file to initiate a new release cycle. With the help of relevant Gradle plugins, the build can infer the next, sensible project version by convention based on the semantic versioning scheme. It is fairly easy to make the process part of a Continuous Delivery pipeline to automate releases end-to-end.
 
