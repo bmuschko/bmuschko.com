@@ -1,5 +1,5 @@
 +++
-title = "Implementing a practical versioning and release strategy"
+title = "Implementing an intuitive versioning and release strategy"
 tags = [
     "build",
     "gradle",
