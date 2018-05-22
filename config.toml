@@ -1,4 +1,4 @@
-baseURL = "http://www.bmuschko.com/"
+baseURL = "https://www.bmuschko.com/"
 languageCode = "en-us"
 title = "Benjamin Muschko's development blog"
 disqusShortname = "bmuschko-com"
