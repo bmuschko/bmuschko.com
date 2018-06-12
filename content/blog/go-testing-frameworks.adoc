@@ -1,0 +1,400 @@
++++
+title = "Exploring the landscape of Go testing frameworks"
+tags = [
+    "golang",
+    "unit",
+    "integration",
+    "testing",
+    "assertion",
+    "tdd",
+    "bdd"
+]
+date = "2018-06-11"
+draft = true
+highlight = true
++++
+
+Recently, Jetbrains ran a survey on the link:https://www.jetbrains.com/research/devecosystem-2018/[state of developer ecosystems]. As part of the survey, they asked Go developers about the their tools of choice. It was interesting to see that `golang/dep` made it to the top of the most popular packager managers.
+
+As I was reading through the survey, the section on testing frameworks caught my eye. So far I had only used the built-in Go testing support and Testify for my own projects. Time to explore the testing landscape! During my research I tried to identify the most popular packages and differentiate them with regards to functionality, usability and expressiveness. I feel like the aspect of mocking deserves stronger coverage. That's why excluded mocking support from the discussion.
+
+For quick reference you can directly refer to the relevant section.
+
+* <<standard-library,Go standard library>>: Testing package
+* <<testify,Testify>>: Assertion and mock helpers
+* <<gocheck,gocheck>>: Assertion helpers
+* <<ginkgo,Ginkgo and Gomega>>: Heavyweight BDD testing framework + assertion helpers
+* <<goblin,Goblin:>> A Mocha like BDD testing framework
+* <<goconvey,GoConvey>>: BDD testing framework with web UI
+
+You can find all code shown in the blog post in the link:https://github.com/bmuschko/go-testing-frameworks[respective GitHub repository].
+
+---
+
+== Code under test
+
+The code under test doesn't have to be complicated to demonstrate the usage of testing frameworks. It's represented by a simple calculator implementation providing exported functions for addition, subtration, multiplication and division.
+
+_calc.go_
+[source,go]
+----
+package calc
+
+// Add two numbers.
+// Return the result.
+func Add(a, b int) int {
+	return a + b
+}
+
+// Subtract two numbers.
+// Return the result.
+func Subtract(a, b int) int {
+	return a - b
+}
+
+// Multiply two numbers.
+// Return the result.
+func Multiply(a, b int) int {
+	return a * b
+}
+
+// Divide two numbers.
+// Return the result.
+func Divide(a, b int) float64 {
+	return float64(a / b)
+}
+----
+
+_Listing 1. Simple calculator functions_
+
+The code shown in listing 1 sits in the package `calc`. All test code is going to live in a different package called `calc_test` to ensure that the code can only verify the public API. First, we'll have a look at the testing support that comes with the Go standard library.
+
+---
+
+[[standard-library]]
+== Using the Go standard library
+
+There are many voices in the Go community the promote the usage of the link:https://golang.org/pkg/testing/[testing package] as sufficient for writing test code. Developers new to the project will quickly find their way around the code base. However, the code easily becomes repetative and tedious to implement.
+
+_calc_standard_test.go_
+[source,go]
+----
+package calc_test
+
+import (
+	. "github.com/bmuschko/go-testing-frameworks/calc"
+	"testing"
+)
+
+func TestAddWithTestingPackage(t *testing.T) {
+	result := Add(1, 2)
+
+	if result != 3 {
+		t.Errorf("Result was incorrect, got: %d, want: %d.", result, 3)
+	}
+}
+
+func TestSubtractWithTestingPackage(t *testing.T) {
+	result := Subtract(5, 3)
+
+	if result != 2 {
+		t.Errorf("Result was incorrect, got: %d, want: %d.", result, 2)
+	}
+}
+
+func TestMultiplyWithTestingPackage(t *testing.T) {
+	result := Multiply(5, 6)
+
+	if result != 30 {
+		t.Errorf("Result was incorrect, got: %d, want: %d.", result, 30)
+	}
+}
+
+func TestDivideWithTestingPackage(t *testing.T) {
+	result := Divide(10, 2)
+
+	if result != 5 {
+		t.Errorf("Result was incorrect, got: %f, want: %f.", result, float64(5))
+	}
+}
+----
+
+_Listing 2. Using the Go standard testing package_
+
+From my perspective, there's nothing wrong with reusing existing functionality even though it requires an external library and increases the learning curve. By now, most Go developers should be familiar with at least one assertion helper library or a more intricate testing framework. Next, we'll have a look at Testify, the most popular assertion library.
+
+---
+
+[[testify]]
+== Simplifying assertions with Testify
+
+link:https://github.com/stretchr/testify[Testify] is an assertion and mocking toolkit that plays nicely with the standard library. The link:https://github.com/stretchr/testify#assert-package[`assert`] package provides helpful functions for asserting the expected outcome of an test case. Optionally, you can also provide a helpful description that is rendered if the assertion fails. Listing 3 clearly outlines the seamless integration with the standard testing support and the improved readability of the test code.
+
+_calc_testify_test.go_
+[source,go]
+----
+package calc_test
+
+import (
+	. "github.com/bmuschko/go-testing-frameworks/calc"
+	. "github.com/stretchr/testify/assert"
+	"testing"
+)
+
+func TestAddWithTestify(t *testing.T) {
+	result := Add(1, 2)
+	Equal(t, 3, result)
+}
+
+func TestSubtractWithTestify(t *testing.T) {
+	result := Subtract(5, 3)
+	Equal(t, 2, result)
+}
+
+func TestMultiplyWithTestify(t *testing.T) {
+	result := Multiply(5, 6)
+	Equal(t, 30, result)
+}
+
+func TestDivideWithTestify(t *testing.T) {
+	result := Divide(10, 2)
+	Equal(t, float64(5), result)
+}
+----
+
+_Listing 3. Using the assertion helpers provided by Testify_
+
+If you are used to testing frameworks from other languages e.g. link:https://junit.org/junit5/[JUnit] then you might be wondering if about setup and tear down functionality as well as way to define a suite of tests for grouping purposes. Testify supports these concepts with the help of the link:https://github.com/stretchr/testify#suite-package[`suite`] package. The functionality of the library is easy to grasp and use.
+
+---
+
+[[gocheck]]
+== Using gocheck
+
+The library link:https://labix.org/gocheck[gocheck] presents similar functionality as Testify. It's a testing framework with support for rich assertions, the definition of test suites and fixture functions. The two features I really like are explicit test skipping and the ability to select test execution from the command line via filters. In listing 4, you can see an multiple test cases written with gocheck. The Go standard library seems somewhat more hidden from the end user than with Testify.
+
+_calc_gocheck_test.go_
+[source,go]
+----
+package calc_test
+
+import (
+	. "github.com/bmuschko/go-testing-frameworks/calc"
+	. "github.com/go-check/check"
+	"testing"
+)
+
+func Test(t *testing.T) {
+	TestingT(t)
+}
+
+type MySuite struct{}
+
+var _ = Suite(&MySuite{})
+
+func (s *MySuite) TestAddWithGocheck(c *C) {
+	result := Add(1, 2)
+	c.Assert(result, Equals, 3)
+}
+
+func (s *MySuite) TestSubtractWithGocheck(c *C) {
+	result := Subtract(5, 3)
+	c.Assert(result, Equals, 2)
+}
+
+func (s *MySuite) TestMultiplyWithGocheck(c *C) {
+	result := Multiply(5, 6)
+	c.Assert(result, Equals, 30)
+}
+
+func (s *MySuite) TestDivideWithGocheck(c *C) {
+	result := Divide(10, 2)
+	c.Assert(result, Equals, float64(5))
+}
+----
+
+_Listing 4. Using the assertion helpers provided by gocheck_
+
+Looking at the source code may indicate that the project is not under active development anymore. The last commit is from 2016. Despite its complete feature set, I'd probably prefer Testify over gocheck as you still expect bugfixes and propose feature requests. Overall, the style imposed by the testing framework is probably rather a matter of preferred style. In the next section, we'll have a look at BDD-style testing frameworks.
+
+---
+
+[[ginkgo]]
+== Expressive BDD-style tests with Ginkgo and Gomega
+
+The BDD testing style is known for its expressiveness and readability. The most well-known BDD testing framework in the Go world is link:https://github.com/onsi/ginkgo[Ginkgo]. There's slightly more code you'll have to write with Ginkgo compared to the tests that only use an assertion helper library. However, it pays back with a given/when/then pattern that should be understandable by even non-programmers.
+
+Ginkgo really shines with its included assertion package, link:http://onsi.github.io/gomega/[Gomega]. It allows for writing a builder-style assertion logic that could even be used outside of Gingko. It reads like natural language and is easy to write. Additionally, Gomega provides a shortcut symbol for writing assertion via the `Ω` notation. The notation may align well from a branding perspective but I am personally not a fan of using it as it makes the syntax more obscure and harder to parse.
+
+_calc_ginkgo_test.go_
+[source,go]
+----
+package calc_test
+
+import (
+	. "github.com/bmuschko/go-testing-frameworks/calc"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+)
+
+func TestCalc(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Calculator Suite")
+}
+
+var _ = Describe("Calculator", func() {
+	Describe("Add numbers", func() {
+		Context("1 and 2", func() {
+			It("should be 3", func() {
+				Expect(Add(1, 2)).To(Equal(3))
+			})
+		})
+	})
+
+	Describe("Subtract numbers", func() {
+		Context("3 from 5", func() {
+			It("should be 2", func() {
+				Expect(Subtract(5, 3)).To(Equal(2))
+			})
+		})
+	})
+
+	Describe("Multiply numbers", func() {
+		Context("5 with 6", func() {
+			It("should be 30", func() {
+				Expect(Multiply(5, 6)).To(Equal(30))
+			})
+		})
+	})
+
+	Describe("Divide numbers", func() {
+		Context("10 by 2", func() {
+			It("should be 30", func() {
+				Expect(Divide(10, 2)).To(Equal(float64(5)))
+			})
+		})
+	})
+})
+----
+
+_Listing 5. Using the BDD framework Ginkgo and Gomega_
+
+Upon execution, Ginkgo renders color-coded console output which makes it extremely easy to parse the results.
+
+image:/img/blog/go-testing-frameworks/ginkgo-console-output.png[]
+
+_Figure 1. Console output from Ginkgo_
+
+Ginkgo and Gomega have great documentation making it easy to get started. If you prefer writing BDD-style tests with an expansive feature set then Ginkgo is for you.
+
+---
+
+[[goblin]]
+== Simple and flexible BDD-style testing with Goblin
+
+link:https://github.com/franela/goblin[Goblin] is another BDD-style testing framework for Go. Despite its fairly simplistic API Goblin makes it easy to write declarative and expressive test cases. You don't necessarily need to go with its built-in assertion functions but can plug in other libraries like Gomega.
+
+_calc_goblin_test.go_
+[source,go]
+----
+import (
+	. "github.com/bmuschko/go-testing-frameworks/calc"
+	. "github.com/franela/goblin"
+	"testing"
+)
+
+func TestCalculator(t *testing.T) {
+	g := Goblin(t)
+	g.Describe("Calculator", func() {
+		g.It("should add two numbers ", func() {
+			g.Assert(Add(1, 2)).Equal(3)
+		})
+
+		g.It("should subtract two numbers", func() {
+			g.Assert(Subtract(5, 3)).Equal(2)
+		})
+
+		g.It("should multiply two numbers", func() {
+			g.Assert(Multiply(5, 6)).Equal(30)
+		})
+
+		g.It("should divide two numbers", func() {
+			g.Assert(Divide(10, 2)).Equal(float64(5))
+		})
+	})
+}
+----
+
+_Listing 7. Using Goblin test framework_
+
+What I really like about Goblin is the colored console output which looks similar to the one provided by link:https://mochajs.org/[Mocha], a JavaScript-based testing framework. Figure 2 shows the successful results for the execution of `calc_goblin_test.go`.
+
+image:/img/blog/go-testing-frameworks/goblin-console-output.png[]
+
+_Figure 2. Console output from Goblin_
+
+---
+
+[[goconvey]]
+== Using GoConvey
+
+Good reporting is a must-have for projects with a large test suite. link:http://goconvey.co/[GoConvey] is a BDD-style testing framework with a similar API to the one defined by Goblin. See listing 8 for a short example.
+
+_calc_goconvey_test.go_
+[source,go]
+----
+import (
+	. "github.com/bmuschko/go-testing-frameworks/calc"
+	. "github.com/smartystreets/goconvey/convey"
+	"testing"
+)
+
+func TestAddWithGoConvey(t *testing.T) {
+	Convey("Adding two numbers", t, func() {
+		x := 1
+		y := 2
+
+		Convey("should produce the expected result", func() {
+			So(Add(x, y), ShouldEqual, 3)
+		})
+	})
+}
+
+func TestSubtractWithGoConvey(t *testing.T) {
+	Convey("Subtracting two numbers", t, func() {
+		x := 5
+		y := 3
+
+		Convey("should produce the expected result", func() {
+			So(Subtract(x, y), ShouldEqual, 2)
+		})
+	})
+}
+
+func TestMultiplyWithGoConvey(t *testing.T) {
+	Convey("Multiplying two numbers", t, func() {
+		x := 5
+		y := 6
+
+		Convey("should produce the expected result", func() {
+			So(Multiply(x, y), ShouldEqual, 30)
+		})
+	})
+}
+
+func TestDivideWithGoConvey(t *testing.T) {
+	Convey("Dividing two numbers", t, func() {
+		x := 10
+		y := 2
+
+		Convey("should produce the expected result", func() {
+			So(Divide(x, y), ShouldEqual, float64(5))
+		})
+	})
+}
+----
+
+_Listing 8. Using the BDD testing framework GoConvey_
+
+== Summary
+
