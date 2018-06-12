@@ -121,6 +121,22 @@ func TestDivideWithTestingPackage(t *testing.T) {
 
 _Listing 2. Using the Go standard testing package_
 
+The console output in verbose mode looks fairly bland but does the job.
+
+----
+$ go test -v ./calc
+=== RUN   TestAddWithTestingPackage
+--- PASS: TestAddWithTestingPackage (0.00s)
+=== RUN   TestSubtractWithTestingPackage
+--- PASS: TestSubtractWithTestingPackage (0.00s)
+=== RUN   TestMultiplyWithTestingPackage
+--- PASS: TestMultiplyWithTestingPackage (0.00s)
+=== RUN   TestDivideWithTestingPackage
+--- PASS: TestDivideWithTestingPackage (0.00s)
+PASS
+ok  	github.com/bmuschko/go-testing-frameworks/calc	0.007s
+----
+
 From my perspective, there's nothing wrong with reusing existing functionality even though it requires an external library and increases the learning curve. By now, most Go developers should be familiar with at least one assertion helper library or a more intricate testing framework. Next, we'll have a look at Testify, the most popular assertion library.
 
 ---
@@ -128,7 +144,7 @@ From my perspective, there's nothing wrong with reusing existing functionality e
 [[testify]]
 == Simplifying assertions with Testify
 
-link:https://github.com/stretchr/testify[Testify] is an assertion and mocking toolkit that plays nicely with the standard library. The link:https://github.com/stretchr/testify#assert-package[`assert`] package provides helpful functions for asserting the expected outcome of an test case. Optionally, you can also provide a helpful description that is rendered if the assertion fails. Listing 3 clearly outlines the seamless integration with the standard testing support and the improved readability of the test code.
+link:https://github.com/stretchr/testify[Testify] is an assertion and mocking toolkit that plays nicely with the standard library. The link:https://github.com/stretchr/testify#assert-package[`assert`] package provides helpful functions for asserting the expected outcome of an test case. Optionally, you can also provide a helpful description that is rendered if the assertion fails. Listing 3 clearly outlines the seamless integration with the standard testing support and the improved readability of the test code. Executing the test code produces the exact same console output as the standard library testing support.
 
 _calc_testify_test.go_
 [source,go]
@@ -214,6 +230,17 @@ func (s *MySuite) TestDivideWithGocheck(c *C) {
 ----
 
 _Listing 4. Using the assertion helpers provided by gocheck_
+
+The testing framework gocheck condenses the usual test results in the console output a bit more. It's unfortunate that the level of details cannot be controlled by a command line option.
+
+----
+$ go test -v ./calc
+=== RUN   Test
+OK: 4 passed
+--- PASS: Test (0.00s)
+PASS
+ok  	github.com/bmuschko/go-testing-frameworks/calc	0.007s
+----
 
 Looking at the source code may indicate that the project is not under active development anymore. The last commit is from 2016. Despite its complete feature set, I'd probably prefer Testify over gocheck as you still expect bugfixes and propose feature requests. Overall, the style imposed by the testing framework is probably rather a matter of preferred style. In the next section, we'll have a look at BDD-style testing frameworks.
 
@@ -336,9 +363,9 @@ _Figure 2. Console output from Goblin_
 ---
 
 [[goconvey]]
-== Using GoConvey
+== Live test reporting with GoConvey
 
-Good reporting is a must-have for projects with a large test suite. link:http://goconvey.co/[GoConvey] is a BDD-style testing framework with a similar API to the one defined by Goblin. See listing 8 for a short example.
+Good reporting is a must-have for projects with a large test suite. link:http://goconvey.co/[GoConvey] is another BDD-style testing framework with a similar API to the one defined by Goblin. See listing 8 for a short example.
 
 _calc_goconvey_test.go_
 [source,go]
@@ -396,5 +423,14 @@ func TestDivideWithGoConvey(t *testing.T) {
 
 _Listing 8. Using the BDD testing framework GoConvey_
 
+GoConvey comes with an extremely useful web interface. You can start it from the console by executing the command `goconvey`. Navigating to `localhost:8080` shows an up to date view of your test result as shown in figure 3.
+
+image:/img/blog/go-testing-frameworks/goconvey-web-ui.png[]
+
+_Figure 3. Live execution and rendering of test results with GoConvey_
+
 == Summary
 
+While many Go developers are happy with the standard testing support, the Go ecosystem produced a wealth of testing libraries that go far beyond the basics. You can avoid writing too much boilerplate code with the help of an assertion library. My person favorite is Testify.
+
+BDD-style testing frameworks can improve the expressiveness of your test code. I do like Goblin for its simplicity and clearly represented console output. If I'd need a richer feature set, I'd probably go with Ginkgo.
