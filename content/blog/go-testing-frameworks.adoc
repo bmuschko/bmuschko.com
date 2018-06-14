@@ -9,8 +9,8 @@ tags = [
     "tdd",
     "bdd"
 ]
-date = "2018-06-11"
-draft = true
+date = "2018-06-13"
+draft = false
 highlight = true
 +++
 
@@ -252,7 +252,7 @@ The last commit to the source code happened in 2016 which might indicate that ac
 [[gopwt]]
 == Declarative failed assertions with gopwt
 
-Identifying the root cause of a failed assertion can be tedious and may require additional debugging. A power assertion library helps with rendering the evaluated result of every portion of the equation as part of the error message. The library link:https://github.com/ToQoz/gopwtp[gopwt] exposes a single function named `OK` for asserting an expression as shown in listing 5. You may have noticed that the test function `TestAddWithGopwt` expects an incorrect result and therefore should fail.
+Identifying the root cause of a failed assertion can be tedious and may require additional debugging. A power assertion library helps with rendering the evaluated result of every portion of the equation as part of the error message. The library link:https://github.com/ToQoz/gopwt[gopwt] exposes a single function named `OK` for asserting an expression as shown in listing 5. You may have noticed that the test function `TestAddWithGopwt` expects an incorrect result and therefore should fail.
 
 _calc_gopwt_test.go_
 [source,go]
