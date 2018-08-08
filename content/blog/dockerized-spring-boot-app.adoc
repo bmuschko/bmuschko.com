@@ -17,6 +17,8 @@ highlight = true
 
 The use of Docker has become widespread among companies big and small for a variety scenarios. Executing Docker from the command line for simple tasks is easy and becomes routine as soon as you get a hang of it. Having to enter Docker commands for a whole workflow can become tedious. It seems obvious that you might want to integrate Docker into an automated process for convenience and reproducibility. Gradle can help with defining and executing such a process with the help of the link:https://github.com/bmuschko/gradle-docker-plugin[Docker plugin].
 
+> Starting with version 3.5.0, the Docker plugin comes with link:http://bmuschko.github.io/gradle-docker-plugin/#spring_boot_application_plugin[built-in support for dockerizing Spring Boot applications]. The configuration described in this blog post has been completely abstracted by the plugin. Enjoy!
+
 This blog post is the first installment of a series on using Docker from Gradle. As a starting point for our journey, we'll want to package a Spring Boot application as a Docker image and push it to the cloud-based registry service link:https://docs.docker.com/docker-hub/[Docker Hub]. You will also learn how to automate the process as a Continuous Integration job on link:https://travis-ci.org/[Travis CI]. You can find the link:https://github.com/bmuschko/dockerized-spring-boot-app[full source code] used in this post on GitHub.
 
 ---
