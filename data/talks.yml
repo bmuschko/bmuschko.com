@@ -1,5 +1,18 @@
 name: Talks
 source:
+  - title: Powering a build pipeline with Docker and Jenkins
+    tags:
+      - ci
+      - cd
+      - pipeline
+      - docker
+      - jenkins
+      - gradle
+    description: "Continuous Delivery is key to delivering software fast and frequently. Jenkins 2 has made great strides in providing a solution for modeling a build pipeline as code. In addition, Docker invoked from a Gradle build can help with implementing certain aspects of your pipeline. Let's combine the benefits of these tools to implement a streamlined and bullet-proof process.
+\n\n
+In this demo-driven talk, you will learn how to construct and operate a declarative pipeline with Jenkins. We'll take a Spring Boot application all the way through the pipeline from building the Docker image, pushing the image to a registry, using it for integration testing and finally deploying the application to a Docker Swarm."
+    slides: https://speakerdeck.com/bmuschko/powering-a-build-pipeline-with-docker-and-jenkins
+
   - title: Building Go projects made easy with Gradle
     tags:
       - golang
