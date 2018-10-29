@@ -103,7 +103,7 @@ publishGhPages.dependsOn javadoc
 
 _Listing 2. Using the gradle-git plugin to publish Javadocs_
 
-The Github Pages Plugin creates the task `publishGhPages`. By wiring it to the `javadoc` task as task dependency we make sure that the Javadocs are always created before they are published to GitHub Pages. You can find this code being used in the link:https://github.com/bmuschko/gradle-docker-plugin/blob/master/gradle/documentation.gradle[Gradle Docker Plugin] if you want to have a closer look at the details. Initiating the publishing process is simple - run the corresponding publishing task:
+The Github Pages Plugin creates the task `publishGhPages`. By wiring it to the `javadoc` task as task dependency we make sure that the Javadocs are always created before they are published to GitHub Pages. You can find this code being used in the link:https://github.com/bmuschko/gradle-docker-plugin/blob/master/buildSrc/src/main/kotlin/com/bmuschko/gradle/docker/DocumentationPlugin.kt[Gradle Docker Plugin] if you want to have a closer look at the details. Initiating the publishing process is simple - run the corresponding publishing task:
 
 [source,shell]
 ----
