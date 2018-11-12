@@ -1,7 +1,7 @@
 language: go
 
 go:
-  - "1.9.2"
+  - "1.10.2"
 
 # Clean and don't fail
 install:
@@ -9,7 +9,7 @@ install:
 
 before_script:
   - gem install asciidoctor
-  - wget https://github.com/gohugoio/hugo/releases/download/v0.40.2/hugo_0.40.2_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
+  - wget https://github.com/gohugoio/hugo/releases/download/v0.51/hugo_0.51_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
   - wget https://github.com/bmuschko/link-verifier/releases/download/v0.4/link-verifier-0.4-linux64.tar.gz -O /tmp/link-verifier.tar.gz
   - tar -xvf /tmp/hugo.tar.gz
   - tar -xvf /tmp/link-verifier.tar.gz
