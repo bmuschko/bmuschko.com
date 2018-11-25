@@ -1,0 +1,262 @@
++++
+title = "Writing, testing and publishing an AsciidoctorJ extension"
+tags = [
+    "documentation",
+    "asciidoc",
+    "extension",
+    "testing"
+]
+date = "2018-11-25"
+draft = true
+highlight = true
++++
+
+http://asciidoc.org/[Asciidoc] is a powerful markup language and extensible platform for producing documentation. Sometimes the requirements for producing documentation go beyond its built-in capabilities. Asciidoc enabled content producers to enhance the basic functionality of the platform by writing so-called extensions. Think plugin for Asciidoc.
+
+https://github.com/asciidoctor/asciidoctorj[AsciidoctorJ] comes into play when converting Asciidoc content to the target format (e.g. HTML) from Java. AsciidoctorJ is the library for running Asciidoctor on the JVM. The library can also be used write extensions.
+
+In this blog post, I want to explain how to write, test, publish and use a AsciidoctorJ extension. As an example, we'll implement functionality for rendering code blocks on multiple tabs. Tabbed code blocks are particularly useful if you want to demonstrate a code example in different languages or tools, as shown in the following two images.
+
+image:/img/blog/asciidoctorj-extension/tabbed-code-groovy.png[float=left,360]
+image:/img/blog/asciidoctorj-extension/tabbed-code-kotlin.png[float=right,360]
+
+_Figure 1. The AsciidoctorJ extension for renderings tabbed code blocks in action_
+
+In figure 1, you can see the use of the extension in a generated HTML output format. It shows a code example for the languages Groovy and Kotlin, each with their own syntax. The user can click one of the tabs to activate the relevant code example. An active tab renders in a specific color.
+
+Let's dive in and see how to implement such an extension.
+
+== Implementing the extension
+
+The AsciidoctorJ API exposes a set of link:https://asciidoctor.org/docs/asciidoctorj/#extension-api[extension points]. An extension point can manipulate the processing of a Asciidoc document. For example, an implementation of the https://asciidoctor.org/docs/asciidoctorj/#postprocessor[`Postprocessor`] inserts custom footer text.
+
+A tabbed code block requires the insertion of dynamic behavior and custom styling. For this purpose, we'll need to add custom CSS and JavaScript to the `<head>` tag of a generated HTML document. The https://asciidoctor.org/docs/asciidoctorj/#docinfoprocessor[`DocinfoProcessor`] extension point can directly manipulate the header and footer of a document and is a good fit for our use case. Listing 1 shows a class that implements the abstract class `DocinfoProcessor`. The code example leaves out implementation details e.g. how to read a file from the classpath. You can find the https://github.com/bmuschko/asciidoctorj-tabbed-code-extension/blob/master/src/main/java/com/bmuschko/asciidoctorj/tabbedcode/TabbedCodeBlockDocinfoProcessor.java[complete source code] in the repository of this extension.
+
+_TabbedCodeBlockDocinfoProcessor.java_
+[source,java]
+----
+import org.asciidoctor.ast.Document;
+import org.asciidoctor.extension.DocinfoProcessor;
+
+import java.util.Map;
+
+public class TabbedCodeBlockDocinfoProcessor extends DocinfoProcessor {
+    public static final String TABBED_CODE_CSS_FILE_PATH_ATTRIBUTE = "tabbed-code-css-path";
+    public static final String TABBED_CODE_JS_FILE_PATH_ATTRIBUTE = "tabbed-code-js-path";
+    public static final String DEFAULT_CSS_FILE_PATH = "/codeBlockSwitch.css";
+    public static final String DEFAULT_JS_FILE_PATH = "/codeBlockSwitch.js";
+
+    @Override
+    public String process(Document document) {
+        if (document.isBasebackend("html")) {
+            Map<String, Object> attributes = document.getAttributes();
+            String cssPath = getCssPath(attributes, TABBED_CODE_CSS_FILE_PATH_ATTRIBUTE, DEFAULT_CSS_FILE_PATH);
+            String jsPath = getCssPath(attributes, TABBED_CODE_JS_FILE_PATH_ATTRIBUTE, DEFAULT_JS_FILE_PATH);
+            String css = readFileContentsFromClasspath(cssPath);
+            String js = readFileContentsFromClasspath(jsPath);
+            return modifyHeadHtml(css, js);
+        }
+
+        return null;
+    }
+
+    ...
+}
+----
+
+_Listing 1. An implementation of DocinfoProcessor_
+
+There are two notable pieces to this code example I'd like to point out. You might have noticed that the `process` method only handles HTML processing. We do this for a simple reason. Adding a tabbed code block to other backends like PDF files would require different handling. By default the class uses a predefined CSS and JavaScript file that ships with the distribution of the extension. Alternatively, the end user can also set an https://asciidoctor.org/docs/asciidoctorj/#conversion-options[attribute] for providing custom styling or JavaScript behavior.
+
+Every extension you'd like to make available to the Asciidoctor processor needs to be registered. You do this by implementing a class of type `ExtensionRegistry`. Listing 2 demonstrates an implementation that adds the `TabbedCodeBlockDocinfoProcessor` to the extension registry.
+
+_TabbedCodeBlockExtension.java_
+[source,java]
+----
+import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.extension.JavaExtensionRegistry;
+import org.asciidoctor.extension.spi.ExtensionRegistry;
+
+public class TabbedCodeBlockExtension implements ExtensionRegistry {
+    @Override
+    public void register(Asciidoctor asciidoctor) {
+        JavaExtensionRegistry javaExtensionRegistry = asciidoctor.javaExtensionRegistry();
+        javaExtensionRegistry.docinfoProcessor(TabbedCodeBlockDocinfoProcessor.class);
+    }
+}
+----
+
+_Listing 2. Registering the DocinfoProcessor with the extension registry_
+
+Unfortunately, we are not done yet. To allow Asciidoctor to find the extension registry, you also need to create a file named `org.asciidoctor.extension.spi.ExtensionRegistry` and point it to the extension implementation.
+
+_META-INF/services/org.asciidoctor.extension.spi.ExtensionRegistry_
+[source,java]
+----
+com.bmuschko.asciidoctorj.tabbedcode.TabbedCodeBlockExtension
+----
+
+_Listing 3. Making the extension discoverable_
+
+Voilà, you wrote your first AsciidoctorJ extension. Next, we'll concentrate on the important aspects of testing, publishing and the usage of an extension.
+
+== Testing the extension
+
+Before bundling the extension into a JAR file, we should make sure that the code is tested. Testing an extension is very similar to writing an extension as you use the same API. You can create an instance of `Asciidoctor` to emulate the processing of an Asciidoc document. To register an extension under test, simply add it to the registry programmatically as with did before. The `Asciidoctor` instance doesn't fully behave like the runtime instance you'd usually deal with in a production environment. You'll have to change the `safe` mode and you have to tell the processor which portions of the generated document to produce. In listing 3, we run the the Asciidoc processing in server mode and ensure that we receive the header and footer for later verification in the test case.
+
+import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.OptionsBuilder;
+import org.asciidoctor.SafeMode;
+
+_TabbedCodeBlockDocinfoProcessorTest.java_
+[source,java]
+----
+public class TabbedCodeBlockDocinfoProcessorTest {
+    @Test
+    @DisplayName("can create HTML tabbed code block with default settings")
+    void canCreateHtmlTabbedCodeBlockWithDefaultsSettings() {
+        String result = convert(createOptionBuilder());
+        verifyConvertedHtml(result, DEFAULT_CSS_FILE_PATH, DEFAULT_JS_FILE_PATH);
+    }
+
+    private static String convert(OptionsBuilder optionsBuilder) {
+        Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+        asciidoctor.javaExtensionRegistry().docinfoProcessor(TabbedCodeBlockDocinfoProcessor.class);
+        return asciidoctor.convert(getAsciiDoc(), optionsBuilder);
+    }
+
+    private static OptionsBuilder createOptionBuilder() {
+        return OptionsBuilder.options().headerFooter(true).safe(SafeMode.SERVER);
+    }
+
+    ...
+}
+----
+
+_Listing 4. Writing tests to verifying the correct extension behavior_
+
+The code above only shows one test case. Refer to the https://github.com/bmuschko/asciidoctorj-tabbed-code-extension/blob/master/src/test/java/com/bmuschko/asciidoctorj/tabbedcode/TabbedCodeBlockDocinfoProcessorTest.java[actual implementation] of a JUnit 5 test, for a full breath of test cases. We put basic verification of code in place. Next, we'll look at publishing the extension.
+
+== Publishing the extension
+
+To make an extension reusable, you have to compile the source code, bundle it into a JAR file and then publish it to a binary repository. For the example extension, I decided to make it https://bintray.com/bmuschko/maven/asciidoctorj-tabbed-code-extension[available on Bintray's JCenter].
+
+But how do you get it there? It's really more a matter of tooling than an implementation detail of AsciidoctorJ. I decided to go with Gradle to implement all of the steps mentioned above. I won't go into details but you can find the https://github.com/bmuschko/asciidoctorj-tabbed-code-extension/blob/master/buildSrc/src/main/kotlin/com/bmuschko/asciidoctorj/tabbedcode/PublishingPlugin.kt[relevant code] on GitHub.
+
+== Using the extension
+
+Let's assume we already published a version of the AsciidoctorJ extension. Now it's time to use it. We already talked about the touch point with a build tool. Optimally, you'd use a build tool to declare a dependency on the binary containing the AsciidoctorJ extension. The following two section demonstrate how to achieve it.
+
+=== Declaring the dependency
+
+A build tools helps you with automatically resolving a dependency and its transitive dependencies. It also adds the dependency to the assigned classpath. AsciidoctorJ extensions are not needed for compiling code. They only need to be available when actually processing Asciidoc files - at runtime. Therefore, we'll have to declare the dependency with the right scope/configuration.
+
+To use the dependency from a Maven build, add the following dependency declaration. The scope should be `runtime`. Make sure to declare JCenter as one of the repositories in your Maven setup.
+
+_pom.xml_
+[source,xml]
+----
+<repositories>
+    <repository>
+      <id>jcenter</id>
+      <url>https://jcenter.bintray.com/</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.bmuschko</groupId>
+    <artifactId>asciidoctorj-tabbed-code-extension</artifactId>
+    <version>0.2</version>
+    <scope>runtime</scope>
+</dependency>
+----
+
+_Listing 5. Declaring the extension dependency in a Maven build_
+
+The build code for Gradle looks similar. First, we define JCenter as repository. Then we assign the AsciidoctorJ extension dependency to the `runtimeOnly` configuration.
+
+_build.gradle.kts_
+[source]
+----
+repositories {
+    jcenter()
+}
+
+dependencies {
+    runtimeOnly("com.bmuschko:asciidoctorj-tabbed-code-extension:0.2")
+}
+----
+
+_Listing 6. Declaring the extension dependency in a Gradle build_
+
+While talking about the build tool integration, let's also have a look at customizing the runtime behavior of the extension.
+
+== Customizing the runtime behavior
+
+The AsciidoctorJ extension can be configured to use a different CSS and JavaScript file provided by the end user. Attributes pass into the processor are considered to be the customizing mechanism for Asciidoctor. In listing 7, we point the attribute `tabbed-code-css-path` to the  custom CSS file available on the classpath of the project.
+
+_build.gradle.kts_
+[source]
+----
+tasks.named<AsciidoctorTask>("asciidoctor") {
+    sourceDir = file("src/docs/asciidoc")
+    sources(delegateClosureOf<PatternSet> {
+        include("index.adoc")
+    })
+
+    attributes(
+        mapOf(
+            "toc" to "left",
+            "source-highlighter" to "prettify",
+            "icons" to "font",
+            "numbered" to "",
+            "idprefix" to "",
+            "docinfo1" to "true",
+            "sectanchors" to "true",
+            "tabbed-code-css-path" to "/customTabbedCode.css"
+        )
+    )
+}
+----
+
+_Listing 7. Customizing the AsciidoctorJ extension in a Gradle build_
+
+What's left in this discussion? Using the extension in an actual Asciidoc document. The last section of this blog post gives you a quick overview.
+
+== Using the extension in an Asciidoc document
+
+Rendering a tabbed code block doesn't have to be hard. Create two different code blocks with the relevant label. Additionally, provide the source code type and a role. Done and done! The resulting tabbed code block should look like figure 1.
+
+_sample.adoc_
+[source]
+....
+[source,groovy,indent=0,subs="verbatim,attributes",role="primary"]
+.Groovy
+----
+docker {
+    registryCredentials {
+        url = 'https://gcr.io'
+        username = '_json_key'
+        password = file('keyfile.json').text
+    }
+}
+----
+
+[source,kotlin,indent=0,subs="verbatim,attributes",role="secondary"]
+.Kotlin
+----
+docker {
+    registryCredentials {
+        url.set("https://gcr.io")
+        username.set("_json_key")
+        password.set(file("keyfile.json").readText())
+    }
+}
+----
+....
+
+_Listing 8. A tabbed code block for rendering Groovy and Kotlin source code side-by-side_
+
+== Summary
+
+AsciidoctorJ provides an extension mechanism for enhancing Asciidoctor's built-in capabilities. In this post, we saw how to create a customizable tabbed code block by implementing an extension point that modifies the header of a generated HTML document. We learned the essentials about implementing an appropriate extension point, writing tests for it as well as the tooling support for bundling and publishing an extension.
