@@ -24,6 +24,7 @@ For a quick reference you can directly refer to the relevant section in this blo
 * <<testify,Testify>>: Assertion and mock helper functions.
 * <<gocheck,gocheck>>: Assertion helper functions.
 * <<gopwt,gopwt>>: Power assertion helper functions.
+* <<go-testdeep,go-testdeep>>: Deep comparison helper functions.
 * <<ginkgo,Ginkgo and Gomega>>: A heavyweight BDD testing framework + assertion helpers.
 * <<goblin,Goblin:>> A Mocha-like BDD testing framework.
 * <<goconvey,GoConvey>>: BDD testing framework with web UI.
@@ -328,6 +329,58 @@ FAIL	github.com/bmuschko/go-testing-frameworks/calc	0.006s
 exit status 1
 ----
 
+---
+
+[[go-testdeep]]
+== Deep comparison with go-testdeep
+
+Sometimes you'll need to write assertions that compare values in data structures. The library link:https://github.com/maxatome/go-testdeep[go-testdeep] offers flexible operators to avoid having to repeat common comparison functionality. For example, you can compare the contents of a map or check if the value of a number is greater or equals than the expected value. The calculator functions under test are not the best show case for demonstrating go-testdeep's capabilities, however, listing 6 uses some of its comparison functions in action.
+
+_calc_gotestdeep_test.go_
+[source,go]
+----
+package calc_test
+
+import (
+	. "github.com/bmuschko/go-testing-frameworks/calc"
+	. "github.com/maxatome/go-testdeep"
+	"testing"
+)
+
+func TestAddWithGoTestDeep(t *testing.T) {
+	result := Add(1, 2)
+	CmpNotZero(t, result)
+	CmpDeeply(t, &result, Ptr(3))
+	CmpDeeply(t, result, Code(func (r int) (bool, string) {
+		if r == 3 {
+			return true, ""
+		}
+		return false, "Result should be 3"
+	}))
+}
+
+...
+----
+_Listing 6. Power assertions with go-testdeep_
+
+Upon encountering a failure, the rendered error messages tries to provide a useful message including the received and expected value.
+
+----
+$ go test -v ./calc
+=== RUN   TestAddWithGoTestDeep
+--- FAIL: TestAddWithGoTestDeep (0.00s)
+	calc_gotestdeep_test.go:12: Failed test
+		*DATA: values differ
+			     got: (int) 3
+			expected: (int) 2
+		[under TestDeep operator Ptr at calc_gotestdeep_test.go:12]
+FAIL
+exit status 1
+FAIL	github.com/bmuschko/go-testing-frameworks/calc	0.028s
+----
+
+Similar to testify, go-testdeep is one of those libraries you can just add to your tool chain when using the standard `testing` package. If you are sick and tired of writing the same comparison logic over and over again, then go-testdeep might be for you.
+
 In the next section, we'll have a look at BDD-style testing frameworks.
 
 ---
@@ -337,7 +390,7 @@ In the next section, we'll have a look at BDD-style testing frameworks.
 
 The BDD testing style is known for its expressiveness and readability. The most well-known BDD testing framework in the Go world is link:https://github.com/onsi/ginkgo[Ginkgo]. There's slightly more code you'll have to write with Ginkgo compared to the tests that only use an assertion helper library. However, it pays back with a given/when/then pattern that should be understandable by even non-programmers.
 
-Ginkgo really shines when used in conjunction with its sister project, the assertion library link:http://onsi.github.io/gomega/[Gomega]. It allows for writing builder-style assertion logic that can even be used independent of Gingko. It reads like natural language and is easy to write. Additionally, Gomega provides a shortcut symbol for writing assertion via the `Ω` notation. The notation may align well from a branding perspective but I am personally not a fan of using it as it makes the syntax more obscure and harder to parse. Listing 6 shows test cases written with Ginkgo and the Gomega `Expect` notation.
+Ginkgo really shines when used in conjunction with its sister project, the assertion library link:http://onsi.github.io/gomega/[Gomega]. It allows for writing builder-style assertion logic that can even be used independent of Gingko. It reads like natural language and is easy to write. Additionally, Gomega provides a shortcut symbol for writing assertion via the `Ω` notation. The notation may align well from a branding perspective but I am personally not a fan of using it as it makes the syntax more obscure and harder to parse. Listing 7 shows test cases written with Ginkgo and the Gomega `Expect` notation.
 
 _calc_ginkgo_test.go_
 [source,go]
@@ -390,7 +443,7 @@ var _ = Describe("Calculator", func() {
 })
 ----
 
-_Listing 6. Using the BDD framework Ginkgo and Gomega_
+_Listing 7. Using the BDD framework Ginkgo and Gomega_
 
 Upon execution, Ginkgo renders color-coded console output which makes it extremely easy to parse the results.
 
@@ -438,7 +491,7 @@ func TestCalculator(t *testing.T) {
 }
 ----
 
-_Listing 7. Using Goblin test framework_
+_Listing 8. Using Goblin test framework_
 
 What I really like about Goblin is the colored console output which looks similar to the one provided by link:https://mochajs.org/[Mocha], a JavaScript-based testing framework. Figure 2 shows the output for a successful execution of `calc_goblin_test.go`.
 
@@ -451,7 +504,7 @@ _Figure 2. Console output from Goblin_
 [[goconvey]]
 == Live test reporting with GoConvey
 
-Good reporting is a must-have for projects with a large test suite. link:http://goconvey.co/[GoConvey] is yet another BDD-style testing framework. See listing 8 for a short example.
+Good reporting is a must-have for projects with a large test suite. link:http://goconvey.co/[GoConvey] is yet another BDD-style testing framework. See listing 9 for a short example.
 
 _calc_goconvey_test.go_
 [source,go]
@@ -507,7 +560,7 @@ func TestDivideWithGoConvey(t *testing.T) {
 }
 ----
 
-_Listing 8. Using the BDD testing framework GoConvey_
+_Listing 9. Using the BDD testing framework GoConvey_
 
 GoConvey comes with an extremely useful web interface. You can start it from the console by executing the command `goconvey`. Navigating to `localhost:8080` shows an up to date view of your test result as shown in figure 3.
 
