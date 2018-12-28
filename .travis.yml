@@ -17,7 +17,7 @@ before_script:
 
 # Build the website
 script:
-  - ./link-verifier -dirs content,data -include=*.yml -timeout 90
+  - ./link-verifier -dirs content,data -include=*.yml,*.adoc -timeout 90
   - ./hugo
   - echo bmuschko.com >> public/CNAME
 
