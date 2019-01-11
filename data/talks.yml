@@ -1,5 +1,18 @@
 name: Talks
 source:
+  - title: Getting the most out of your next generation JVM testing framework
+    tags:
+      - testing
+      - jvm
+      - junit
+      - spock
+    description: "With the rise of newer JVM languages like Groovy and Kotlin, feature-rich test frameworks emerged. The test framework Spock became a welcome alternative for many projects fearless to adopt Groovy as part of their polyglot software stack.
+\n\n
+With the first GA release of JUnit 5 in September 2017, the JUnit team brought real innovation to the established space of testing JVM code. Not only is the release packed with new features comparable to the ones provided by Spock, JUnit 5 also serves as a platform for launching other test frameworks on the JVM.
+\n\n
+In this demo-driven talk, we will compare typical testing usage patterns and features available for JUnit 5 and Spock. You'll leave with a firm understanding of the benefits and tradeoffs delivered by both test frameworks."
+    slides: https://speakerdeck.com/bmuschko/getting-the-most-out-of-your-next-generation-jvm-testing-framework
+
   - title: Restoring sanity to integration & functional testing with TestContainers
     tags:
       - testing
