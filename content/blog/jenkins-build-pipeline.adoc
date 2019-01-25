@@ -34,7 +34,7 @@ The main focus of this post is going to be on modeling pipeline capabilities of 
 
 == Modeling the build pipeline
 
-A build pipeline, also called deployment pipeline, represents the delivery process of a software broken down into individual stages. A change to the code of that software travels through the stages of the pipeline with the goal of producing one or many deliverable artifacts that can be shipped to the customer. The book link:https://www.amazon.com/Continuous-Delivery-Deployment-Automation-Addison-Wesley/dp/0321601912[Continuous Delivery] gives a great introduction to the topic of modeling build pipeline.
+A build pipeline, also called deployment pipeline, represents the delivery process of a software broken down into individual stages. A change to the code of that software travels through the stages of the pipeline with the goal of producing one or many deliverable artifacts that can be shipped to the customer. The book link:https://martinfowler.com/books/continuousDelivery.html[Continuous Delivery] gives a great introduction to the topic of modeling build pipeline.
 
 The build pipeline for the To Do web application should consist of the following phases:
 
