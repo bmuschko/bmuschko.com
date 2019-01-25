@@ -27,6 +27,8 @@ In the figure, you can see the effect of using such an extension in a generated 
 
 Let's dive in and see how to implement this AsciidoctorJ extension. For reference, see the https://github.com/bmuschko/asciidoctorj-tabbed-code-extension[complete source code] in on GitHub.
 
+'''
+
 == Implementing the extension
 
 The AsciidoctorJ API exposes a set of link:https://asciidoctor.org/docs/asciidoctorj/#extension-api[extension points]. An extension point can manipulate the generated result of an Asciidoc document. For example, an implementation of the https://asciidoctor.org/docs/asciidoctorj/#postprocessor[`Postprocessor`] inserts custom footer text.
@@ -103,6 +105,8 @@ _Listing 3. Making the extension discoverable_
 
 Voilà, you wrote your first AsciidoctorJ extension. Next, we'll concentrate on the important aspects of testing, publishing and the usage of the extension.
 
+'''
+
 == Testing the extension
 
 Before bundling the extension into a JAR file, we should make sure that the code is tested. Testing an extension is very similar to writing an extension. You can create an instance of `Asciidoctor` to emulate the processing of an Asciidoc document. To register an extension under test, simply add it to the registry programmatically as with did in `TabbedCodeBlockExtension`. 
@@ -144,11 +148,15 @@ The code above only shows one test case. For a full breath of test cases, refer 
 
 Next, we'll look at publishing the extension.
 
+'''
+
 == Publishing the extension
 
 To make an extension reusable, you have to compile the source code, bundle it into a JAR file and then publish it to a binary repository. For the example extension, I decided to make it https://bintray.com/bmuschko/maven/asciidoctorj-tabbed-code-extension[available on Bintray's JCenter]. JCenter is a superset of Maven Central so you should be able to retrieve from there as well.
 
 AsciidoctorJ doesn't provide any tooling for publishing extensions. I decided to go with Gradle for publishing to Bintray. I won't go into details in this blog post but you can find the https://github.com/bmuschko/asciidoctorj-tabbed-code-extension/blob/master/buildSrc/src/main/kotlin/com/bmuschko/asciidoctorj/tabbedcode/PublishingPlugin.kt[relevant code] on GitHub.
+
+'''
 
 == Using the extension
 
@@ -198,6 +206,8 @@ _Listing 6. Declaring the extension dependency in a Gradle build_
 
 While talking about the build tool integration, let's also have a brief look at customizing the extension's runtime behavior.
 
+'''
+
 == Customizing the runtime behavior
 
 You might not like the default look & feel of the rendered tabs. The AsciidoctorJ extension can be configured to use a different CSS and JavaScript files. Attributes are the key mechanism for injecting runtime behavior. In listing 7, we point the attribute `tabbed-code-css-path` to the  custom CSS file available on the classpath of the project.
@@ -229,6 +239,8 @@ tasks.named<AsciidoctorTask>("asciidoctor") {
 _Listing 7. Customizing the AsciidoctorJ extension in a Gradle build_
 
 What's left in this discussion? Using the extension in an actual Asciidoc document. The last section of this blog post gives a quick overview.
+
+'''
 
 == Using the extension in an Asciidoc document
 
@@ -263,6 +275,8 @@ docker {
 ....
 
 _Listing 8. A tabbed code block for rendering Groovy and Kotlin source code side-by-side_
+
+'''
 
 == Summary
 
