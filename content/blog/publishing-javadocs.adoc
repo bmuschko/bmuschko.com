@@ -118,7 +118,7 @@ $ ./gradlew javadoc
 BUILD SUCCESSFUL
 ----
 
-Pages published to GitHub can be resolved through the HTTP URL pattern _http://<username>.github.io_. In the example above the URL would evaluate to _http://bmuschko.github.io_. GitHub Pages organizes the published files with the name of the repository. Additionally, we provided the context path _docs/javadoc_. As a result our Javadocs can be browsed with the URL _http://bmuschko.github.io/gradle-docker-plugin/docs/javadoc_.
+Pages published to GitHub can be resolved through the HTTP URL pattern _http://<username>.github.io_. GitHub Pages organizes the published files with the name of the repository. Additionally, we provided the context path _docs/javadoc_.
 
 In the last section of this post, we'll have a look at automatically running the publication process through Continuous Integration.
 
