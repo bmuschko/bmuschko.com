@@ -235,10 +235,22 @@ The following commands build the binary of the plugin and copy it into the `PATH
 ----
 $ go build -o kubectl-server_version
 $ cp kubectl-server_version /usr/local/bin
+$ kubectl plugin list
+The following kubectl-compatible plugins are available:
+
+/usr/local/bin/kubectl-server_version
 ----
 
-Awesome, the plugin has been installed. We can now go ahead and execute it as described earlier. As you can see the development and installation process is not very burdensome. But what if you wanted to share the plugin with the team or the Kubernetes community? Let's talk about distribution the plugin in the next section.
+Awesome, the plugin has been installed. We can now go ahead and execute it as described earlier. As you can see, the development and installation process is not very burdensome. But what if you wanted to share the plugin with the team or the Kubernetes community? Let's talk about distribution the plugin in the next section.
 
-== Distributing the plugin
+== Distributing the plugin on GitHub Releases
+
+There are various options for distributing the binary of your plugin. In this post, we'll discuss the distribution of the plugin on https://help.github.com/en/articles/creating-releases[GitHub Releases].
+
+> Another, popular option, is to use the package manager for `kubectl` plugins called https://github.com/kubernetes-sigs/krew[krew]. I will leave this topic for another blog post.
+
+My tool of choice for publishing binaries to GitHub Releases is https://github.com/goreleaser/goreleaser[GoReleaser]. It helps with defining, building and publishing the binaries you want to release for the source code with a given Git tag. GoReleaser reads the configuration for the binaries in a file named `.goreleaser.yml`. You can find https://github.com/bmuschko/kubectl-server-version/blob/master/.goreleaser.yml[an example] for such a file in the plugin repository. Once a version has been released, any consumer can download the binary for a target platform and install the plugin directly into the `PATH`.
 
 == Conclusion
+
+The blog post taught you how to get started with writing a `kubectl` plugin using the Go language. We created a new project from scratch and took it all the way from inception to distribution. I hope I could inspire you to write your own plugins. In the course of the next couple of months, I am intending to write more blog posts on this topic so stay tuned! In the meantime, check out the all the https://github.com/topics/kubectl-plugins[kubectl plugins that have been published by the community].
