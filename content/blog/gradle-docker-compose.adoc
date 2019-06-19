@@ -100,7 +100,7 @@ Managing Compose via Gradle tasks is helpful for manually testing or experimenti
 
 Microservice applications represent a collection of individual services communicating with each other. It's common for a developer to work on one or many services to implement new features or bugfixes. Testing those changes in conjunction with other services needed at runtime requires all dependencies to be available. The Gradle Docker compose plugin makes it really easy to bootstrap an application stack and tie it into the task execution lifecycle of a test task.
 
-We'll pick Java and the test framework JUnit 5 for writing integration tests. In listing 2, you can see that the test case calls the expected service endpoint using the incubating link:https://developer.oracle.com/java/jdk-http-client[JDK HTTP Client]. You'll make the service endpoint host name and port available through system properties passed in by the build. The assertion logic verifies the expected response from the HTTP call with every iteration of the test case.
+We'll pick Java and the test framework JUnit 5 for writing integration tests. In listing 2, you can see that the test case calls the expected service endpoint using the incubating link:https://openjdk.java.net/groups/net/httpclient/intro.html[JDK HTTP Client]. You'll make the service endpoint host name and port available through system properties passed in by the build. The assertion logic verifies the expected response from the HTTP call with every iteration of the test case.
 
 _src/test/java/com/bmuschko/ApplicationIntegrationTest.java_
 [source,java]
