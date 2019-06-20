@@ -5,8 +5,8 @@ tags = [
     "kubectl",
     "plugin",
 ]
-date = "2019-06-19"
-draft = true
+date = "2019-06-20"
+draft = false
 highlight = true
 +++
 
