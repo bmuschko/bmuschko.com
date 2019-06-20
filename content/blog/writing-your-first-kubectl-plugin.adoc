@@ -10,17 +10,17 @@ draft = true
 highlight = true
 +++
 
-The `kubectl` command line tool offers a powerful, client-side mechanism for communicating with the Kubernetes API server. `kubectl` comes with a lot of fine-grained commands, subcommands and options. Getting familiar with all of these options can take a bit of time.
+The `kubectl` command line tool offers a powerful, client-side mechanism for communicating with the Kubernetes API server. `kubectl` comes with a lot of fine-grained commands, subcommands and options. Getting familiar with all of these options takes practice and time.
 
-Sometimes you wish that `kubectl` would provide higher-level functions or would simplify specific operations. For example, you may have to shell into a running container to inspect the environment in interactive mode. Easy to achieve with the command `kubectl exec mypod -it --namespace=abc  -- /bin/sh`, however, there are various options you have to remember and provide as options. Wouldn't it be easier if there would be a simplied command say `kubectl iexec mypod`? That's where https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/[kubectl plugins] come in. You can write your own commands and the behavior they should expose.
+Despite its wide array of options, you sometimes wish that `kubectl` would provide higher-level functions or would simplify specific operations. For example, you may have to shell into a running container to inspect the environment in interactive mode. That's easy to achieve with the command `kubectl exec mypod -it --namespace=abc  -- /bin/sh`, however, there are various options you have to remember. Wouldn't it be easier if there would be a simplied command say `kubectl iexec mypod`? That's where https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/[kubectl plugins] come in. You can write your own commands and the behavior they should expose.
 
-In this blog post, I want to show how to write a simple `kubectl` plugin that leverages the Go client to communicate with the API server. You will learn how to stand up the Go project, declare the dependency on the Go client with the help of Go Modules and write the source code. You will be able to find the https://github.com/bmuschko/kubectl-server-version[source code on GitHub] if you'd like to follow along.
+In this blog post, I want to show how to write a simple `kubectl` plugin that leverages the Go client to communicate with the API server. You will learn how to stand up the Go project, declare the dependency on the Go client library with the help of Go Modules and write the source code. You will be able to find the https://github.com/bmuschko/kubectl-server-version[source code on GitHub] if you'd like to have a look at the details.
 
-> The Go library isn't the only option for writing a `kubectl` plugin. Kubernetes supports https://kubernetes.io/docs/reference/using-api/client-libraries/[other languages] as well though they won't be subject of this blog post. I personally haven't tried out any of the other client libraries. I would think that the Go library is likely the most well-maintained as Kubernetes itself is written in Go.
+> The Go library isn't the only option for writing a `kubectl` plugin. Kubernetes supports https://kubernetes.io/docs/reference/using-api/client-libraries/[other languages] though they won't be subject of this blog post. I personally haven't tried any of the other client libraries. I would think that the Go library is likely the most well-maintained as Kubernetes itself is written in Go.
 
 == Defining the plugin functionality
 
-The purpuse of our plugin is to render the Kubernetes server version on the command line. We will want to make this functionality available with the command `server-version`. The result could look similar to the console output below.
+The purpose of our plugin is to render the Kubernetes server version on the command line. We will want to make this functionality available with the command `server-version`. The result should look similar to the console output below.
 
 [source,bash]
 ----
@@ -28,7 +28,7 @@ $ kubectl server-version
 Hello from Kubernetes server with version v1.10.11!
 ----
 
-Furthermore, it's a good idea to provide a subcommand that render the version of the plugin so that the end user knows which feature set to expect. It will help tremendously with the upgrade process if you know which plugin version has been installed on your machine already. The following console output indicates that the plugin with version `0.2.0` is used.
+Furthermore, it's a good idea to provide a subcommand that renders the version of the plugin so that the end user knows which feature set to expect. It will help tremendously with the upgrade process if you know which plugin version has been installed on your machine already. The following console output indicates that the plugin with version `0.2.0` is used.
 
 [source,bash]
 ----
@@ -36,13 +36,13 @@ $ kubectl server-version version
 kubectl server-version v0.2.0
 ----
 
-We defined the command we want to expose and its functionality. Lets start by setting up the project structure.
+We defined the commands we want to expose and their functionality. Let's start by setting up the project structure.
 
 == Setting up the project
 
-There's really nothing special about setting up a Go project that implements a `kubectl` plugin. You'd follow the same conventions as you usually would for any Go project.
+There's really nothing special about setting up a Go project that implements a `kubectl` plugin. You'd follow the same conventions as you usually would for any other Go project.
 
-We'll start by adding a `main.go` file, the main entrypoint into the application. Next, we'll generate the Go Module `go mod init github.com/bmuschko/kubectl-server-version`. You'll end up with a `go.mod` and `go.sum` file that we will populate later. The package `cmd` is going to contain all relevant CLI command handling. Moreover, I like to provide a license for the project and a README file that explains how to use the plugin. In the end, you should end up with a project layout shown below.
+We'll start by adding a `main.go` file, the entrypoint into the application. Next, we'll generate the Go Module with `go mod init github.com/bmuschko/kubectl-server-version`. You'll end up with a `go.mod` and `go.sum` file that we will populate later. The package `cmd` is going to contain all relevant CLI command handling. Moreover, I personally like to provide a license for the project and a README file that explains how to use the plugin. In the end, you should end up with a project layout shown below.
 
 ----
 .
@@ -58,9 +58,9 @@ In the next section, we'll add the necessary dependencies.
 
 == Declaring the dependencies
 
-The initial structure of the `go.mod` file has already been set up when we ran the `go init` command. Remember that you have to set the environment variable `GO111MODULES=on` to enable Go Modules before adding any dependencies. To get started with the Go client simply run the command `go get k8s.io/client-go`. There are other portions to the Go client library that you might need e.g. `k8s.io/api`, `k8s.io/apimachinery`. You can retrieve them with the same Go command. Have a look at the https://github.com/kubernetes/client-go/[documentation] for more information and the compatibility with the Kubernetes version.
+The initial structure of the `go.mod` file has already been set up when we ran the `go init` command. Remember that you have to set the environment variable `GO111MODULES=on` to enable Go Modules before adding any dependencies. To get started with the Go client simply run the command `go get k8s.io/client-go`. There are other portions to the Go client library that you might need e.g. `k8s.io/api`, `k8s.io/apimachinery`. You can retrieve them with the same Go command. Have a look at the https://github.com/kubernetes/client-go/[documentation] for more information.
 
-The Go Modules file below shows my final list dependencies. As you can see, we are building the project with Go 1.12. I also added the dependency `github.com/spf13/cobra` for exposing the CLI commands and `github.com/stretchr/testify` to help with simplifying test code.
+The Go Modules file below shows my final list of dependencies. As you can see, we are building the project with Go 1.12. I also added the dependency `github.com/spf13/cobra` for exposing the CLI commands and `github.com/stretchr/testify` to help with simplifying test code.
 
 _go.mod_
 ----
@@ -103,7 +103,7 @@ Next up, we'll implement the plugin functionality.
 
 == Implementing the plugin functionality
 
-Not surprisingly, we will start by filling the `main.go` with life. The implementation logic straightforward. First, we create a new command by calling the function `NewServerVersionCommand`. Standard input, standard output and standard error have been wrapped with `genericclioptions.IOStreams` and passed in as parameter. Next, we'll execute the newly created command and handle a potential error case.
+Not surprisingly, we will start by filling the `main.go` with life. The implementation logic is straightforward. First, we'll create a new command by calling the function `NewServerVersionCommand`. Standard input, standard output and standard error have been wrapped with `genericclioptions.IOStreams` and passed in as parameter. Next, we'll execute the newly created command and handle a potential error case.
 
 _main.go_
 [source,go]
@@ -128,9 +128,9 @@ func main() {
 }
 ----
 
-The value for variable `version` can be injected at build-time and represents the plugin version. We'll pass on the value to the package `cmd` for later use in the `version` subcommand.
+The value of the variable `version` can be injected at build-time and represents the plugin version. We'll pass on the value to the package `cmd` for later use in the `version` subcommand.
 
-Let's have a look at the meat of the plugin functionality, the command that communicates with the API server and renders the returned Kubernetes server version. I split up the code into multiple, digestiable pieces. The code block below uses the Cobra library to create the new command. Apart from the Kubernetes package imports, there's nothing special about this implementation. You can easily imagine similar code as part of any other CLI tool written in Go.
+Let's have a look at the meat of the plugin functionality, the command that communicates with the API server and renders the returned Kubernetes server version. I split up the code into multiple, digestiable pieces. The code block below uses the https://github.com/spf13/cobra[Cobra library] to create the new command. Apart from the Kubernetes package imports, there's nothing special about this implementation. You can easily imagine similar code as part of any other CLI tool written in Go.
 
 _cmd/server_version.go_
 [source,go]
@@ -185,9 +185,11 @@ func (sv *serverVersionCmd) run() error {
 }
 ----
 
-The most important portion of this file is the call to the function `getServerVersion()`. In here we are actually interacting with the Go client.
+The most important portion of this file is the call to the function `getServerVersion()`. In here, we are actually interacting with the Go client.
 
-The "client" instance is called a `clientset` and is represented by the struct `kubernetes.Clientset`. For the creation of the the struct, you will have to provide additional client configuration in the form of a `restclient.Config`. Once created, the `clientset` gives access to the whole Kubernetes API and relevant operations for querying, creating, updating and deleting Kubernetes objects. The function below retrieves the `DiscoveryClient` which can discover server-supported API groups, versions and resources. For example, the function `ServerVersion()` returns the Kubernetes server version, as shown below.
+The "client" instance is called a `clientset` and is represented by the struct `kubernetes.Clientset`. For the creation of the the struct, you will have to provide additional client configuration in the form of a `restclient.Config`. Once created, the `clientset` gives access to the whole Kubernetes API and all relevant operations for querying, creating, updating and deleting Kubernetes objects.
+
+The function below retrieves the `DiscoveryClient` which can discover server-supported API groups, versions and resources. For example, the function `ServerVersion()` returns the Kubernetes server version.
 
 _cmd/server_version.go_
 [source,go]
@@ -247,10 +249,10 @@ Awesome, the plugin has been installed. We can now go ahead and execute it as de
 
 There are various options for distributing the binary of your plugin. In this post, we'll discuss the distribution of the plugin on https://help.github.com/en/articles/creating-releases[GitHub Releases].
 
-> Another, popular option, is to use the package manager for `kubectl` plugins called https://github.com/kubernetes-sigs/krew[krew]. I will leave this topic for another blog post.
+> Another popular option is to use the package manager for `kubectl` plugins called https://github.com/kubernetes-sigs/krew[krew]. It's your best option when it comes to easy of use and making the plugin available to the world. I will leave this topic for another blog post.
 
-My tool of choice for publishing binaries to GitHub Releases is https://github.com/goreleaser/goreleaser[GoReleaser]. It helps with defining, building and publishing the binaries you want to release for the source code with a given Git tag. GoReleaser reads the configuration for the binaries in a file named `.goreleaser.yml`. You can find https://github.com/bmuschko/kubectl-server-version/blob/master/.goreleaser.yml[an example] for such a file in the plugin repository. Once a version has been released, any consumer can download the binary for a target platform and install the plugin directly into the `PATH`.
+My tool of choice for publishing binaries to GitHub Releases is https://github.com/goreleaser/goreleaser[GoReleaser]. It helps with defining, building and publishing the binaries you want to release with a given Git tag. GoReleaser reads the configuration for the binaries in a file named `.goreleaser.yml`. You can find https://github.com/bmuschko/kubectl-server-version/blob/master/.goreleaser.yml[an example] for such a file in the plugin repository. Once a version has been released, any consumer can download the binary for a target platform and install the plugin directly into the `PATH`.
 
 == Conclusion
 
-The blog post taught you how to get started with writing a `kubectl` plugin using the Go language. We created a new project from scratch and took it all the way from inception to distribution. I hope I could inspire you to write your own plugins. In the course of the next couple of months, I am intending to write more blog posts on this topic so stay tuned! In the meantime, check out the all the https://github.com/topics/kubectl-plugins[kubectl plugins that have been published by the community].
+The blog post taught you how to get started with writing a `kubectl` plugin using the Go language. We created a new project from scratch and took it all the way from inception to distribution. I hope I could inspire you to write your own plugins. In the course of the next couple of months, I intend to write more blog posts on this topic so stay tuned! In the meantime, check out the all the https://github.com/topics/kubectl-plugins[kubectl plugins that have been published by the community]. Maybe you will find the functionality you've been missing for so long from the standard `kubectl` command.
