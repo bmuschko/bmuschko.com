@@ -3,6 +3,7 @@ title = "Crushing the Certified Kubernetes Application Developer (CKAD) exam"
 tags = [
     "kubernetes",
     "ckad",
+    "certification",
 ]
 date = "2019-08-04"
 draft = false
@@ -19,7 +20,7 @@ highlight = true
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         </td>
         <td>
-            <img src="/img/blog/ckad-prep/ckad-logo.png" alt="CKAD Logo" />
+            <a href="https://www.cncf.io/certification/ckad/"><img src="/img/blog/ckad-prep/ckad-logo.png" alt="CKAD Logo" /></a>
         </td>
     </tr>
 </table>
