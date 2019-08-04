@@ -5,7 +5,7 @@ tags = [
     "ckad",
 ]
 date = "2019-08-04"
-draft = true
+draft = false
 highlight = true
 +++
 
