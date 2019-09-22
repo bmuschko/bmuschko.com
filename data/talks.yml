@@ -1,5 +1,31 @@
 name: Talks
 source:
+  - title: Fully automated release processes for Go projects
+    tags:
+      - go
+      - tooling
+      - cicd
+      - jenkins
+      - travisci
+    description: "Go projects need to rely on an automated process that ushers changes through all aspects of a delivery pipeline. A typical pipeline involves resolving packages, compilation, testing, generation of code coverage, static code analysis, binary creation, and the actual release of the binaries.
+\n\n
+This session discusses automation aspects and tools helpful for streamlining Go projects. First, you’ll get to know individual tools and why they are so useful. Then you’ll tie it all together to form a simple delivery pipeline for Go projects powered by Travis CI or Jenkins. You will leave the session with a recipe for implementing a sensible, yet simple end-to-end automation approach for your own Go projects to ensure reliable and reproducible builds."
+    slides: https://speakerdeck.com/bmuschko/fully-automated-release-processes-for-go-projects
+
+  - title: Powering a build pipeline with Docker and Jenkins
+    tags:
+      - cicd
+      - docker
+      - jenkins
+      - gradle
+      - maven
+      - testcontainers
+      - jib
+    description: "Continuous Delivery is key to delivering software fast and frequently. Jenkins 2 has made great strides in providing a solution for modeling a build pipeline as code. In addition, Docker invoked from a Gradle build can help with implementing certain aspects of your pipeline. Combining the benefits of these tools makes it possible to implement a streamlined and bulletproof process.
+\n\n
+In this demo-driven session, you will learn how to construct and operate a declarative pipeline with Jenkins. You’ll see a Spring Boot application taken all the way through the pipeline, from building the Docker image to pushing the image to a registry, using it for integration testing, and finally deploying the application to a Docker Swarm or Kubernetes."
+    slides: https://speakerdeck.com/bmuschko/powering-a-build-pipeline-with-docker-and-jenkins-a1d28556-1c49-4f92-8831-4d2db2d9fef5
+
   - title: Getting the most out of your next generation JVM testing framework
     tags:
       - testing
@@ -27,8 +53,7 @@ In this lightning talk, we'll have a look at setting up and running integration 
 
   - title: Powering a build pipeline with Docker and Jenkins
     tags:
-      - ci
-      - cd
+      - cicd
       - pipeline
       - docker
       - jenkins
@@ -40,7 +65,7 @@ In this demo-driven talk, you will learn how to construct and operate a declarat
 
   - title: Building Go projects made easy with Gradle
     tags:
-      - golang
+      - go
       - build
       - gradle
     description: "For many Go projects, Make and shell scripts are the predominant tools of choice for automating the process of building source code as well as assembling and distributing binaries. While powerful tools, they do not provide any higher level abstractions like conventions and generalized concepts to minimize the burden on maintainability and readability. There must be a better way to avoid copy-pasting the same automation code from project to project!
@@ -123,8 +148,7 @@ In this demo-driven talk, we will discuss how the build tool Gradle can help wit
 
   - title: Building a Continuous Delivery Pipeline with Gradle and Jenkins
     tags:
-      - ci
-      - cd
+      - cicd
       - pipeline
       - jenkins
       - gradle
