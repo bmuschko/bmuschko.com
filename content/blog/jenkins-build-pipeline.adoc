@@ -41,7 +41,7 @@ The build pipeline for the To Do web application should consist of the following
 1. **Compile source code:** Executes the Java compiler to turn production and test source code into byte code.
 2. **Execute unit tests:** Runs the unit test suite for fast feedback.
 3. **Execute integration tests:** Performs long-running integration tests.
-4. **Perform static code analysis:** Analyzes the source code and identifies quality hotspots. For convenience reasons, the project uses the link:https://about.sonarcloud.io/[cloud-based service of Sonarqube].
+4. **Perform static code analysis:** Analyzes the source code and identifies quality hotspots. For convenience reasons, the project uses the link:https://sonarcloud.io/[cloud-based service of Sonarqube].
 5. **Assemble the WAR file**: Builds the final deliverable, a WAR file containing all resources needed in the runtime environment.
 6. **Deploy the deliverable to production:** Pushes the WAR file to the Paas, link:https://www.heroku.com[Heroku], upon request.
 
