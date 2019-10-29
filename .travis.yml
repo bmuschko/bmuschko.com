@@ -15,17 +15,24 @@ before_script:
   - tar -xvf /tmp/link-verifier.tar.gz
   - export PATH=$PATH:$PWD/hugo/:$PWD/link-verifier/
 
-# Build the website
-script:
-  - ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90
-  - ./hugo
-  - echo bmuschko.com >> public/CNAME
-
-# Deploy to GitHub pages
-deploy:
-  provider: pages
-  skip_cleanup: true
-  local_dir: public
-  github_token: $GITHUB_TOKEN
-  on:
-    branch: master
+jobs:
+  include:
+    - stage: "Verify Links"
+      name: "Verifies Links in Blog Posts"
+      script: ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90
+    - stage: "Build Website"
+      name: "Build Website with Hugo"
+      script: ./hugo
+    - stage: "Set CNAME"
+      name: "Adds Domain to CNAME file"
+      script: echo bmuschko.com >> public/CNAME
+    - stage: "Deploy"
+      name: "Deploys Website to GitHub Pages"
+      script: skip
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        local_dir: public
+        github_token: $GITHUB_TOKEN
+        on:
+          branch: master
