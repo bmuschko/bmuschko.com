@@ -7,22 +7,23 @@ go:
 install:
   - rm -rf public || exit 0
 
-before_script:
-  - gem install asciidoctor
-  - wget https://github.com/gohugoio/hugo/releases/download/v0.59.0/hugo_0.59.0_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
-  - wget https://github.com/bmuschko/link-verifier/releases/download/v0.7/link-verifier-0.7-linux-amd64.tar.gz -O /tmp/link-verifier.tar.gz
-  - tar -xvf /tmp/hugo.tar.gz
-  - tar -xvf /tmp/link-verifier.tar.gz
-  - export PATH=$PATH:$PWD/hugo/:$PWD/link-verifier/
-
 jobs:
   include:
     - stage: "Verify Links"
       name: "Verifies Links in Blog Posts"
       script: ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90
+      before_script:
+        - wget https://github.com/bmuschko/link-verifier/releases/download/v0.7/link-verifier-0.7-linux-amd64.tar.gz -O /tmp/link-verifier.tar.gz
+        - tar -xvf /tmp/link-verifier.tar.gz
+        - export PATH=$PATH:$PWD/link-verifier/
     - stage: "Build Website"
       name: "Build Website with Hugo"
       script: ./hugo
+      before_script:
+        - gem install asciidoctor
+        - wget https://github.com/gohugoio/hugo/releases/download/v0.59.0/hugo_0.59.0_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
+        - tar -xvf /tmp/hugo.tar.gz
+        - export PATH=$PATH:$PWD/hugo/
     - stage: "Set CNAME"
       name: "Adds Domain to CNAME file"
       script: echo bmuschko.com >> public/CNAME
