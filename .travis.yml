@@ -1,32 +1,28 @@
 language: minimal
 
-jobs:
-  include:
-    - stage: "Verify Links"
-      name: "Verifies Links in Blog Posts"
-      before_script:
-        - wget https://github.com/bmuschko/link-verifier/releases/download/v0.7/link-verifier-0.7-linux-amd64.tar.gz -O /tmp/link-verifier.tar.gz
-        - tar -xvf /tmp/link-verifier.tar.gz
-        - export PATH=$PATH:$PWD/link-verifier/
-      script: ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90
-    - stage: "Build Website"
-      name: "Build Website with Hugo"
-      before_script:
-        - rm -rf public || exit 0
-        - gem install asciidoctor
-        - wget https://github.com/gohugoio/hugo/releases/download/v0.59.0/hugo_0.59.0_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
-        - tar -xvf /tmp/hugo.tar.gz
-        - export PATH=$PATH:$PWD/hugo/
-      script:
-        - ./hugo
-        - echo bmuschko.com >> public/CNAME
-    - stage: "Deploy"
-      name: "Deploys Website to GitHub Pages"
-      script: skip
-      deploy:
-        provider: pages
-        skip_cleanup: true
-        local_dir: public
-        github_token: $GITHUB_TOKEN
-        on:
-          branch: master
+# Clean and don't fail
+install:
+  - rm -rf public || exit 0
+
+before_script:
+  - gem install asciidoctor
+  - wget https://github.com/gohugoio/hugo/releases/download/v0.59.0/hugo_0.59.0_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
+  - wget https://github.com/bmuschko/link-verifier/releases/download/v0.7/link-verifier-0.7-linux-amd64.tar.gz -O /tmp/link-verifier.tar.gz
+  - tar -xvf /tmp/hugo.tar.gz
+  - tar -xvf /tmp/link-verifier.tar.gz
+  - export PATH=$PATH:$PWD/hugo/:$PWD/link-verifier/
+
+# Build the website
+script:
+  - ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90
+  - ./hugo
+  - echo bmuschko.com >> public/CNAME
+
+# Deploy to GitHub pages
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: public
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
