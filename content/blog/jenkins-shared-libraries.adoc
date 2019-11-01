@@ -5,20 +5,20 @@ tags = [
     "cicd",
     "build",
 ]
-date = "2019-10-29"
-draft = true
+date = "2019-10-31"
+draft = false
 highlight = true
 +++
 
 == Introduction
 
-In most cases, pipeline definitions in Jenkins start small and maintainble. You write a `Jenkinsfile` that declares a couple of stages. Nothing dramatic, simple, understandable code. As your adoption of Jenkins and pipelines as code grows within the organization, you find out that other teams are copy-pasting pipeline code all over the place. What works for one project should work for another project, right?! Soon requirements become more complex and your organization will enter a world of pain.
+Pipeline definitions in Jenkins start small and maintainble. You write a `Jenkinsfile` that declares a couple of stages. Nothing dramatic, simple, understandable code. As your adoption of Jenkins and "pipelines as code" grows within the organization, you'll find out that other teams are copy-pasting pipeline code all over the place. What works for one project should work for other projects, right?! Soon requirements become more complex and your organization will enter a world of pain of unmaintainable, duplicated code.
 
-Jenkins provides the concept of reusable pipeline functionality through https://jenkins.io/doc/book/pipeline/shared-libraries/[shared libraries]. With the help of shared libraries, you can implement more complex logic that should be shared across multiple pipelines. Shared libraries are somewhat comparable to libraries in other languages like JARs in the JVM world or Go packages.
+Jenkins provides the concept of reusable pipeline functionality through https://jenkins.io/doc/book/pipeline/shared-libraries/[shared libraries]. With the help of shared libraries, you can implement more complex logic that can be shared across multiple pipelines. Shared libraries are somewhat comparable to libraries in other languages e.g. JARs in the JVM world or Go packages.
 
 The Jenkins user guide explains the mechanics of shared libraries but gives very little guidance on best practices. In this blog post, I am going to explain what I consider to be best practices. Many of the recipes described here are not really specific to Jenkins shared libraries but are applicable to software development in general.
 
-For a quick reference, you can directly jump to a specific aspect:
+As a quick reference, you can directly jump to a specific aspect:
 
 * <<designing,Designing shared libraries>>
 * <<building,Building shared libraries>>
@@ -33,43 +33,48 @@ For a quick reference, you can directly jump to a specific aspect:
 
 === Global variables vs. class implementations
 
-Shared libraries allow two ways to implement reusable logic:
+Shared libraries offer two ways to implement reusable logic:
 
-1. *Global variables* represent a loosely-defined script with a little structure containing one or many methods and/or variables. Essentially, global variables are just externalized scripts that can be imported into a `Jenkinsfile` to break down logic. The naming seems to be misleading.
-2. *Class implementations* are the alternative to writing scripts. They support a more structured approach to breaking down functionality into packages and classes as you would with application source code. Additionally, class implementations can also download and use external libraries via http://docs.groovy-lang.org/latest/html/documentation/grape.html[Groovy Grape].
+1. *Global variables* represent a loosely-defined script with little structure. Those scripts usually containing one or many methods and/or variables. Essentially, global variables are just externalized scripts that can be imported into a `Jenkinsfile` to break down logic. The naming doesn't fully express its purpose and can lead to issues among team members when talking about shared library terminology.
+2. *Class implementations* represent the alternative to scripts. They support a much more structured approach to breaking down functionality into packages and classes, a coding approach you are likely already familiar with if you are writing application source code. One of the major benefits of class implementation is the cabilility to declare and download external libraries via http://docs.groovy-lang.org/latest/html/documentation/grape.html[Groovy Grape].
 
-I am personally not a fan of using global variables. The ability to expose variables with a global scope often times leads to confusion when tracking down its definition and assignment of values. Morever, a script is not well-suited for implementing more elaborate logic. In most cases, I start implementing Jenkins shared libraries as classes right away. The approach feels much more natural to JVM programmers, helps with structuring and evolving the code over time and puts you in a good position to actually writing tests for the code. You can read more about <<testing,testing aspects>> in the section below.
+Personally, I am not a fan of using global variables. The ability to expose variables with a global scope often times leads to confusion when tracking down its definition and the place in the code that assign new values. Morever, a script is not well-suited for implementing more elaborate logic as it can easily become spaghetti code.
+
+For the most part, I start implementing Jenkins shared libraries as classes right away. The approach feels much more natural to JVM programmers, helps with structuring and evolving the code over time and puts you in a good position to actually writing tests for the code. You can read more about testing aspects in the <<testing,decicated section below>>.
 
 === Declarative vs. scripted
 
-Shared libraries can even define a https://jenkins.io/doc/book/pipeline/shared-libraries/#defining-declarative-pipelines[templated pipeline definition] with the purpose of standardizing typical project types. For example, you might decide that a Java project in your organization should always walk through the stages compilation, unit testing, integration testing and publishing.
+Shared libraries can even define a https://jenkins.io/doc/book/pipeline/shared-libraries/#defining-declarative-pipelines[templated pipeline definition] with the purpose of standardizing typical project types. For example, you might decide that a Java project in your organization should require the change to pass through the stages compilation, unit testing, integration testing and publishing.
 
-There are some intricate differences between the syntax of declarative and scripted pipelines e.g. a `stage` in a scripted pipeline does not need to specify a `steps` blocks. Syntax differences (especially when imported from shared libraries) can lead to a lot of confusion among consumers and unexpected runtime errors. Try to implement shared libraries with the declarative syntax as the preferred choice. The declarative syntax will likely see more support and new features by CloudBees in the future. Furthermore, document the decision for any of your consumers.
+There are some intricate differences between the syntax of declarative and scripted pipelines e.g. a `stage` in a scripted pipeline does not need to specify a nested `steps` blocks. Syntax differences (especially when imported from shared libraries) can lead to a lot of confusion among consumers and result in unexpected runtime errors. Try to implement shared libraries with the declarative syntax as the preferred choice. The declarative syntax will likely see more support and new features by CloudBees in the future. Most importantly, document this decision for any of your consumers.
 
 === API design
 
-Independent of your choice to use global variables or class implementations, you will have to think about the method signatures you want to expose to consumers. Try to put yourself into the shoes of other developers that are calling the functionality from their pipeline. As a general guideline, I'd recommend to ask the following questions when designing the API of your shared library:
+Independent of your choice to use global variables or class implementations, you will have to think about the method signatures you want to expose to consumers. Try to put yourself into the shoes of other developers that are calling the functionality from their pipeline. As a general guideline, I'd recommend to ask yourself the following questions when designing the API of your shared library.
 
 1. Does the naming express the functionality it provides?
 2. Is the signature of the functionality expressive enough?
 3. Do I maybe require the end user to provide a long list of parameters? Can I minimize the number of parameters? Should I potentially introduce a data object for providing input values?
 4. Is the functionality documented with the help of Groovydoc? For more information on documentation, see the <<documenting,dedicated section below>>.
 
-Groovy as a language does not enforcing typing of variables and methods. You can happily just mark everything with `def` or omit the type altogether. I would highly advice against it as the typing acts as documentation for consumers. Try to provide a type whenever you can. It will give consumers a hint on what kind of value your are expecting.
+Groovy as a language does not enforcing static typing of variables and methods. You can happily just mark everything with `def` or omit the type altogether. I would highly advise against it as the typing can act as subtle documentation to consumers. Try to provide a type whenever you can. It will give consumers a hint on what kind of value your are expecting.
 
 === Limitations
 
-Initially, Jenkins shared libraries might give you the impression that you are writing plain old Groovy code. That's only true to a certain extend. While the pipeline uses the Groovy compiler and parser, it runs the pipeline and any shared library in a special interpreter. This interpreter introduces certain limitation when it comes to structuring your code.
+Initially, Jenkins shared libraries might give you the impression that you are writing plain old Groovy code. That's only true to a certain extend. While the pipeline uses the Groovy compiler and parser, it runs the pipeline and shared libraries with a special interpreter. This interpreter induces certain limitations that affect the way you need to structure your code.
 
-1. It doesn't handle inheritance or method overwrites very well which can lead to runtime issues that are hard analyze and debug aka the https://wiki.jenkins.io/display/JENKINS/Pipeline+CPS+method+mismatches[notorious CPS mismatch errors]. In most cases, I replace inheritance with delegation.
+1. It doesn't handle inheritance or method overrides very well which can lead to runtime issues. The resulting error messages are hard analyze and debug, also known as the https://wiki.jenkins.io/display/JENKINS/Pipeline+CPS+method+mismatches[notorious CPS mismatch errors]. In most cases, I replace inheritance with delegation to work around this limitation.
 2. Given my recommendations about static typing above, you might feel tempted to use Groovy's http://docs.groovy-lang.org/latest/html/gapi/groovy/transform/CompileStatic.html[@CompileStatic] annotation to enforce the coding style. Unfortunately, Jenkins doesn't deal well with the annotation and generates a runtime error.
+3. Not so much a limitation but more of a requirement. Don't forget to implement `java.io.Serializable` by any of your classes to avoid issues for pipelines in case the Jenkins server needs to be restarted.
 
 ---
 
 [[building]]
 == Building shared libraries
 
-Building a Jenkins shared library becomes so much easier if you work on it in an IDE. Especially when writing Groovy classes you will want feature like auto-completion, easy navigation between classes and basic compilation support. IntelliJ does a great job in deriving the project setup from a build definition. In the listing below, you can find a sample Maven build script. Pointing IntelliJ to the build script when opening the project will automatically derive the source directories, set up the proper JDK version and configure the Groovy compiler. Please note that the https://jenkins.io/doc/book/pipeline/shared-libraries/#directory-structure[source directory conventions of a shared library] do not follow the standard Maven conventions and therefore have to be reconfigured.
+Building a Jenkins shared library becomes so much easier if you work on it in an IDE. Especially when writing Groovy classes, you will want features like auto-completion, easy navigation between classes and compilation support. IntelliJ does a great job of deriving the project setup from a build definition. 
+
+Listing 1 shows a sample Maven build script. Pointing IntelliJ to the build script when opening the project will automatically derive the source directories, set up the proper JDK version and configure the Groovy compiler. Please note that the https://jenkins.io/doc/book/pipeline/shared-libraries/#directory-structure[source directory conventions of a shared library] does not follow the standard Maven conventions and therefore has to be reconfigured.
 
 _pom.xml_
 [source,xml]
@@ -143,23 +148,25 @@ _pom.xml_
 
 _Listing 1. Building a shared library with Maven_
 
-I tried to locate the compatible Jenkins versions used to compile and parse a Jenkins pipeline. The only hint I could find was under _Manage Jenkins > About Jenkins_. For my version of Jenkins, the Maven GAV is `org.codehaus.groovy:groovy-all:2.4.12`. In the build script for your shared library, you should rely on that exact version to ensure optimal version compatibility. You will also get a hint about the compatible Groovy version by looking at the https://search.maven.org/artifact/com.cloudbees/groovy-cps-parent[parent POM] of the dependency `com.cloudbees:groovy-cps-parent`.
+I tried to locate the compatible Jenkins versions used to compile and parse a Jenkins pipeline. The only hint I could find was under _Manage Jenkins > About Jenkins_. For my version of Jenkins, the Maven GAV is `org.codehaus.groovy:groovy-all:2.4.12`. In the build script for your shared library, you should rely on that exact version to ensure optimal version compatibility. You will also get a hint about the compatible Groovy version by looking at the https://search.maven.org/artifact/com.cloudbees/groovy-cps-parent[parent POM] of the dependency `com.cloudbees:groovy-cps`.
 
-There's nothing speaking against setting up a similar build with Gradle. While the syntax is completely different, the essence of the configuration would be very similar. In a nutshell, apply the Groovy plugin, declare the relevant dependencies and reconfigure the source directory. There's no need to configure the Groovy compiler explicitly. The Groovy plugin already takes care of it.
+There's nothing speaking against setting up a similar build with Gradle. While the syntax is completely different, the essence of the configuration would be the same. In a nutshell, apply the Groovy plugin, declare the relevant dependencies and reconfigure the source directory. There's no need to configure the Groovy compiler explicitly. The Groovy plugin already takes care of it.
 
 ---
 
 [[testing]]
 == Testing shared libraries
 
-Any code used in production should be tested. And by that I do not necessarily mean manually. The Jenkins documentation doesn't provide any hints on how to approach this problem. Here are the possible ways to tackle the testing aspect of shared libraries.
+Any code used in production should be tested. And by that I do not necessarily mean by hand. The Jenkins documentation doesn't provide any hints on how to approach this problem. Here are the possible ways to tackle the testing for shared libraries.
 
 1. Setting up pipeline job for the sole purpose of consuming shared library code to see how things pan out. Sooner or later, you will have to go through this type of testing as there's no way to emulate the runtime behavior of Jenkins.
-2. Write unit tests and mock out every portion of the code that makes calls to the Jenkins API. This approach is really only possible if you are writing shared libraries as class implementations so that you can put the proper abstractions in place.
+2. Write unit tests and mock out every portion of the code that calls off to the Jenkins API. This approach is really only possible if you are writing shared libraries as class implementations so that you can put the proper abstractions in place.
 
-Point 2. requires a little bit extra work from your end. I am going to describe the setup below. There's also a project called https://github.com/jenkinsci/JenkinsPipelineUnit["Jenkins Pipeline Unit testing framework"], however, I didn't manage to even create a single working test case with it.
+Point 2 requires a little bit of extra work from your end. I am going to describe the setup below. There's also a project called https://github.com/jenkinsci/JenkinsPipelineUnit["Jenkins Pipeline Unit testing framework"], however, I didn't manage to even execute a single working test case with it successfully.
 
-For writing unit tests, you have to decide on a test framework. The most prominent options are JUnit and Spock. Additionally, you will want to pull in a mock framework if you decide to go with JUnit. The Maven build below chooses to use JUnit 5 in combination with Mockito. You can also see that I am configuring the build to look at a non-standard test sources directory.
+=== Setting up the build
+
+For writing unit tests, you have to decide on a test framework. The most prominent options are JUnit and Spock. Additionally, you will want to pull in a mock framework if you decide to go with JUnit. The Maven build shown in listing 2 uses JUnit 5 in combination with Mockito. You can also see that I am configuring the build to look at a non-standard test sources directory.
 
 _pom.xml_
 [source,xml]
@@ -217,7 +224,9 @@ _pom.xml_
 
 _Listing 2. Testing a shared library with Maven_
 
-You will want to put yourself into a good position for mocking calls to the Jenkins API. I recommend introducing an interface that can hide all those calls. You can find an example below. You will likely only need to add a couple of methods and not the full Jenkins API.
+=== Mocking the Jenkins API
+
+You will want to put yourself into a good position for mocking calls to the Jenkins API. I recommend introducing an interface that can hide all those calls. You can find an example in listing 3. You will likely only need to add a couple of methods and not the full Jenkins API.
 
 _JenkinsExecutor.groovy_
 [source,groovy]
@@ -234,7 +243,7 @@ interface JenkinsExecutor extends Serializable {
 
 _Listing 3. Hiding the Jenkins API behind an interface_
 
-The implementation for the interface looks straightforward, as shown below. First of all, you'll have to inject the reference to the Jenkins `script`. This is done in the constructor of the class. The method simply use the `script` reference to call the relevant Jenkins API.
+The implementation of the interface looks straightforward, as shown in listing 4. First of all, you'll have to inject the reference to the Jenkins `script`. This is done in the constructor of the class. The method simply uses the `script` reference to call the relevant Jenkins APIs.
 
 _DefaultJenkinsExecutor.groovy_
 [source,groovy]
@@ -268,7 +277,7 @@ class DefaultJenkinsExecutor implements JenkinsExecutor {
 
 _Listing 4. Calling to the Jenkins API via the script reference_
 
-Any code in your shared library that needs to call the Jenkins API requires a reference to the interface `JenkinsExecutor`. For example, the class below uses the `sh` and `echo` method.
+Any code in your shared library that needs to call the Jenkins API requires a reference to the interface `JenkinsExecutor`. For example, the class below uses the `sh` and the `echo` method.
 
 _MyCustomSteps.groovy_
 [source,groovy]
@@ -291,7 +300,7 @@ class MyCustomSteps implements Serializable {
 
 _Listing 5. Using the Jenkins API facade_
 
-Now that we hid the Jenkins implementation details behind an interface, we can simply create a mock object for it. The test case below create a mock object for `JenkinsExecutor` with Mockito, injects the instance into the class under test and emulates its behavior as needed.
+Now that we hid the Jenkins implementation details behind an interface, we can simply create a mock object for it. The test case in listing 6 creates a mock object for `JenkinsExecutor` with Mockito, injects the instance into the class under test and emulates its behavior as needed.
 
 _DefaultJenkinsExecutor.groovy_
 [source,groovy]
@@ -325,30 +334,35 @@ _Listing 6. Mocking Jenkins API calls in a test_
 [[versioning]]
 == Versioning shared libraries
 
-Jenkins shared libraries do not need to be bundled and published similar to other libraries in the JVM ecosystem. In the Jenkins management section, you simply create a reference to the SCM repository hosting the code. It might sound very tempting at first to just point to the `master` branch for the library, however, the result is a potential unreliable build. Any changes made to the branch will be pulled automatically by the consuming pipeline. While that might seem convenient for rolling out new features, the same concept also applies to bugs.
+Jenkins shared libraries do not need to be bundled or published like typical libraries in the JVM ecosystem. In the Jenkins management section, you create a reference to the SCM repository hosting the code. It might sound very tempting at first to point to the `master` branch for the library, however, the result is a potential unreliable build. Any changes made to the branch will be pulled down automatically by the consuming pipeline. While that might seem convenient for rolling out new features, the same concept also applies to bugs.
 
-I would highly recommend tag your commits in version control and pinning to those tags from your pipeline. Effectively, the tag acts as the version of the shared library. I used semantic versioning with great success in the past.
+I would highly recommend tagging your commits in version control and pinning to those tags from your pipeline. Effectively, the tag acts as the version of the shared library. I used semantic versioning with great success in the past.
 
 _Jenkinsfile_
 [source,groovy]
 ----
-@Library('deployment@4.2.6') _
+@Library('deployment@4.2.6')
+
+import com.bmuschko.jenkins.Deployment
+...
 ----
 
 _Listing 7. Using a shared library by referencing a concrete tag_
 
-It goes without saying that every "release" aka tag should be documented with the help of release notes. Release notes can look as simple as a Markdown or Asciidoc file in the root directory of the shared library. If you are rolling out new releases to a wider audience, those release notes will help consumers to decide which feature set they want to adopt.
+It goes without saying that every "release" aka tag should be documented with the help of release notes. Release notes can look as simple as a Markdown or Asciidoc file in the root directory of the shared library. If you are rolling out new releases to a wider audience, those release notes will help consumers to decide which feature set they actually want to adopt.
+
+---
 
 [[documenting]]
 == Documenting shared libraries
 
-For most consumers, a Jenkins shared library looks like a black box. You might know the purpose of the shared library but without any documentation you have no idea what to call. There are multiple levels of documentation I found useful:
+For most consumers, a Jenkins shared library looks like a black box. You might understand the purpose of the shared library but without any documentation you have no idea what to call. There are multiple levels of documentation I found useful:
 
 1. *High-level documentation* that answers the question "What problem does the shared library solve?".
 2. *Groovydoc to document the API* of the shared library that answers the question "How can I used it?".
-3. *Usage examples* that show code snippets of the shared library in a pipeline.
+3. *Usage examples* that show code snippets of the shared library as part of a pipeline.
 
-Documentation for 1. and 3. can easily be added as Markdown and Asciidoc files to the same repository or can reside on a Wiki page. Groovydoc needs to be generated and published for later reference. Adding Groovydoc support to a Maven build is not very hard. You can add one of the available plugins, as shown below.
+Documentation for 1 and 3 can easily be added as Markdown and Asciidoc files to the same repository or can reside on a Wiki page. Groovydoc needs to be generated and published for later reference. Adding Groovydoc support to a Maven build is not very hard. You can add one of the available plugins, as shown in listing 8.
 
 _pom.xml_
 [source,xml]
@@ -370,7 +384,7 @@ _pom.xml_
 
 _Listing 8. Generating Groovydoc in a Maven build_
 
-Publishing and hosting the Groovydoc is a bit more complicated. Hosting the API documentation on Jenkins can be a good way to start. Assuming you already have a build pipeline in place for your shared library, adding another step for generating and publishing the API docs is easy. The listing below demonstrates such a stage in an example pipeline. Additionally, you will have to configure Jenkins' https://wiki.jenkins.io/display/JENKINS/Configuring+Content+Security+Policy[content security policy].
+Publishing the Groovydoc files is a bit more complicated. Hosting the API documentation on Jenkins may be a good way to start. Assuming you already have a build pipeline in place for your shared library, adding another step for generating and publishing the API docs is easy. The listing below demonstrates such a stage in an example pipeline. Additionally, you will have to configure Jenkins' https://wiki.jenkins.io/display/JENKINS/Configuring+Content+Security+Policy[content security policy].
 
 _Jenkinsfile.groovy_
 [source,groovy]
@@ -401,6 +415,8 @@ pipeline {
 
 _Listing 9. Generating and publishing Groovydoc in a Jenkins pipeline_
 
+---
+
 == Summary
 
-Shared libraries can be a powerful tool for organizations interested in writing reusable pipeline logic or standardizing full pipeline definitions. Jenkins does not take a strong stance on best practices. This article identifies recipes that worked well for me. We covered design, build, test, versioning and documentation aspects. I hope you can take back some of those recipes to your own projects to avoid common pitfalls.
+Shared libraries can be a powerful tool for organizations interested in writing reusable pipeline logic or even standardizing full pipeline definitions. Jenkins does not take a strong stance on best practices. This article identifies recipes that worked well for me. We covered design, build, test, versioning and documentation aspects. I hope you can apply those recipes to your own projects to avoid common pitfalls.
