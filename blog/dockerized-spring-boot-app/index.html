@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="map[]" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
+    <title>Docker with Gradle: Dockerizing a Spring Boot application</title>
+    <meta name="generator" content="Hugo 0.59.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+        
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-99678333-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://bmuschko.com/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/talks/">TALKS</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="https://bmuschko.com/blog/dockerized-spring-boot-app/">Docker with Gradle: Dockerizing a Spring Boot application</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+            
+            <span class="label label-success">build</span>
+            
+            <span class="label label-success">docker</span>
+            
+            <span class="label label-success">container</span>
+            
+            <span class="label label-success">spring</span>
+            
+            <span class="label label-success">boot</span>
+            
+            <span class="label label-success">gradle</span>
+            
+            <span class="label label-success">ci</span>
+            
+            <span class="label label-success">travis</span>
+            
+            </br></br></br>
+            February 8, 2018
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <div class="paragraph">
+<p>The use of Docker has become widespread among companies big and small for a variety scenarios. Executing Docker from the command line for simple tasks is easy and becomes routine as soon as you get a hang of it. Having to enter Docker commands for a whole workflow can become tedious. It seems obvious that you might want to integrate Docker into an automated process for convenience and reproducibility. Gradle can help with defining and executing such a process with the help of the <a href="https://github.com/bmuschko/gradle-docker-plugin">Docker plugin</a>.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Starting with version 3.5.0, the Docker plugin comes with <a href="http://bmuschko.github.io/gradle-docker-plugin/#spring_boot_application_plugin">built-in support for dockerizing Spring Boot applications</a>. The configuration described in this blog post has been completely abstracted by the plugin. Enjoy!</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>This blog post is the first installment of a series on using Docker from Gradle. As a starting point for our journey, we&#8217;ll want to package a Spring Boot application as a Docker image and push it to the cloud-based registry service <a href="https://docs.docker.com/docker-hub/">Docker Hub</a>. You will also learn how to automate the process as a Continuous Integration job on <a href="https://travis-ci.org/">Travis CI</a>. You can find the <a href="https://github.com/bmuschko/dockerized-spring-boot-app">full source code</a> used in this post on GitHub.</p>
+</div>
+<hr>
+<div class="sect1">
+<h2 id="_configuring_the_docker_plugin">Configuring the Docker plugin</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Docker plugin for Gradle provides two main sets of functionality out-of-the-box. It comes with a <a href="https://github.com/bmuschko/gradle-docker-plugin#remote-api-plugin">base plugin</a> for modeling and executing typical Docker commands e.g. for creating an image or starting a container. The base plugin gives you full control over the process you&#8217;d like to define.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, it ships with a convenience <a href="https://github.com/bmuschko/gradle-docker-plugin#java-application-plugin">abstraction for packaging Java applications as a Docker image</a>. Unfortunately, the Java application abstraction won&#8217;t quite work for building Spring Boot applications. In the future, I might implement an abstraction suited for this specific use case. For now, we&#8217;ll just use the most basic functionality giving us the most freedom in defining the process we need.</p>
+</div>
+<div class="paragraph">
+<p>Getting started with the Docker plugin is straightforward. You just have to apply the plugin with the identifier <code>com.bmuschko.docker-remote-api</code> and the concrete version. Furthermore, you will also have to provide the credentials for the registry we&#8217;ll want to use for hosting our image. As you can see in listing 1, the credentials have not been hard-coded in the build script. They can either be provided as environment variables or as project properties (e.g. in a <code>gradle.properties</code> file in your user home directory). In this workflow, we want to push an image to Docker Hub. The Docker plugin uses the Docker Hub registry by default so no additional configuration is required.</p>
+</div>
+<div id="listing1" class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'com.bmuschko.docker-remote-api' version '3.2.3'
+}
+
+docker {
+    registryCredentials {
+        username = getConfigurationProperty('DOCKER_USERNAME', 'docker.username')
+        password = getConfigurationProperty('DOCKER_PASSWORD', 'docker.password')
+        email = getConfigurationProperty('DOCKER_EMAIL', 'docker.email')
+    }
+}
+
+String getConfigurationProperty(String envVar, String sysProp) {
+    System.getenv(envVar) ?: project.findProperty(sysProp)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 1. Configuring the Docker plugin</em></p>
+</div>
+<div class="paragraph">
+<p>With this build script, you just layed the ground work for defining the Docker process. As part of the Docker process, we&#8217;ll want to achieve the following tasks:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Assemble the Spring Boot application WAR file</p>
+</li>
+<li>
+<p>Create a Dockerfile containing the instructions for the Docker image</p>
+</li>
+<li>
+<p>Use the Dockerfile to build an image</p>
+</li>
+<li>
+<p>Try out the image locally by starting a container to verify that it works as expected</p>
+</li>
+<li>
+<p>Push the image to Docker Hub</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s get started by creating the Dockerfile.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_the_dockerfile">Creating the Dockerfile</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Docker plugins provides custom task types for implementing the most common operations in the Docker world. One of the operations is the creation of a <a href="https://docs.docker.com/engine/reference/builder/">Dockerfile</a>. The task type <code>Dockerfile</code> exposes methods for populating a Dockerfile with the necessary instructions for an image.</p>
+</div>
+<div class="paragraph">
+<p>Listing 2 demonstrates the use of the task type in a build script. An important aspect of the task definition is that we&#8217;ll want to copy the WAR file when creating the image. When starting the image inside of a container, the application&#8217;s main class is automatically executed with the <code>java</code> command. As soon as the application is up and running, the Docker container will expose its functionality through port 8080. You can also see that the Dockerfile performs a health check on the service to indicate its readiness to serve requests. The health check can be achived by calling a <code>curl</code> command. Notice that there are more <a href="https://blog.sixeyed.com/docker-healthchecks-why-not-to-use-curl-or-iwr/">lightweight approaches</a> available.</p>
+</div>
+<div class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+
+task createDockerfile(type: Dockerfile) {
+    destFile = project.file('build/docker/Dockerfile')
+    from 'openjdk:8-jre-alpine'
+    maintainer 'Benjamin Muschko "benjamin.muschko@gmail.com"'
+    copyFile war.archiveName, '/app/account-web-service.war'
+    entryPoint 'java'
+    defaultCommand '-jar', '/app/account-web-service.war'
+    exposePort 8080
+    runCommand 'apk --update --no-cache add curl'
+    instruction 'HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1'
+}
+
+task syncWebAppArchive(type: Sync) {
+    dependsOn assemble
+    from war.archivePath
+    into createDockerfile.destFile.parentFile
+}
+
+createDockerfile.dependsOn syncWebAppArchive</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 2. Creating the Dockerfile</em></p>
+</div>
+<div class="paragraph">
+<p>Executing the task <code>createDockerfile</code> produces the following Dockerfile contents in the directory <code>build/docker</code>:</p>
+</div>
+<div class="paragraph">
+<p><em>build/docker/Dockerfile</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>FROM openjdk:8-jre-alpine
+MAINTAINER Benjamin Muschko "benjamin.muschko@gmail.com"
+COPY account-web-service-1.0.0.war /app/account-web-service.war
+ENTRYPOINT ["java"]
+CMD ["-jar", "/app/account-web-service.war"]
+EXPOSE 8080
+RUN apk --update --no-cache add curl
+HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 3. The generated Dockerfile</em></p>
+</div>
+<div class="paragraph">
+<p>The task automatically translates its declarative syntax into the underlying Docker instructions. For the most part (except for the <code>HEALTHCHECK</code>) you don&#8217;t even have to know how they need to look like in Docker lingo.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_building_the_docker_image">Building the Docker image</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that you have a Dockerfile in place, you can use the definition to build an image. The task type <code>DockerBuildImage</code> takes care of the underlying implementation details. You just need to point it to the directory holding the necessary files (Dockerfile and War file) and provide a tag. The tag is a combination of the target repository and the version of the project. You will need to have Docker running to be able to produce the image.</p>
+</div>
+<div class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+task buildImage(type: DockerBuildImage) {
+    dependsOn createDockerfile
+    inputDir = createDockerfile.destFile.parentFile
+    tag = "bmuschko/account-web-service:$war.version"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 4. Building the Docker image</em></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_running_the_image_in_a_container">Running the image in a container</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before pushing the image to the public repository, you should make sure that it is working as expected. First, we&#8217;ll want to identify that the image exists and then start up the container to see if the Spring Boot application behaves as expected. For now, we&#8217;ll just run the plain Docker commands.</p>
+</div>
+<div class="paragraph">
+<p>The <code>images</code> command lists the available images. Alternatively, you can also create a task of type <code>DockerListImages</code> in your build script.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker images
+REPOSITORY                     TAG                 IMAGE ID            CREATED             SIZE
+bmuschko/account-web-service   1.0.0               91db93d1be41        5 days ago          98.5MB</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Great, the image is available for consumption. Next, you will start a container for the image. You start a container with the <code>run</code> command. The command renders the container ID in the console for future reference.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker run -d -p 8080:8080 bmuschko/account-web-service:1.0.0
+670757d71ccc94b044946497c721dac956a837392c87497027af06244e5fd853</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Docker plugin also supports <a href="https://github.com/bmuschko/gradle-docker-plugin#containers">task types</a> for creating, starting and stopping containers. However, it makes more sense to explain the task types with the help of a more specific use case (covered in the <a href="http://bmuschko.com/blog/docker-integration-testing/">next blog post</a>).</p>
+</div>
+<div class="paragraph">
+<p>You can also discover all running containers by listing them with the <code>container ls</code> command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker container ls
+CONTAINER ID        IMAGE                                COMMAND                  CREATED             STATUS                    PORTS                    NAMES
+670757d71ccc        bmuschko/account-web-service:1.0.0   "java -jar /app/acco…"   32 minutes ago      Up 32 minutes (healthy)   0.0.0.0:8080-&gt;8080/tcp   angry_einstein</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The application is ready for use as soon as the status turns "healthy". In practice that means that the <code>curl</code> command could successfully resolve the URL in the Dockerfile. We can verify one of the application&#8217;s endpoints by calling the URL <code><a href="http://localhost:8080/accounts?id=1" class="bare">http://localhost:8080/accounts?id=1</a></code> in a browser. The HTTP response returns a JSON structure representing a bank account.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+   "id":1,
+   "owner":"John Doe",
+   "balance":34024.2300000000032014213502407073974609375
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We know that the application works properly within a Docker container. Next, you will push the image for consumption by other users.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pushing_the_docker_image_to_a_registry">Pushing the Docker image to a registry</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A Docker registry allows you to store and share images. Docker Hub is a free, cloud-based solution for anyone that willing to make images publicly-available. Think Github for Docker images. Of course you can also configure the Docker plugin to use a private registry. See the <a href="https://github.com/bmuschko/gradle-docker-plugin#extension-properties">plugin documentation</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p>Below you can find the task for pushing the image we created earlier. Providing the tag of the image is the key aspect of configuring the task.</p>
+</div>
+<div class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
+task pushImage(type: DockerPushImage) {
+    dependsOn buildImage
+    conventionMapping.imageName = { buildImage.getTag() }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 5. Pushing the Docker image to Dockerhub</em></p>
+</div>
+<div class="paragraph">
+<p>This task represents the main entry point for our worflow. You might have noticed that we established task dependencies between the tasks shown in the previous sections. Executing <code>pushImage</code> will create the Dockerfile, produce the image with the latest changes in the WAR file and push the image to Docker Hub.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_and_pushing_the_image_on_travis_ci">Creating and pushing the image on Travis CI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You may want to integrate this workflow on a CI server to enable Continuous Deployment for your project. In this section, you will learn how to achieve this with Travis CI. Travis CI can build Docker images and push them to a registry. To use Docker, you will need to <a href="https://docs.travis-ci.com/user/docker/">enable the service</a>.</p>
+</div>
+<div class="paragraph">
+<p>With the Travis CI configuration shown in listing 6, you will automatically build a new image of the application and push it to Docker Hub - with every single commit! Remember that you&#8217;ll need to create the <a href="#listing1">environment variables</a> for the Docker Hub credentials and your email.</p>
+</div>
+<div class="paragraph">
+<p><em>.travis.yml</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">language: java
+install: true
+sudo: required
+
+services:
+  - docker
+
+jdk:
+  - oraclejdk8
+
+script:
+  - ./gradlew pushImage -s
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 6. Creating and pushing the image on Travis CI</em></p>
+</div>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        February 1, 2020
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/bazel-groovy/">Building Groovy with Bazel</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        October 31, 2019
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/jenkins-shared-libraries/">Best practices for writing Jenkins shared libraries</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        January 25, 2019
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/go-on-jenkins/">Building Go projects using modules on Jenkins</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = 'bmuschko-com';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://bmuschko.com/js/docs.min.js"></script>
+<script src="https://bmuschko.com/js/main.js"></script>
+
+<script src="https://bmuschko.com/js/ie10-viewport-bug-workaround.js"></script><!-- Syntax highlighting -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/shell.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/groovy.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+  </body>
+</html>

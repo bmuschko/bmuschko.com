@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="map[]" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
+    <title>Injecting credentials into a Docker container running a Spring Boot application</title>
+    <meta name="generator" content="Hugo 0.59.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+        
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-99678333-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://bmuschko.com/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/talks/">TALKS</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="https://bmuschko.com/blog/docker-secret-spring-boot/">Injecting credentials into a Docker container running a Spring Boot application</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+            
+            <span class="label label-success">java</span>
+            
+            <span class="label label-success">spring</span>
+            
+            <span class="label label-success">boot</span>
+            
+            <span class="label label-success">docker</span>
+            
+            <span class="label label-success">container</span>
+            
+            </br></br></br>
+            November 5, 2018
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <div class="paragraph">
+<p>The <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html">profile concept</a> in Spring Boot makes is extremely easy to provide configuration specific to a runtime environment. A typical setup might include configuration for the local development environment, a testing environment, staging and production. All you need to do is to provide a properties files per environment on the classpath e.g. <code>application-dev.properties</code> and <code>application-prod.properties</code>. At runtime, you can tell Spring Boot which profile to pick via command line option or environment variable.</p>
+</div>
+<div class="paragraph">
+<p>Now, different environments require different credentials. Let&#8217;s say your application uses an embedded H2 database for development purposes and PostgreSQL for all other environments. It feels natural to just add username/password or access tokens to the profile property files. When building the binary file, the executable JAR or WAR file of a Spring Boot application, those files would simply be included into the deliverable.</p>
+</div>
+<div class="paragraph">
+<p>Depending on how you are planning to share the binary file and the applied deployment strategy this approach may raise security concerns. Should anyone with access to the file allowed to crack open the archive and access the plain-text credentials? What if you build a Docker image for your application and share it on a Docker registry? You might have guessed it. It&#8217;s likely a better idea to externalize the credentials and inject them at runtime to elminate a potential security breach.</p>
+</div>
+<div class="paragraph">
+<p>In this blog post, I am going to show you how to use <a href="https://docs.docker.com/engine/swarm/secrets/">Docker secrets</a> to create credentials in a Docker Swarm. We&#8217;ll run a Spring Boot application on that Swarm distributed to multiple replicas and only inject the credentials when creating a service for that application.</p>
+</div>
+<div class="paragraph">
+<p>Docker secrets is an enterprise feature. Unfortunately, you won&#8217;t be able to use Docker secrets without distributing your application in a Swarm. In a future post, I am going to discuss other options for storing credentials like <a href="https://www.vaultproject.io/">HashiCorp&#8217;s Vault</a>.</p>
+</div>
+<div class="sect1">
+<h2 id="_reading_a_docker_secrets_file">Reading a Docker secrets file</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Switching between different environments for a Spring Boot application is easy, even if it is run within a Docker container. Simply pass the environment variable <code>SPRING_PROFILES_ACTIVE</code> when starting the container and point it to the desired profile name. In addition, we&#8217;ll want to read credentials from a Docker secrets file if it does exist. By default, Docker secrets are available in the directory <code>/run/secrets</code> when run on a node in a Docker Swarm.</p>
+</div>
+<div class="paragraph">
+<p>A good fit for reading a Docker secret credentials file is an implementation of an <a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/env/EnvironmentPostProcessor.html">EnvironmentPostProcessor</a>. Let&#8217;s say we wanted to read a database password and use it for our application&#8217;s data source. The class shown in listing 1 achieves exactly that.</p>
+</div>
+<div class="paragraph">
+<p><em>DockerSecretsDatabasePasswordProcessor.java</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package com.bmuschko.todo.webservice.env;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.PropertiesPropertySource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.util.StreamUtils;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Properties;
+
+public class DockerSecretsDatabasePasswordProcessor implements EnvironmentPostProcessor {
+    private final Logger logger = LoggerFactory.getLogger(DockerSecretsDatabasePasswordProcessor.class);
+
+    @Override
+    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+        Resource resource = new FileSystemResource("/run/secrets/db-password");
+
+        if (resource.exists()) {
+            try {
+                if (logger.isInfoEnabled()) {
+                    logger.info("Using database password from injected Docker secret file");
+                }
+
+                String dbPassword = StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
+                Properties props = new Properties();
+                props.put("spring.datasource.password", dbPassword);
+                environment.getPropertySources().addLast(new PropertiesPropertySource("dbProps", props));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 1. Reading and applying database credentials from a Docker secrets file</em></p>
+</div>
+<div class="paragraph">
+<p>Implementing the <code>EnvironmentPostProcessor</code> is not enough. You&#8217;ll have to register the class in a file named <code>spring.factories</code>. For Maven and Gradle projects this file usually sits in the directory <code>src/main/resources</code> and is bundled with the application when creating the executable binary.</p>
+</div>
+<div class="paragraph">
+<p><em>META-INF/spring.factories</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-text" data-lang="text">org.springframework.boot.env.EnvironmentPostProcessor=com.bmuschko.todo.webservice.env.DockerSecretsDatabasePasswordProcessor</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The application is ready to go. Next, we&#8217;ll have a look at the container infrastructure.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_a_docker_secret">Creating a Docker secret</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The prerequisite for using Docker secrets is a Docker Swarm. A Docker Swarm has to have at least one manager node. Additionally, you can have any number of worker nodes. Refer to the <a href="https://docs.docker.com/engine/swarm/admin_guide/#distribute-manager-nodes">Docker documentation</a> if you want to learn more about fault tolerance and load balancing.</p>
+</div>
+<div class="paragraph">
+<p>You can create a Docker secret with a single command on the Swarm manager. The following command creates the secret <code>db-password</code> containing the password <code>prodpwd</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ printf "prodpwd" | docker secret create db-password -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After creating the secret you should be able to list it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker secret ls
+ID                          NAME                DRIVER              CREATED             UPDATED
+nskgie2gozso364hwl92ne3og   db-password                             12 days ago         12 days ago</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We created a secret. Let&#8217;s inject it into the container running our application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_a_docker_secret">Using a Docker secret</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In Docker, you distribute an application across multiple nodes with the help of a service. When creating a service you can provide options for setting environment variables and Docker secrets.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s say we wanted to run a Spring Boot application in a production environment. First, we activate the profile with <code>--env SPRING_PROFILES_ACTIVE=prod</code>. Second, we pass in the Docker secret with a name via <code>--secret db-password</code>. Below you can find the full command for creating a Docker service with five replicas.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker service create --name todo-web-service --publish 8080:8080 --replicas 5 --secret db-password --env SPRING_PROFILES_ACTIVE=prod bmuschko/todo-web-service:latest</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All set. Your Spring Boot application should be able to read the Docker secret and use it to connect to the database.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_summary">Summary</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Credentials shouldn&#8217;t be baked into a Spring Boot application binary whether you run it in a container or just as a plain, executable JAR file. Docker secrets can help with keeping credentials secure. In a Docker Swarm environment, it&#8217;s easy to inject the secret into a running container. Reading the secret from a Spring Boot application only requires the implementation of a post processor.</p>
+</div>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        November 12, 2018
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/java-project-testcontainers/">Testing a Java project with TestContainers on JUnit 5</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        October 16, 2018
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/containerization-with-jib/">Containerization workflow for Java apps with Jib</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        April 27, 2018
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/gradle-docker-compose/">Docker with Gradle: Getting started with Docker Compose</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = 'bmuschko-com';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://bmuschko.com/js/docs.min.js"></script>
+<script src="https://bmuschko.com/js/main.js"></script>
+
+<script src="https://bmuschko.com/js/ie10-viewport-bug-workaround.js"></script><!-- Syntax highlighting -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/shell.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/groovy.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+  </body>
+</html>

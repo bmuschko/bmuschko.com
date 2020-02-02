@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>travis on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/travis/</link>
+    <description>Recent content in travis on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 17 May 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/travis/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Implementing an intuitive versioning and release strategy</title>
+      <link>https://bmuschko.com/blog/gradle-release-strategy/</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/gradle-release-strategy/</guid>
+      <description>Implementing a versioning and release strategy for a project can be daunting task. An effective strategy should be elegant and require little manual intervention. When forming a strategy the following factors need to be taken under consideration.
+   What kind of artifact(s) does your project produce? Maybe you are writing a library or a full-fledged application comprised of multiple components.
+  How often do you usually release your project?</description>
+    </item>
+    
+    <item>
+      <title>Docker with Gradle: Integration testing using containers</title>
+      <link>https://bmuschko.com/blog/docker-integration-testing/</link>
+      <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/docker-integration-testing/</guid>
+      <description>In the first blog post on &#34;Docker with Gradle&#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
+ Integration testing plays an important role in the software development lifecycle to ensure functional and non-functional requirements have been met.</description>
+    </item>
+    
+    <item>
+      <title>Docker with Gradle: Dockerizing a Spring Boot application</title>
+      <link>https://bmuschko.com/blog/dockerized-spring-boot-app/</link>
+      <pubDate>Thu, 08 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/dockerized-spring-boot-app/</guid>
+      <description>The use of Docker has become widespread among companies big and small for a variety scenarios. Executing Docker from the command line for simple tasks is easy and becomes routine as soon as you get a hang of it. Having to enter Docker commands for a whole workflow can become tedious. It seems obvious that you might want to integrate Docker into an automated process for convenience and reproducibility. Gradle can help with defining and executing such a process with the help of the Docker plugin.</description>
+    </item>
+    
+    <item>
+      <title>Publishing Javadocs with Gradle</title>
+      <link>https://bmuschko.com/blog/publishing-javadocs/</link>
+      <pubDate>Sun, 21 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/publishing-javadocs/</guid>
+      <description>Introduction Documentation is a must-have for any consumer-facing project. It can come in different shapes and sizes: documentation about the functionality of the project, DSL documentation, API documentation, usage examples and many more. For consumers of libraries the relevant part of the documentation often is the exposed API. In the Java world, API documentation materializes as Javadocs.
+ Java provides the javadoc tool for generating Javadocs documentation from source code. Running the tool is a no-brainer either from the command line or as an integration with any of the build tools available, like Ant, Maven or Gradle.</description>
+    </item>
+    
+  </channel>
+</rss>

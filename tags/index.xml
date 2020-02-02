@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/</link>
+    <description>Recent content in Tags on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 01 Feb 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>bazel</title>
+      <link>https://bmuschko.com/tags/bazel/</link>
+      <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/bazel/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>build</title>
+      <link>https://bmuschko.com/tags/build/</link>
+      <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/build/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cicd</title>
+      <link>https://bmuschko.com/tags/cicd/</link>
+      <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/cicd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>groovy</title>
+      <link>https://bmuschko.com/tags/groovy/</link>
+      <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/groovy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>certification</title>
+      <link>https://bmuschko.com/tags/certification/</link>
+      <pubDate>Thu, 30 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/certification/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>cje</title>
+      <link>https://bmuschko.com/tags/cje/</link>
+      <pubDate>Thu, 30 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/cje/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>jenkins</title>
+      <link>https://bmuschko.com/tags/jenkins/</link>
+      <pubDate>Thu, 30 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/jenkins/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ckad</title>
+      <link>https://bmuschko.com/tags/ckad/</link>
+      <pubDate>Sun, 04 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/ckad/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubernetes</title>
+      <link>https://bmuschko.com/tags/kubernetes/</link>
+      <pubDate>Sun, 04 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kubectl</title>
+      <link>https://bmuschko.com/tags/kubectl/</link>
+      <pubDate>Thu, 20 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/kubectl/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>plugin</title>
+      <link>https://bmuschko.com/tags/plugin/</link>
+      <pubDate>Thu, 20 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/plugin/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ci</title>
+      <link>https://bmuschko.com/tags/ci/</link>
+      <pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/ci/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>https://bmuschko.com/tags/golang/</link>
+      <pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>modules</title>
+      <link>https://bmuschko.com/tags/modules/</link>
+      <pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/modules/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>asciidoc</title>
+      <link>https://bmuschko.com/tags/asciidoc/</link>
+      <pubDate>Sun, 25 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/asciidoc/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>asciidoctor</title>
+      <link>https://bmuschko.com/tags/asciidoctor/</link>
+      <pubDate>Sun, 25 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/asciidoctor/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>documentation</title>
+      <link>https://bmuschko.com/tags/documentation/</link>
+      <pubDate>Sun, 25 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/documentation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>extension</title>
+      <link>https://bmuschko.com/tags/extension/</link>
+      <pubDate>Sun, 25 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/extension/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>testing</title>
+      <link>https://bmuschko.com/tags/testing/</link>
+      <pubDate>Sun, 25 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/testing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>boot</title>
+      <link>https://bmuschko.com/tags/boot/</link>
+      <pubDate>Mon, 12 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/boot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>container</title>
+      <link>https://bmuschko.com/tags/container/</link>
+      <pubDate>Mon, 12 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/container/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>docker</title>
+      <link>https://bmuschko.com/tags/docker/</link>
+      <pubDate>Mon, 12 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/docker/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>java</title>
+      <link>https://bmuschko.com/tags/java/</link>
+      <pubDate>Mon, 12 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/java/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>spring</title>
+      <link>https://bmuschko.com/tags/spring/</link>
+      <pubDate>Mon, 12 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/spring/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>testcontainers</title>
+      <link>https://bmuschko.com/tags/testcontainers/</link>
+      <pubDate>Mon, 12 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/testcontainers/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>google</title>
+      <link>https://bmuschko.com/tags/google/</link>
+      <pubDate>Tue, 16 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/google/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gradle</title>
+      <link>https://bmuschko.com/tags/gradle/</link>
+      <pubDate>Tue, 16 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/gradle/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>maven</title>
+      <link>https://bmuschko.com/tags/maven/</link>
+      <pubDate>Tue, 16 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/maven/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>assertion</title>
+      <link>https://bmuschko.com/tags/assertion/</link>
+      <pubDate>Wed, 13 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/assertion/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>bdd</title>
+      <link>https://bmuschko.com/tags/bdd/</link>
+      <pubDate>Wed, 13 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/bdd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>integration</title>
+      <link>https://bmuschko.com/tags/integration/</link>
+      <pubDate>Wed, 13 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/integration/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tdd</title>
+      <link>https://bmuschko.com/tags/tdd/</link>
+      <pubDate>Wed, 13 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/tdd/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>unit</title>
+      <link>https://bmuschko.com/tags/unit/</link>
+      <pubDate>Wed, 13 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/unit/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>management</title>
+      <link>https://bmuschko.com/tags/management/</link>
+      <pubDate>Sat, 26 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/management/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>package</title>
+      <link>https://bmuschko.com/tags/package/</link>
+      <pubDate>Sat, 26 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/package/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>git</title>
+      <link>https://bmuschko.com/tags/git/</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/git/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>release</title>
+      <link>https://bmuschko.com/tags/release/</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/release/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>travis</title>
+      <link>https://bmuschko.com/tags/travis/</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/travis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>versioning</title>
+      <link>https://bmuschko.com/tags/versioning/</link>
+      <pubDate>Thu, 17 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/versioning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>career</title>
+      <link>https://bmuschko.com/tags/career/</link>
+      <pubDate>Mon, 14 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/career/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>compose</title>
+      <link>https://bmuschko.com/tags/compose/</link>
+      <pubDate>Fri, 27 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/compose/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>python</title>
+      <link>https://bmuschko.com/tags/python/</link>
+      <pubDate>Fri, 27 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>redis</title>
+      <link>https://bmuschko.com/tags/redis/</link>
+      <pubDate>Fri, 27 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/redis/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>javascript</title>
+      <link>https://bmuschko.com/tags/javascript/</link>
+      <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/javascript/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>nodejs</title>
+      <link>https://bmuschko.com/tags/nodejs/</link>
+      <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/nodejs/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>generation</title>
+      <link>https://bmuschko.com/tags/generation/</link>
+      <pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/generation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>init</title>
+      <link>https://bmuschko.com/tags/init/</link>
+      <pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/init/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>project</title>
+      <link>https://bmuschko.com/tags/project/</link>
+      <pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/project/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>spock</title>
+      <link>https://bmuschko.com/tags/spock/</link>
+      <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/spock/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>junit5</title>
+      <link>https://bmuschko.com/tags/junit5/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/junit5/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mock</title>
+      <link>https://bmuschko.com/tags/mock/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/mock/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>mockito</title>
+      <link>https://bmuschko.com/tags/mockito/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/mockito/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>continuous</title>
+      <link>https://bmuschko.com/tags/continuous/</link>
+      <pubDate>Mon, 30 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/continuous/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>delivery</title>
+      <link>https://bmuschko.com/tags/delivery/</link>
+      <pubDate>Mon, 30 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/delivery/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>heroku</title>
+      <link>https://bmuschko.com/tags/heroku/</link>
+      <pubDate>Mon, 30 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/heroku/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>author</title>
+      <link>https://bmuschko.com/tags/author/</link>
+      <pubDate>Tue, 18 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/author/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>book</title>
+      <link>https://bmuschko.com/tags/book/</link>
+      <pubDate>Tue, 18 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/book/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tech</title>
+      <link>https://bmuschko.com/tags/tech/</link>
+      <pubDate>Tue, 18 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/tech/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>writing</title>
+      <link>https://bmuschko.com/tags/writing/</link>
+      <pubDate>Tue, 18 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/writing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>javadoc</title>
+      <link>https://bmuschko.com/tags/javadoc/</link>
+      <pubDate>Sun, 21 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/tags/javadoc/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

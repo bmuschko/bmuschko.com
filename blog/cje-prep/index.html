@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="map[]" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
+    <title>Crushing the Certified Jenkins Engineer (CJE) exam</title>
+    <meta name="generator" content="Hugo 0.59.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+        
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-99678333-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://bmuschko.com/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/talks/">TALKS</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="https://bmuschko.com/blog/cje-prep/">Crushing the Certified Jenkins Engineer (CJE) exam</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+            
+            <span class="label label-success">jenkins</span>
+            
+            <span class="label label-success">cje</span>
+            
+            <span class="label label-success">certification</span>
+            
+            </br></br></br>
+            January 30, 2020
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <table>
+    <tr>
+        <td>
+            Last summer, I decided to take the <a href="https://www.cloudbees.com/jenkins/certification/">Certified Jenkins Engineer (CJE) exam</a>. I have years of experience with Jenkins as developer managing my own jobs as well as Jenkins administrator. Aquiring the certification sounded like a good idea to prove my proficiency with the subject. To pass the exam, you have to understand theoretical and practical aspects of CI/CD. The main focus of the certification lies on operating Jenkins pipelines and maintaining them in the context of a larger organization.
+        </td>
+        <td>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+        <td>
+            <a href="https://www.cloudbees.com/jenkins/certification/"><img src="/img/blog/cje-prep/cje-logo.png" alt="CJE Logo" /></a>
+        </td>
+    </tr>
+</table>
+<br>
+<div class="paragraph">
+<p>To certify, you have to register with a test center near you. The test center provides a computer preloaded with the questions. You have two hours to complete them. With the right practical knowledge of Jenkins, you should have not trouble hitting the passing score. For a rough guideance on the curriculum, check out the <a href="https://www.previous.cloudbees.com/sites/default/files/cje-study-guide-2018.pdf">2018 study guide</a>. The PDF contains helpful links to external resources you may want to read.</p>
+</div>
+<div class="paragraph">
+<p>In this post, I want to summarize the resources I used to prepare for the CJE exam. I hope they will help you with succeeding the exam with flying colors.</p>
+</div>
+<div class="sect1">
+<h2 id="_setting_up_a_jenkins_environment_for_practice">Setting up a Jenkins environment for practice</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An important aspect of getting familiar with all aspects of Jenkins is to set up an instance and get hands-on experience. Here are some options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Your company already uses Jenkins as the standard CI/CD product. You likely already have an instance in place, optimally with a master/agent setup.</p>
+</li>
+<li>
+<p>Download a <a href="https://jenkins.io/doc/book/installing/">Jenkins distribution</a> to your machine and run it there. The distribution is available for a variety of target platforms. You can even run Jenkins in a Docker container to keep your machine clean and tidy.</p>
+</li>
+<li>
+<p>Running Jenkins in virtual machine. This method is helpful for emulating a distributed build setup. I used <a href="https://www.vagrantup.com/">Vagrant</a> to stand up a master with two agents which worked quite well.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>I personally decided to run Jenkins on my developer machine by executing the Java command on the WAR file. You can exercise all aspects of Jenkins except for distributed builds. For distributed builds, I chose option 3.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_learning_resources">Learning resources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are a couple of free and paid resources that I found helpful. Moreover, I wrote two blog posts if you&#8217;d like go further on certain aspects.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A good way to start are the <a href="https://standard.cbu.cloudbees.com/series/certified-jenkins-engineer-exam-prep">video courses by CloudBees university</a>. Those courses lay out the curriculum and touch on all topics important to the exam.</p>
+</li>
+<li>
+<p>The course "Learn Jenkins by doing" is an instructor-led <a href="https://linuxacademy.com/course/learn-jenkins-by-doing/">video course by Linux Academy</a>. It might be helful to go through the material shortly before taking the test. You can subscribe to a 30-day trial to get access to the content.</p>
+</li>
+<li>
+<p>I wrote a blog post on <a href="https://bmuschko.com/blog/jenkins-shared-libraries/">best practices for shared libraries in Jenkins</a>. The content goes beyond what&#8217;s required for the exam but you might find it helpful if you planning to roll out pipeline logic on a bigger scale in your organization.</p>
+</li>
+<li>
+<p>You can set up your Jenkins environment in a Kubernetes cluster. To learn more, check out <a href="https://github.com/bmuschko/jenkins-with-kubernetes">this GitHub repository</a>. The instructions walk you through the installation and configuration steps. I know that a lot of people are interested in this topic but it&#8217;s not really relevant to the exam.</p>
+</li>
+</ol>
+</div>
+<table>
+    <tr>
+        <td>
+            <a href="https://learning.oreilly.com/learning-paths/learning-path-certified/0636920305934/">
+                <img src="/img/blog/cje-prep/oreilly-learning-path-logo.jpg" alt="Learning Path Cover" />
+            </a>
+        </td>
+        <td>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+        <td>
+            After passing the exam, I decided to create a learning resource to help students with their journey of becoming a CJE. In cooperation with O'Reilly Media, I produced a video course, the <a href="https://learning.oreilly.com/learning-paths/learning-path-certified/0636920305934/">Certified Jenkins Engineer (CJE) Prep Course</a>, that explains the theory of all topics covered in the exam and reinforces the material with the help of <a href="https://github.com/bmuschko/cje-prep">practical demos</a>. Check it out! It's free for subscribers of the Safari program.
+        </td>
+    </tr>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_during_the_exam">During the exam</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are a couple of things you need to consider for the actual exam. <strong>Time management</strong> wasn&#8217;t really an issue for me. As far as I can remember, I finished the exam after 1 1/2 hours with plenty of time to revisit answers to questions I wasn&#8217;t quite sure about.</p>
+</div>
+<div class="paragraph">
+<p>The exam is conducted in a test center. You will not have access to any <strong>documentation</strong> and need to solely rely on your knowledge. Try not to cheat by secretly bringing in any notes as it can result in automatically failing the test. Remember that you can&#8217;t bring any food or drinks either.</p>
+</div>
+<div class="paragraph">
+<p>You will likely encounter questions that are not necessarily clear-cut or that you can&#8217;t solve right away without thinking about the answer more deeply. Don&#8217;t get hung up on those questions. Simply <strong>move forward</strong> by working on the next question to ensure that you score the points for simplier questions. You can always come back.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>I hope I could give a couple of valuable pointers to prepare for the CJE exam. It took me about a week of preparation to feel ready for the actual test by brushing up on topics that I was less familiar with. Your preparation time may vary and highly depends on your experience with Jenkins. Practice, practice, practice. I am sure you&#8217;ll be able to pass the exam. Good luck and let me know how it goes!</p>
+</div>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        October 31, 2019
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/jenkins-shared-libraries/">Best practices for writing Jenkins shared libraries</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        August 4, 2019
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/ckad-prep/">Crushing the Certified Kubernetes Application Developer (CKAD) exam</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        January 25, 2019
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/go-on-jenkins/">Building Go projects using modules on Jenkins</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = 'bmuschko-com';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://bmuschko.com/js/docs.min.js"></script>
+<script src="https://bmuschko.com/js/main.js"></script>
+
+<script src="https://bmuschko.com/js/ie10-viewport-bug-workaround.js"></script><!-- Syntax highlighting -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/shell.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/groovy.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>cje on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/cje/</link>
+    <description>Recent content in cje on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 30 Jan 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/cje/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Crushing the Certified Jenkins Engineer (CJE) exam</title>
+      <link>https://bmuschko.com/blog/cje-prep/</link>
+      <pubDate>Thu, 30 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/cje-prep/</guid>
+      <description>Last summer, I decided to take the Certified Jenkins Engineer (CJE) exam. I have years of experience with Jenkins as developer managing my own jobs as well as Jenkins administrator. Aquiring the certification sounded like a good idea to prove my proficiency with the subject. To pass the exam, you have to understand theoretical and practical aspects of CI/CD. The main focus of the certification lies on operating Jenkins pipelines and maintaining them in the context of a larger organization.</description>
+    </item>
+    
+  </channel>
+</rss>

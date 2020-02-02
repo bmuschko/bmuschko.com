@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>java on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/java/</link>
+    <description>Recent content in java on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 12 Nov 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/java/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Testing a Java project with TestContainers on JUnit 5</title>
+      <link>https://bmuschko.com/blog/java-project-testcontainers/</link>
+      <pubDate>Mon, 12 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/java-project-testcontainers/</guid>
+      <description>TestContainers is a helpful tool for writing integration and functional tests with Docker containers as fixtures. Starting with version 1.10.0, the Java library of TestContainers supports writing and executing tests with JUnit 5, a feature long-awaited by the community. Time to explore the functionality by example!
+ In this blog post, you will learn how to build an image for a Java application on-the-fly, start up a container as test fixture and stop it after the test has finished.</description>
+    </item>
+    
+    <item>
+      <title>Injecting credentials into a Docker container running a Spring Boot application</title>
+      <link>https://bmuschko.com/blog/docker-secret-spring-boot/</link>
+      <pubDate>Mon, 05 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/docker-secret-spring-boot/</guid>
+      <description>The profile concept in Spring Boot makes is extremely easy to provide configuration specific to a runtime environment. A typical setup might include configuration for the local development environment, a testing environment, staging and production. All you need to do is to provide a properties files per environment on the classpath e.g. application-dev.properties and application-prod.properties. At runtime, you can tell Spring Boot which profile to pick via command line option or environment variable.</description>
+    </item>
+    
+    <item>
+      <title>Containerization workflow for Java apps with Jib</title>
+      <link>https://bmuschko.com/blog/containerization-with-jib/</link>
+      <pubDate>Tue, 16 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/containerization-with-jib/</guid>
+      <description>Containerizing a Java application is the natural extension to building a plain, executable JAR file: &#34;write once, run everywhere&#34;. Creating an optimized image for an application is far from straightforward and requires in-depth knowledge of Docker concepts and best practices.
+ A typical developer worflow involves the following steps. First, you start out by writing a Dockerfile with the goal of producing an image small in size while at the same time ensuring cacheability of layers as much as possible.</description>
+    </item>
+    
+    <item>
+      <title>Publishing Javadocs with Gradle</title>
+      <link>https://bmuschko.com/blog/publishing-javadocs/</link>
+      <pubDate>Sun, 21 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/publishing-javadocs/</guid>
+      <description>Introduction Documentation is a must-have for any consumer-facing project. It can come in different shapes and sizes: documentation about the functionality of the project, DSL documentation, API documentation, usage examples and many more. For consumers of libraries the relevant part of the documentation often is the exposed API. In the Java world, API documentation materializes as Javadocs.
+ Java provides the javadoc tool for generating Javadocs documentation from source code. Running the tool is a no-brainer either from the command line or as an integration with any of the build tools available, like Ant, Maven or Gradle.</description>
+    </item>
+    
+  </channel>
+</rss>

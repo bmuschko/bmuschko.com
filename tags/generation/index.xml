@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>generation on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/generation/</link>
+    <description>Recent content in generation on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 06 Mar 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/generation/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Easy Gradle project generation</title>
+      <link>https://bmuschko.com/blog/gradle-project-generation/</link>
+      <pubDate>Tue, 06 Mar 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/gradle-project-generation/</guid>
+      <description>Having to create a build.gradle file, a settings.gradle file and the necessary project layout manually for ever new Gradle project can be a drag. Gradle provides the build init plugin for generating new projects with different flavors from the command line. The downside of this approach is that you already have to have the Gradle runtime installed on your machine. You will likely also have to look up the right combination of command line options from the user manual.</description>
+    </item>
+    
+  </channel>
+</rss>

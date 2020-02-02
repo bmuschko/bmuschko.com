@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ckad on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/ckad/</link>
+    <description>Recent content in ckad on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Aug 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/ckad/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Crushing the Certified Kubernetes Application Developer (CKAD) exam</title>
+      <link>https://bmuschko.com/blog/ckad-prep/</link>
+      <pubDate>Sun, 04 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/ckad-prep/</guid>
+      <description>I recently decided the take the Certified Kubernetes Application Developer (CKAD) exam. Unlike other certification exams, the CKAD exam is 100% hands-on. You are not expected to select one or many answers from a multiple choice question but instead solve problems on a Kubernetes cluster. Each question focuses on a practical aspect of Kubernetes and applying it to real-world use cases. By passing the exam, you demonstrated practical proficiency with Kubernetes concepts in the role of an application developer.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="map[]" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
+    <title>Building Go with Gradle</title>
+    <meta name="generator" content="Hugo 0.59.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+        
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-99678333-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://bmuschko.com/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/talks/">TALKS</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="https://bmuschko.com/blog/golang-with-gradle/">Building Go with Gradle</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+            
+            <span class="label label-success">build</span>
+            
+            <span class="label label-success">golang</span>
+            
+            <span class="label label-success">gradle</span>
+            
+            </br></br></br>
+            July 29, 2017
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <div class="sect1">
+<h2 id="_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In July 2017 <a href="https://golang.org/">Google Go</a> made a <a href="https://www.tiobe.com/tiobe-index/go/">big jump on the TIOBE index</a>. It&#8217;s now ranked among the top 10 most popular programming languages. With the rise of Moby aka Docker, Kubernetes and InfluxDB the language has become the go-to tool in the DevOps space. The complexity of automating the process of building, assembling and distributing the source code and binaries for any medium- to large-sized project is high. It&#8217;s somewhat shocking to see that the predominant tooling of automating in Go is still a mixture of Make files and shell scripts as it can be observed in the <a href="https://github.com/moby/moby/blob/master/Makefile/">Moby</a> and <a href="https://github.com/kubernetes/kubernetes/tree/master/build/">Kubernetes</a> code base.</p>
+</div>
+<div class="paragraph">
+<p>Make files and shell script can be powerful tools but they do not provide any support for strong modeling of a domain, are hard to maintain and do not provide any means to testing the automation code.</p>
+</div>
+<div class="paragraph">
+<p>In this post I&#8217;d like to identify if Gradle can live up to the game. We&#8217;ll look at a simple Go project, some typical challenges and tasks encountered when building this project and how Gradle can help to automate the process.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_can_gradle_help">How can Gradle help?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image right"><img src="/img/blog/golang-with-gradle/go-mini.png" alt="go mini"></span>
+Gradle currently does not provide a standard way to build Go project with its core distribution. However, users can write plugins to enhance the functionality by plugins to model new domains.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/gogradle/gogradle">GoGradle</a> is a plugin that helps with compiling, testing and assembling Go projects. At this year&#8217;s Gradle Summit, the plugin was awarded the Gradle plugin of the year 2017. For a deep dive on the plugin functionality check out the <a href="https://www.youtube.com/watch?v=Mvf3gY1MopE/">recording of the Summit talk on GoGradle</a>.</p>
+</div>
+<div class="paragraph">
+<p><em>Disclaimer:</em> I found <a href="https://github.com/echocat/gradle-golang-plugin">another Gradle plugin for building Go project</a> but did not have a chance to compare the functionality and their implementation approaches.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_sample_project">The sample project</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image right"><img src="/img/blog/golang-with-gradle/link-verifier-logo.jpg" alt="link verifier logo"></span>
+For the purpose of demonstrating the functionality provided by the GoGradle plugin, we&#8217;ll have a look at a Go project called <a href="https://github.com/bmuschko/link-verifier">Link Verifier</a>, a program run from the command line. Functionally, Link Verifier recursively iterates over a given directory and identifies plain-text mark-up files like AsciiDoc and Markdown. For each of the found documents, the program extracts URLs and verifies that they can be resolved by executing a HTTP call.</p>
+</div>
+<div class="paragraph">
+<p>The project depends on external Go packages: <a href="https://github.com/mvdan/xurls">xurls</a> for extract URLs out of a text document and <a href="https://github.com/stretchr/testify">testify</a> for conviently making assertions in test code. Both libraries can be resolved with the help of <a href="https://glide.sh/">Glide</a>, a package manager for Go. A developer working on the project will have to install Glide to properly resolve the declared dependencies and their transitive dependencies.</p>
+</div>
+<div class="paragraph">
+<p>The project uses <a href="https://github.com/bmuschko/link-verifier/blob/bm/gradle/test.sh">Go&#8217;s built-in support for executing tests</a>, the <code>test</code> command. Additionally, code coverage metrics are produced by configuring the The <code>test</code> command. The project uses <a href="https://codecov.io/gh/bmuschko/link-verifier">Codecov</a> to capture and visualize code coverage metrics over time.</p>
+</div>
+<div class="paragraph">
+<p>The program was designed to run on different OSes e.g. Linux, Windows and MacOSX. For that purpose the project <a href="https://github.com/bmuschko/link-verifier/releases/">publishes prebuilt libraries</a> with every single release. To adhere to the license agreements of external packages used by the project, I also wrote some logic for <a href="https://github.com/bmuschko/link-verifier/blob/bm/gradle/third-party-licenses.sh">extracting the third-party license agreements</a> and <a href="https://github.com/bmuschko/link-verifier/blob/bm/gradle/cross-compile.sh">packaging them with the corresponding library</a> in a TAR or ZIP file.</p>
+</div>
+<div class="paragraph">
+<p>Most of the automation steps mentioned above can be executed by invoking a shell script. Every change made to <a href="https://travis-ci.org/bmuschko/link-verifier/">the project runs through Travis CI</a>. To reuse automation logic Travis directly calls the shell script checked into version control with the project&#8217;s source code.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s see if the Gradle plugin can fulfill all of those requirements while at the same hiding and simplifying complex implementation logic which would otherwise lives in a shell script. You can find the source code describe below in a <a href="https://github.com/bmuschko/link-verifier/tree/bm/gradle">dedicated branch</a>.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_initial_setup">Initial setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Getting started with the GoGradle plugin is easy. We just have to create a <code>build.gradle</code> file in the root directory of the existing project. In the build script, apply the plugin and provide some basic configuration that indicates the root path of the package used for the project. For the Link Verifier project, I assigned <code>github.com/bmuschko/link-verifier</code> to the <code>packagePath</code> property of the extension. All sections below directly refer to version 0.6.5. Please be aware that the behavior and/or the configuration options may change in future versions of the plugin.</p>
+</div>
+<div class="paragraph">
+<p>By default the GoGradle plugin downloads the latest version of Go automatically and stores it in a temporary directory. Alternatively, a user can also configure a concrete Go version as needed. Please refer to the <a href="https://github.com/gogradle/gogradle/blob/master/docs/getting-started.md#configuration">plugin documentation</a> for more information.</p>
+</div>
+<div class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
+    id 'com.github.blindpirate.gogradle' version '0.6.5'
+}
+
+golang {
+    packagePath = 'github.com/bmuschko/link-verifier'
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 1. Basic project setup</em></p>
+</div>
+<div class="paragraph">
+<p>Now that we applied the plugin to our project, we have <a href="https://github.com/gogradle/gogradle/blob/master/docs/tasks.md">a bunch of useful tasks</a> to our disposal. Probably the most important one is <code>build</code> which resolves all dependencies, compiles the code, runs the tests and assembles the binaries.</p>
+</div>
+<div class="paragraph">
+<p>Executing the task with the build script shown in listing 1 fails compilation. Obviously, the project is missing external dependencies referenced in source file. In the next step, we&#8217;ll fix the issue.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_managing_and_resolving_dependencies">Managing and resolving dependencies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Glide is my package management tool of choice for building Go projects. The project uses the libraries xurls and testify with a specific version to ensure reproducibility. Listing 2 shows those dependencies in the YAML format processed by Glide.</p>
+</div>
+<div class="paragraph">
+<p><em>glide.yaml</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">package: .
+import:
+- package: github.com/mvdan/xurls
+  version: 1.1.0
+testImport:
+- package: github.com/stretchr/testify
+  version: 1.1.4</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 2. The Glide dependency definition file</em></p>
+</div>
+<div class="paragraph">
+<p>As you might know Go resolves external packages from Git repositories. In file named <code>glide.lock</code>, Glide maps the concrete version of an external dependency to a Git commit hash of the repository hosting the code. An example of such a lock file can be seen in listing 3.</p>
+</div>
+<div class="paragraph">
+<p><em>glide.lock</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">hash: 806deb3bb1bb02051f152c49856cac37224f623247742a1b8c028b38dff21aef
+updated: 2017-06-03T12:38:37.338393246-04:00
+imports:
+- name: github.com/mvdan/xurls
+  version: d315b61cf6727664f310fa87b3197e9faf2a8513
+testImports:
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 3. The Glide dependency lock file</em></p>
+</div>
+<div class="paragraph">
+<p>The latest version of Gradle, 4.0, does not support resolving dependencies from a Git repository. So how do we make sure that Gradle understands the information? GoGradle enhances the standard way of declaring dependencies in Gradle. By applying the plugin users can declare Git-based dependencies with a help of a DSL. The exposed DSL seamlessly blends into the existing dependency management DSL as shown in listing 4.</p>
+</div>
+<div class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+    golang {
+        build name:'github.com/mvdan/xurls', version:'d315b61cf6727664f310fa87b3197e9faf2a8513'
+        test name:'github.com/stretchr/testify', version:'69483b4bd14f5845b5a1e55bca19e954e827f1d0'
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 4. Gradle dependency definitions derived from Glide yaml file</em></p>
+</div>
+<div class="paragraph">
+<p>As you can imagine typing down the dependency declaration manually is somewhat painful. Thankfully, the plugin introduces the convenience task <code>init</code>. The task <a href="https://github.com/gogradle/gogradle/blob/master/docs/getting-started.md#start">derives the information declared in the Glide lock file and translates it into Gradle-based configuration</a>. I&#8217;d expect that VCS-based repository formats are going to be introduced by Gradle core natively in the future.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>The functionality of the <code>init</code> task is not limited to Glide. It also understands a variety of other Go package management tools. Please <a href="https://github.com/gogradle/gogradle#why-gogradle">refer to the documentation</a> to identify if your package manager is supported by GoGradle.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>With all the dependencies in place, the project is able to run through the compilation and test steps. Let&#8217;s also have a closer look at the testing capabilities of the plugin.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_executing_tests">Executing tests</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>GoGradle&#8217;s testing support follows the same conventions you might know from <a href="https://docs.gradle.org/current/userguide/java_plugin.html">Java-based projects</a>. The <code>test</code> task provided by the plugin finds all Go files that follow the file name convention <code>&lt;package&gt;_test.go</code>. GoGradle properly detects and runs all tests in the project as shown in the following console output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">$ gradle test
+
+&gt; Task :prepare
+Found go 1.8.3 in /usr/local/go/bin/go, use it.
+Use project GOPATH: /Users/bmuschko/dev/projects/gradle-playground/link-verifier/.gogradle/project_gopath
+
+&gt; Task :test
+Test for github.com/bmuschko/link-verifier/stat finished, 4 completed, 0 failed
+Test for github.com/bmuschko/link-verifier/text finished, 6 completed, 0 failed
+Test for github.com/bmuschko/link-verifier/http finished, 3 completed, 0 failed
+Test for github.com/bmuschko/link-verifier/file finished, 6 completed, 0 failed
+
+BUILD SUCCESSFUL in 3s
+5 actionable tasks: 3 executed, 2 up-to-date</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default the task automatically generates test reports as well as coverage profile data. Coverage metrics can be found in the directory <code>.gogradle/reports</code>. Figure 1 shows a sample report for the project.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/img/blog/golang-with-gradle/test-report.png" alt="Test report"></span>
+<em>Figure 1. HTML test report</em></p>
+</div>
+<div class="paragraph">
+<p>At the time of writing, the plugin only creates one coverage profile data file per package. Aggregating individual coverage files requires writing some custom logic. Listing 5 demonstrates a simple solution to the problem. I expect this functionality to be worked into the plugin sooner or later.</p>
+</div>
+<div class="paragraph">
+<p><em>buildSrc/src/main/groovy/com/bmuschko/linkverifier/AggregateCoverage.groovy</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package com.bmuschko.linkverifier
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputFile
+
+class AggregateCoverage extends DefaultTask {
+    @InputDirectory
+    File inputDir = project.file('.gogradle/reports/coverage/profiles')
+
+    @OutputFile
+    File outputFile = project.file("$project.buildDir/reports/coverage-aggregate/coverage.txt")
+
+    AggregateCoverage() {
+        group = 'GoGradle'
+        description = 'Aggregates coverage profile data.'
+    }
+
+    @TaskAction
+    void aggregate() {
+        StringBuilder aggregatedCoverage = new StringBuilder()
+
+        inputDir.listFiles().each {
+            aggregatedCoverage &lt;&lt; it.text
+        }
+
+        outputFile.text = aggregatedCoverage.toString()
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 5. Custom task for aggregating coverage profiles</em></p>
+</div>
+<div class="paragraph">
+<p>With the custom task implementation in place, the build script can be enhanced by the task <code>aggregateCoverage</code>. As shown in listing 6, necessary task dependencies have been established to hook into the typical lifecycle of a Go-based Gradle project.</p>
+</div>
+<div class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.bmuschko.linkverifier.AggregateCoverage
+
+task aggregateCoverage(type: AggregateCoverage) {
+    mustRunAfter test
+}
+
+build.dependsOn aggregateCoverage</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 6. Hooking coverage aggregration task into task lifecycle</em></p>
+</div>
+<div class="paragraph">
+<p>After exploring the plugin&#8217;s testing capabilities, let&#8217;s round out the discussion by having a look at the cross-compilation functionality.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cross_compiling_binaries">Cross-compiling binaries</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Link Verifier creates a <a href="https://github.com/bmuschko/link-verifier/blob/bm/gradle/cross-compile.sh">matrix-combination of cross-compiled binary files</a>. The plugin takes away the burden of having to implement the logic manually for every single project. With the help of the <code>build</code> task, a user can declare a list of target platforms as shown in listing 7.</p>
+</div>
+<div class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">build {
+    targetPlatform = 'darwin-amd64, netbsd-amd64, netbsd-386, openbsd-amd64, openbsd-386, freebsd-amd64, freebsd-386, linux-amd64, linux-386, linux-arm, windows-amd64, windows-386'
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 7. Target platforms definitions</em></p>
+</div>
+<div class="paragraph">
+<p>Upon execution, the task creates the resulting prebuilt libraries in the directory <code>.gogradle</code>. Each file name consists of the provided target platform and the name of the project. Currently, the project version is not taken into account.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>.
+└── .gogradle
+    ├── darwin_amd64_link-verifier
+    ├── freebsd_386_link-verifier
+    ├── freebsd_amd64_link-verifier
+    ├── linux_386_link-verifier
+    ├── linux_amd64_link-verifier
+    ├── linux_arm_link-verifier
+    ├── netbsd_386_link-verifier
+    ├── netbsd_amd64_link-verifier
+    ├── openbsd_386_link-verifier
+    ├── openbsd_amd64_link-verifier
+    ├── windows_386_link-verifier
+    └── windows_amd64_link-verifier</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In my shell script, I also extracted all third-party licenses and bundled them with the binary in a <code>tar.gz</code> or <code>.zip</code> file. The plugin does not provide this functionality. However, it&#8217;s very easy to achieve this with the help of Gradle&#8217;s built-in capabilities as shown in listing 8.</p>
+</div>
+<div class="paragraph">
+<p><em>buildSrc/src/main/groovy/com/bmuschko/linkverifier/Distributions.groovy</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">package com.bmuschko.linkverifier
+
+import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.InputDirectory
+import org.gradle.api.tasks.OutputDirectory
+
+class Distributions extends DefaultTask {
+    @InputDirectory
+    File inputDir = project.file('.gogradle')
+
+    @OutputDirectory
+    File outputDir = project.file("$project.buildDir/distributions")
+
+    Distributions() {
+        group = 'GoGradle'
+        description = 'Builds packaged distributions for all prebuilt binaries.'
+    }
+
+    @TaskAction
+    void create() {
+        inputDir.listFiles(new CrossCompiledFileFilter(project)).each { preBuiltLib -&gt;
+            if (preBuiltLib.name.contains('windows')) {
+                ant.zip(destfile: "${outputDir}/${preBuiltLib.name}.zip") {
+                    fileset(dir: inputDir) {
+                        include(name: preBuiltLib.name)
+                    }
+                }
+            } else {
+                def tarFile = "${outputDir}/${preBuiltLib.name}.tar"
+                ant.tar(destfile: tarFile) {
+                    tarfileset(dir: inputDir) {
+                        include(name: preBuiltLib.name)
+                    }
+                }
+                ant.gzip(destfile: "${tarFile}.gz", src: tarFile)
+                project.delete(tarFile)
+            }
+        }
+    }
+
+    private static class CrossCompiledFileFilter implements FilenameFilter {
+        private final Project project
+
+        CrossCompiledFileFilter(Project project) {
+            this.project = project
+        }
+
+        boolean accept(File f, String filename) {
+            filename.endsWith("_${project.name}")
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 8. Packaging prebuilt binaries into archive files</em></p>
+</div>
+<div class="paragraph">
+<p>In the build script, we just need to create a new task of type <code>Distributions</code> and ensure that it can only run after the prebuilt libraries have been created.</p>
+</div>
+<div class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.bmuschko.linkverifier.Distributions
+
+task dist(type: Distributions) {
+    mustRunAfter build
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 9. Instantiating a task for creating distributions</em></p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_summary">Summary</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Go&#8217;s popularity is growing. Gradle can help to automate the build process for Go-based projects. In this post, we had a look at the community plugin GoGradle. GoGradle is a powerful and easy-to-use addition to the Gradle plugin ecosystem. It provides tasks for compiling and testing Go sources. It can also help with creating prebuilt libraries for distribution.</p>
+</div>
+<div class="paragraph">
+<p>We&#8217;ve seen that the plugin can reduce a lot of boiler plate code which normally would have to be written as shell scripts. In some areas, the plugin can be improved even further. To drive innovation, I <a href="https://github.com/gogradle/gogradle/issues/created_by/bmuschko">opened a list of issues</a> on the plugin&#8217;s GitHub repository.</p>
+</div>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        February 1, 2020
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/bazel-groovy/">Building Groovy with Bazel</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        October 31, 2019
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/jenkins-shared-libraries/">Best practices for writing Jenkins shared libraries</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        January 25, 2019
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/go-on-jenkins/">Building Go projects using modules on Jenkins</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = 'bmuschko-com';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://bmuschko.com/js/docs.min.js"></script>
+<script src="https://bmuschko.com/js/main.js"></script>
+
+<script src="https://bmuschko.com/js/ie10-viewport-bug-workaround.js"></script><!-- Syntax highlighting -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/shell.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/groovy.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+  </body>
+</html>

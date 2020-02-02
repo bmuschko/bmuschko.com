@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="map[]" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
+    <title>Talks</title>
+    <meta name="generator" content="Hugo 0.59.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+        
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-99678333-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://bmuschko.com/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/talks/">TALKS</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">  
+            <h3>Talks</h3>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+            
+            
+            <h3><strong>Fully automated release processes for Go projects</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">go</span>
+                
+                  <span class="label label-success">tooling</span>
+                
+                  <span class="label label-success">cicd</span>
+                
+                  <span class="label label-success">jenkins</span>
+                
+                  <span class="label label-success">travisci</span>
+               
+            </p>
+    
+            <p><p>Go projects need to rely on an automated process that ushers changes through all aspects of a delivery pipeline. A typical pipeline involves resolving packages, compilation, testing, generation of code coverage, static code analysis, binary creation, and the actual release of the binaries.</p>
+
+<p>This session discusses automation aspects and tools helpful for streamlining Go projects. First, you’ll get to know individual tools and why they are so useful. Then you’ll tie it all together to form a simple delivery pipeline for Go projects powered by Travis CI or Jenkins. You will leave the session with a recipe for implementing a sensible, yet simple end-to-end automation approach for your own Go projects to ensure reliable and reproducible builds.</p>
+</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/fully-automated-release-processes-for-go-projects">Slides</a> 
+                
+            </p>
+            <hr />
+            
+            <h3><strong>Powering a build pipeline with Docker and Jenkins</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">cicd</span>
+                
+                  <span class="label label-success">docker</span>
+                
+                  <span class="label label-success">jenkins</span>
+                
+                  <span class="label label-success">gradle</span>
+                
+                  <span class="label label-success">maven</span>
+                
+                  <span class="label label-success">testcontainers</span>
+                
+                  <span class="label label-success">jib</span>
+               
+            </p>
+    
+            <p><p>Continuous Delivery is key to delivering software fast and frequently. Jenkins 2 has made great strides in providing a solution for modeling a build pipeline as code. In addition, Docker invoked from a Gradle build can help with implementing certain aspects of your pipeline. Combining the benefits of these tools makes it possible to implement a streamlined and bulletproof process.</p>
+
+<p>In this demo-driven session, you will learn how to construct and operate a declarative pipeline with Jenkins. You’ll see a Spring Boot application taken all the way through the pipeline, from building the Docker image to pushing the image to a registry, using it for integration testing, and finally deploying the application to a Docker Swarm or Kubernetes.</p>
+</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/powering-a-build-pipeline-with-docker-and-jenkins-a1d28556-1c49-4f92-8831-4d2db2d9fef5">Slides</a> 
+                
+            </p>
+            <hr />
+            
+            <h3><strong>Getting the most out of your next generation JVM testing framework</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">testing</span>
+                
+                  <span class="label label-success">jvm</span>
+                
+                  <span class="label label-success">junit</span>
+                
+                  <span class="label label-success">spock</span>
+               
+            </p>
+    
+            <p><p>With the rise of newer JVM languages like Groovy and Kotlin, feature-rich test frameworks emerged. The test framework Spock became a welcome alternative for many projects fearless to adopt Groovy as part of their polyglot software stack.</p>
+
+<p>With the first GA release of JUnit 5 in September 2017, the JUnit team brought real innovation to the established space of testing JVM code. Not only is the release packed with new features comparable to the ones provided by Spock, JUnit 5 also serves as a platform for launching other test frameworks on the JVM.</p>
+
+<p>In this demo-driven talk, we will compare typical testing usage patterns and features available for JUnit 5 and Spock. You&rsquo;ll leave with a firm understanding of the benefits and tradeoffs delivered by both test frameworks.</p>
+</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/getting-the-most-out-of-your-next-generation-jvm-testing-framework">Slides</a> 
+                
+            </p>
+            <hr />
+            
+            <h3><strong>Restoring sanity to integration &amp; functional testing with TestContainers</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">testing</span>
+                
+                  <span class="label label-success">integration</span>
+                
+                  <span class="label label-success">fixture</span>
+                
+                  <span class="label label-success">container</span>
+                
+                  <span class="label label-success">docker</span>
+               
+            </p>
+    
+            <p><p>Many organizations struggle with maintaining tests that require more complex setup procedures. As a result, tests become flaky, unreliable and require manual intervention. In a world of &ldquo;automate all the things&rdquo; this is very counterproductive and unnecessarily costs organizations time and money.</p>
+
+<p>In this lightning talk, we&rsquo;ll have a look at setting up and running integration &amp; functional tests with the help of the open source library TestContainers. You will learn how to stand up lightweight, disposable Docker instances running your application as reliable test fixtures.</p>
+</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/restoring-sanity-to-integration-and-functional-testing-with-testcontainers">Slides</a> 
+                
+            </p>
+            <hr />
+            
+            <h3><strong>Powering a build pipeline with Docker and Jenkins</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">cicd</span>
+                
+                  <span class="label label-success">pipeline</span>
+                
+                  <span class="label label-success">docker</span>
+                
+                  <span class="label label-success">jenkins</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p><p>Continuous Delivery is key to delivering software fast and frequently. Jenkins 2 has made great strides in providing a solution for modeling a build pipeline as code. In addition, Docker invoked from a Gradle build can help with implementing certain aspects of your pipeline. Let&rsquo;s combine the benefits of these tools to implement a streamlined and bullet-proof process.</p>
+
+<p>In this demo-driven talk, you will learn how to construct and operate a declarative pipeline with Jenkins. We&rsquo;ll take a Spring Boot application all the way through the pipeline from building the Docker image, pushing the image to a registry, using it for integration testing and finally deploying the application to a Docker Swarm.</p>
+</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/powering-a-build-pipeline-with-docker-and-jenkins">Slides</a> 
+                
+            </p>
+            <hr />
+            
+            <h3><strong>Building Go projects made easy with Gradle</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">go</span>
+                
+                  <span class="label label-success">build</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p><p>For many Go projects, Make and shell scripts are the predominant tools of choice for automating the process of building source code as well as assembling and distributing binaries. While powerful tools, they do not provide any higher level abstractions like conventions and generalized concepts to minimize the burden on maintainability and readability. There must be a better way to avoid copy-pasting the same automation code from project to project!</p>
+
+<p>In this demo-driven talk, we will discuss how the build tool Gradle can help with bootstrapping and streamlining the automation of Go projects. In the process, we’ll identify some typical challenges with the help of a sample project and how to overcome them with GoGradle, a community plugin for Gradle.</p>
+</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/building-go-projects-made-easy-with-gradle">Slides</a> 
+                
+            </p>
+            <hr />
+            
+            <h3><strong>Designing and writing Gradle plugins</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">plugins</span>
+                
+                  <span class="label label-success">recipes</span>
+                
+                  <span class="label label-success">patterns</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p>Implementing plugins can be a daunting task for Gradle beginners and advanced users alike. The task requires many intricate considerations, decisions and deep knowledge about (sometimes undocumented) features. Have you ever asked yourself one of the following questions, then this session is for you!</p>
+
+<ul>
+<li>What&rsquo;s the best structure for my plugin code?</li>
+<li>How do I make my plugin as performant, flexible and user-friendly as possible?</li>
+<li>How do I ensure the best forward and backward compatibility for builds consuming my plugin?</li>
+<li>How do I expose a declarative DSL to configure my plugin&rsquo;s runtime behavior?</li>
+</ul></p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/designing-and-writing-gradle-plugins">Slides</a> 
+                
+                | <a href="https://www.youtube.com/watch?v=wLHqAC0Ag4M">Video</a>
+                 
+            </p>
+            <hr />
+            
+            <h3><strong>Testing the build with Testkit</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">testing</span>
+                
+                  <span class="label label-success">functional</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p>Build code contributes to the success of a company to a large extent. It enables an organization to deliver their software to the end user fast, frequently and reliably. With Continuous Delivery becoming a standard practice throughout the industry and build logic increasing in complexity, a need arises to verify the logic powering these processes. Gradle provides powerful support for testing build code out-of-the-box. In this demo-driven session, we will discuss the ins and outs of TestKit, a Gradle core library that helps with functional testing of build logic.</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/testing-the-build-with-testkit">Slides</a> 
+                
+                | <a href="https://www.youtube.com/watch?v=P7SvwkRXjSU">Video</a>
+                 
+            </p>
+            <hr />
+            
+            <h3><strong>Gradle plugin best practices by example</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">plugin</span>
+                
+                  <span class="label label-success">reusability</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p>Gradle is a general purpose, multi-platform build tool. Plugins allow for extending Gradle&rsquo;s core capabilities with reusable and targeted functionality. In this session, we&rsquo;ll discuss techniques and best practices for developing your own Gradle plugins by dissecting the structure, code, documentation and supporting infrastructure of an existing Gradle plugin.</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/gradle-plugin-best-practices-by-example">Slides</a> 
+                
+                | <a href="https://www.youtube.com/watch?v=2VKXzkAOuwc">Video</a>
+                 
+            </p>
+            <hr />
+            
+            <h3><strong>Advanced Dependency Management with Gradle</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">dependency</span>
+                
+                  <span class="label label-success">maven</span>
+                
+                  <span class="label label-success">ivy</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p>Gradle&rsquo;s dependency management is declarative, highly flexible and can cope with demanding requirements posed by enterprise projects. Among its key functionalities are transitive dependency resolution, full compatibility with existing infrastructure like Maven and Ivy repositories, as well as precise dependency resolution control, reporting and diagnostics. I am sure you are already using those features for your own projects but you can go further. In this demo-driven session, we will focus on less prominent, but extremely powerful dependency management capabilities you can use in your build today.</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/advanced-dependency-management-with-gradle">Slides</a> 
+                
+                | <a href="https://www.youtube.com/watch?v=YwEiGSSR4fc">Video</a>
+                 
+            </p>
+            <hr />
+            
+            <h3><strong>State of the art Gradle multi-module builds</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">modularization</span>
+                
+                  <span class="label label-success">ide</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p>Large, complex projects often consist of multiple modules based on particular functionality and logical boundaries. The benefits are obvious: better maintainability, less coupling and high cohesion of code. Gradle provides powerful support for configuring and executing modularized projects. In the course of this session, we will discuss the state of the art techniques for tackling highly-customized multi-project builds. Furthermore, this talk will give an outlook on the features to come.</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/state-of-the-art-gradle-multi-module-builds">Slides</a> 
+                
+                | <a href="https://www.youtube.com/watch?v=T5bYWLNTKN4">Video</a>
+                 
+            </p>
+            <hr />
+            
+            <h3><strong>Web Application Deployments With Gradle</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">web</span>
+                
+                  <span class="label label-success">deployment</span>
+                
+                  <span class="label label-success">container</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p>Web applications live and breathe in their runtime environment, the web container. But what is the best way to install the relevant artifacts during development or as part of your deployment pipeline? In this talk, we will discuss the techniques and tooling required to implement efficient, flexible, and most importantly, automated deployment strategies to local and remote web containers with Gradle.</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/web-application-deployments-with-gradle-from-the-developers-machine-to-continuous-deployment">Slides</a> 
+                
+                | <a href="https://www.youtube.com/watch?v=mWwN3PrcJUc">Video</a>
+                 
+            </p>
+            <hr />
+            
+            <h3><strong>Provisioning virtualized infrastructure with Gradle</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">virtualization</span>
+                
+                  <span class="label label-success">infrastructure</span>
+                
+                  <span class="label label-success">vagrant</span>
+                
+                  <span class="label label-success">docker</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p>Server infrastructure and configuration plays a crucial role in every build pipeline. It provides the runtime environment for your application and is used as basis for automated acceptance and exploratory testing. Managing infrastructure manually is time-consuming and error-prone. Virtualization helps to provide a repeatable, &ldquo;production-like&rdquo; environment. In this talk, we&rsquo;ll discuss how Gradle integrates with popular tools for creating virtual machines (VMs) as part of a standardized deployment and release process.</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/provisioning-virtualized-infrastructure-with-gradle">Slides</a> 
+                
+                | <a href="https://www.youtube.com/watch?v=G5kMc_ZzJ7E">Video</a>
+                 
+            </p>
+            <hr />
+            
+            <h3><strong>Building a Continuous Delivery Pipeline with Gradle and Jenkins</strong></h3>
+    
+            <p>
+                
+                  <span class="label label-success">cicd</span>
+                
+                  <span class="label label-success">pipeline</span>
+                
+                  <span class="label label-success">jenkins</span>
+                
+                  <span class="label label-success">gradle</span>
+               
+            </p>
+    
+            <p>Getting software from a developer&rsquo;s machine to a production environment without a fully automated process is time-consuming and error-prone. Continuous Delivery enables building, testing and deploying of software through build pipelines with well-defined quality gates. In this session, we will discuss how to build an exemplary pipeline with the help of Gradle and Jenkins.</p>
+    
+            <p>
+                <a href="https://speakerdeck.com/bmuschko/building-a-continuous-delivery-pipeline-with-gradle-and-jenkins">Slides</a> 
+                
+                | <a href="https://www.youtube.com/watch?v=L4ZgTCq6dLQ">Video</a>
+                 
+            </p>
+            
+            
+            </div>
+          </div>
+      </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://bmuschko.com/js/docs.min.js"></script>
+<script src="https://bmuschko.com/js/main.js"></script>
+
+<script src="https://bmuschko.com/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

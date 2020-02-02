@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubectl on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/kubectl/</link>
+    <description>Recent content in kubectl on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 20 Jun 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/kubectl/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Writing your first kubectl plugin with Go</title>
+      <link>https://bmuschko.com/blog/writing-your-first-kubectl-plugin/</link>
+      <pubDate>Thu, 20 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/writing-your-first-kubectl-plugin/</guid>
+      <description>The kubectl command line tool offers a powerful, client-side mechanism for communicating with the Kubernetes API server. kubectl comes with a lot of fine-grained commands, subcommands and options. Getting familiar with all of these options takes practice and time.
+ Despite its wide array of options, you sometimes wish that kubectl would provide higher-level functions or would simplify specific operations. For example, you may have to shell into a running container to inspect the environment in interactive mode.</description>
+    </item>
+    
+  </channel>
+</rss>

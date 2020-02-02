@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>spock on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/spock/</link>
+    <description>Recent content in spock on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 18 Feb 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/spock/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Docker with Gradle: Integration testing using containers</title>
+      <link>https://bmuschko.com/blog/docker-integration-testing/</link>
+      <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/docker-integration-testing/</guid>
+      <description>In the first blog post on &#34;Docker with Gradle&#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
+ Integration testing plays an important role in the software development lifecycle to ensure functional and non-functional requirements have been met.</description>
+    </item>
+    
+    <item>
+      <title>JUnit 5 vs. Spock feature showdown</title>
+      <link>https://bmuschko.com/blog/junit5-vs-spock-showdown/</link>
+      <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/junit5-vs-spock-showdown/</guid>
+      <description>Introduction For over a decade JUnit 4 has been the go-to test framework for JVM-based software projects. You can find the use of JUnit across the board in organizations from big entprises to small startups. Despite its popularity, the test framework&amp;#8217;s features barely moved with the times. Due to its deep penetration among the industry, evolutionary changes became harder and harder to implement without introducing inevidable breakages to the API.</description>
+    </item>
+    
+  </channel>
+</rss>

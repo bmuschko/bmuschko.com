@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="map[]" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
+    <title>Docker with Gradle: Integration testing using containers</title>
+    <meta name="generator" content="Hugo 0.59.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+        
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', 'UA-99678333-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://bmuschko.com/"><i class="fa fa-home"></i></a>
+    </div>
+    <div id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/talks/">TALKS</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="https://bmuschko.com/blog/docker-integration-testing/">Docker with Gradle: Integration testing using containers</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+            
+            <span class="label label-success">testing</span>
+            
+            <span class="label label-success">spock</span>
+            
+            <span class="label label-success">build</span>
+            
+            <span class="label label-success">docker</span>
+            
+            <span class="label label-success">container</span>
+            
+            <span class="label label-success">gradle</span>
+            
+            <span class="label label-success">ci</span>
+            
+            <span class="label label-success">travis</span>
+            
+            </br></br></br>
+            February 18, 2018
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              <div class="paragraph">
+<p>In the <a href="http://bmuschko.com/blog/dockerized-spring-boot-app/">first blog post</a> on "Docker with Gradle" you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.</p>
+</div>
+<div class="paragraph">
+<p>Integration testing plays an important role in the software development lifecycle to ensure functional and non-functional requirements have been met. With the rise of microservices, we see an increasing number of projects that reach out to other services e.g. by performing a HTTP call. During integration testing, external services and endpoints need to be available. It can be very tedious, time-consuming and error-prone to bring up multiple services just for the purpose of integration testing especially during development. Docker containers enable standing up services with a desired state on demand.</p>
+</div>
+<div class="paragraph">
+<p>In this blog post, you will learn how to pull a specific tag of a Docker image from a registry and use it as fixture for integration testing. You will also automate the process as part of a Continuous Integration job on <a href="https://travis-ci.org/">Travis CI</a>. You can find the <a href="https://github.com/bmuschko/docker-integration-testing">full source code</a> used on GitHub.</p>
+</div>
+<hr>
+<div class="sect1">
+<h2 id="_setting_up_integration_testing">Setting up integration testing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The code under test in this example builds upon the account management application created in an earlier blog post. <a href="https://github.com/bmuschko/docker-integration-testing/blob/master/src/main/java/com/bmuschko/consumer/DefaultAccountManager.java"><code>DefaultAccountManager.java</code></a> implements a method for retrieving account information by ID via HTTP(s) and crediting a monetary amount to the existing balance of that account. The test <a href="https://github.com/bmuschko/docker-integration-testing/blob/master/src/integrationTest/groovy/com/bmuschko/consumer/DefaultAccountManagerIntegrationTest.groovy"><code>DefaultAccountManagerIntegrationTest.groovy</code></a> requires the account management service to be up and running to verify the integration point.</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s considered good practice to separate the source code of different test types with the help of dedicated directories. Furthermore, different types of tests should be runnable individually by invoking corresponding tasks. For example sometimes you might want to just run unit tests, other times will want to run integration tests.</p>
+</div>
+<div class="paragraph">
+<p>Listing 1 demonstrates how to create a dedicated source set and <code>Test</code> task for the purpose of integration testing. The logic has been extracted into a script plugin named <code>integration-test.gradle</code>. Keeping the setup for integration testing separate from the main build script improves maintainability and readability.</p>
+</div>
+<div class="paragraph">
+<p><em>gradle/integration-test.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">sourceSets {
+    integrationTest {
+        groovy.srcDir file('src/integrationTest/groovy')
+        resources.srcDir file('src/integrationTest/resources')
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    mustRunAfter test
+}
+
+check.dependsOn integrationTest</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 1. Creating an integration test source set and task</em></p>
+</div>
+<div class="paragraph">
+<p>The <code>build.gradle</code> file in turn applies the integration test script plugin as shown below.</p>
+</div>
+<div class="paragraph">
+<p><em>build.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">apply from: 'gradle/integration-test.gradle'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 2. Applying the integration test script plugin</em></p>
+</div>
+<div class="paragraph">
+<p>With this configuration in place, any source code under <code>src/integTest/groovy</code> can be compiled and executed by running the <code>integrationTest</code> task from the command line.</p>
+</div>
+<div class="paragraph">
+<p>In the course of the next sections, you will set up the Docker plugin to retrieve the Docker image bundling the account management application. Moreoever, you will add tasks for starting and stopping a Docker container as fixture for integration testing.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_the_docker_plugin">Configuring the Docker plugin</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Docker plugin knows how to do the heavy lifting of communicating with Docker from the Gradle build. It&#8217;s binary artifact is available on the <a href="https://plugins.gradle.org/plugin/com.bmuschko.docker-remote-api">Gradle plugin portal</a>. Because of a known <a href="https://github.com/gradle/gradle/issues/1262">limitation of applying third-party plugins from a script plugin</a>, the Docker plugin needs to be applied by type as shown in listing 3.</p>
+</div>
+<div class="paragraph">
+<p><em>gradle/integration-test.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
+    repositories {
+        maven {
+            url 'https://plugins.gradle.org/m2/'
+        }
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:3.2.3'
+    }
+}
+
+apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 3. Applying the Docker plugin</em></p>
+</div>
+<div class="paragraph">
+<p>Next, you will use a custom task type provided by the plugin to pull an image from a registry.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pulling_the_image_from_a_registry">Pulling the image from a registry</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default the Docker plugin tries to resolve images from Docker Hub. Thankfully, the image of the account management application is available from <a href="https://hub.docker.com/r/bmuschko/account-web-service/"><code>bmuschko/account-web-service</code></a> so no additional setup is required. For more information on using private registries, refer to <a href="https://github.com/bmuschko/gradle-docker-plugin#extension-examples">plugin documentation</a>. The following code snippet creates a task of type <code>DockerPullImage</code> for pulling the tag <code>1.0.0</code> of the image from Docker Hub.</p>
+</div>
+<div class="paragraph">
+<p><em>gradle/integration-test.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
+
+task pullImage(type: DockerPullImage) {
+    repository = 'bmuschko/account-web-service'
+    tag = '1.0.0'
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 4. Pulling the Docker image for a specific tag</em></p>
+</div>
+<div class="paragraph">
+<p>Downloading the image might take a while depending on your network bandwidth. The compressed size of the image is roughly 71 MB. The following section explains how to start and stop a container running the image.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_starting_and_stopping_the_container">Starting and stopping the container</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Starting and stopping the container is existential for successfully executing integration tests. Below you can find the detailed steps for starting the container:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Creating a container from the image with an exposed port binding.</p>
+</li>
+<li>
+<p>Starting up the container.</p>
+</li>
+<li>
+<p>Waiting until the application running within the container becomes accessible.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Step 3 is extremely important to ensure that the integration tests do not start executing before the application can serve requests. The task <code>startAndWaitOnHealthyContainer</code> inspects the starting container periodically and only proceeds if the health check returns a "ready state". It also implements a circuit breaker pattern in case the operation takes longer than expected.</p>
+</div>
+<div class="paragraph">
+<p><em>gradle/integration-test.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.bmuschko.gradle.docker.tasks.container.DockerCreateContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStartContainer
+import com.bmuschko.gradle.docker.tasks.container.DockerStopContainer
+import com.bmuschko.gradle.docker.tasks.container.extras.DockerWaitHealthyContainer
+
+task createContainer(type: DockerCreateContainer) {
+    dependsOn pullImage
+    targetImageId { pullImage.getImageId() }
+    portBindings = ['8080:8080']
+}
+
+task startContainer(type: DockerStartContainer) {
+    dependsOn createContainer
+    targetContainerId { createContainer.getContainerId() }
+}
+
+task startAndWaitOnHealthyContainer(type: DockerWaitHealthyContainer) {
+    dependsOn startContainer
+    timeout = 60
+    targetContainerId { createContainer.getContainerId() }
+}
+
+task stopContainer(type: DockerStopContainer) {
+    targetContainerId { createContainer.getContainerId() }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 5. Creating tasks for starting and stopping a container</em></p>
+</div>
+<div class="paragraph">
+<p>Finally it&#8217;s time to hook the container tasks into the task for executing integration tests.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_the_container_fixture_for_integration_testing">Using the container fixture for integration testing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Integrations tests may or may not fail. The container running the account management application needs to be teared down independent of the outcome of the test execution. Dangling but unused services accumlating over time lead to unnecessary resource consumption and will inevitability overload a system.</p>
+</div>
+<div class="paragraph">
+<p>Meet the Gradle API method <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#finalizedBy-java.lang.Object&#8230;&#8203;-"><code>Task.finalizedBy(Object&#8230;&#8203;)</code></a>. It behaves analogous to Java&#8217;s try/finally construct and will execute the finalizer task even if a failure occurs.</p>
+</div>
+<div class="paragraph">
+<p><em>gradle/integration-test.gradle</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">integrationTest {
+    dependsOn startAndWaitOnHealthyContainer
+    finalizedBy stopContainer
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 6. Modeling the integration test fixture setup</em></p>
+</div>
+<div class="paragraph">
+<p>The workflow is now fully set up and ready for use. Running integration tests as part of a deployment pipeline ensures that every commit is automatically verified.</p>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_performing_integration_testing_on_travis_ci">Performing integration testing on Travis CI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Most organizations adopting Continuous Delivery will want to run integration tests as part of the pipeline. Implementing the integration test step with Travis CI is straightforward. To use Docker as part of your CI job, you will need to first <a href="https://docs.travis-ci.com/user/docker/">enable the service</a>.</p>
+</div>
+<div class="paragraph">
+<p>As seen in the previous code examples, the integration test fixture logic is completely encapsulated in the build script. What that means is that you can just call off to the <code>integrationTest</code> task without having to configure any additional Docker-related steps as part of the CI definition. The approach will make it extremly simple to switch CI products if needed.</p>
+</div>
+<div class="paragraph">
+<p><em>.travis.yml</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">language: java
+install: true
+sudo: required
+
+services:
+  - docker
+
+jdk:
+  - oraclejdk8
+
+script:
+  - ./gradlew integrationTest -s
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Listing 7. Executing the integration test workflow on Travis CI</em></p>
+</div>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        February 1, 2020
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/bazel-groovy/">Building Groovy with Bazel</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        October 31, 2019
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/jenkins-shared-libraries/">Best practices for writing Jenkins shared libraries</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+                  <div class="row">
+                    <div class="col-sm-4 col-md-4 col-lg-4">
+                      <h6 style="text-align: right">
+                        January 25, 2019
+                      </h6>
+                    </div>
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                      <h6 style="text-align: left">
+                        <strong><a href="/blog/go-on-jenkins/">Building Go projects using modules on Jenkins</a></strong>
+                      </h6>
+                    </div>
+                  </div>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = 'bmuschko-com';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://bmuschko.com/js/docs.min.js"></script>
+<script src="https://bmuschko.com/js/main.js"></script>
+
+<script src="https://bmuschko.com/js/ie10-viewport-bug-workaround.js"></script><!-- Syntax highlighting -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/shell.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/groovy.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/languages/yaml.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+  </body>
+</html>

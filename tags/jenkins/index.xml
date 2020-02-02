@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>jenkins on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/jenkins/</link>
+    <description>Recent content in jenkins on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 30 Jan 2020 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/jenkins/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Crushing the Certified Jenkins Engineer (CJE) exam</title>
+      <link>https://bmuschko.com/blog/cje-prep/</link>
+      <pubDate>Thu, 30 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/cje-prep/</guid>
+      <description>Last summer, I decided to take the Certified Jenkins Engineer (CJE) exam. I have years of experience with Jenkins as developer managing my own jobs as well as Jenkins administrator. Aquiring the certification sounded like a good idea to prove my proficiency with the subject. To pass the exam, you have to understand theoretical and practical aspects of CI/CD. The main focus of the certification lies on operating Jenkins pipelines and maintaining them in the context of a larger organization.</description>
+    </item>
+    
+    <item>
+      <title>Best practices for writing Jenkins shared libraries</title>
+      <link>https://bmuschko.com/blog/jenkins-shared-libraries/</link>
+      <pubDate>Thu, 31 Oct 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/jenkins-shared-libraries/</guid>
+      <description>Introduction Pipeline definitions in Jenkins start small and maintainble. You write a Jenkinsfile that declares a couple of stages. Nothing dramatic, simple, understandable code. As your adoption of Jenkins and &#34;pipelines as code&#34; grows within the organization, you&amp;#8217;ll find out that other teams are copy-pasting pipeline code all over the place. What works for one project should work for other projects, right?! Soon requirements become more complex and your organization will enter a world of pain of unmaintainable, duplicated code.</description>
+    </item>
+    
+    <item>
+      <title>Building Go projects using modules on Jenkins</title>
+      <link>https://bmuschko.com/blog/go-on-jenkins/</link>
+      <pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/go-on-jenkins/</guid>
+      <description>The Go 1.11 release introduced experimental, opt-in support for Go modules. It is now possible to build Go projects outside of the $GOPATH. This profound change has a significant impact on developer workflows. For example, you don&amp;#8217;t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</description>
+    </item>
+    
+    <item>
+      <title>Build pipelines with Jenkins 2 by example</title>
+      <link>https://bmuschko.com/blog/jenkins-build-pipeline/</link>
+      <pubDate>Mon, 30 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/jenkins-build-pipeline/</guid>
+      <description>Introduction Jenkins World 2017 came to a close in late September. Time to revisit the improvements that have been made to the support for build pipelines. I am no stranger to using Jenkins to model a Continuous Delivery pipeline. In the dark ages, you had to construct a pipeline with the help of different Jenkins plugins bit by bit. The approach was highly brittle, inconsistent and full of magical tips and tricks.</description>
+    </item>
+    
+  </channel>
+</rss>

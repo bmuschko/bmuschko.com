@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubernetes on Benjamin Muschko&#39;s development blog</title>
+    <link>https://bmuschko.com/tags/kubernetes/</link>
+    <description>Recent content in kubernetes on Benjamin Muschko&#39;s development blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 04 Aug 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://bmuschko.com/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Crushing the Certified Kubernetes Application Developer (CKAD) exam</title>
+      <link>https://bmuschko.com/blog/ckad-prep/</link>
+      <pubDate>Sun, 04 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/ckad-prep/</guid>
+      <description>I recently decided the take the Certified Kubernetes Application Developer (CKAD) exam. Unlike other certification exams, the CKAD exam is 100% hands-on. You are not expected to select one or many answers from a multiple choice question but instead solve problems on a Kubernetes cluster. Each question focuses on a practical aspect of Kubernetes and applying it to real-world use cases. By passing the exam, you demonstrated practical proficiency with Kubernetes concepts in the role of an application developer.</description>
+    </item>
+    
+    <item>
+      <title>Writing your first kubectl plugin with Go</title>
+      <link>https://bmuschko.com/blog/writing-your-first-kubectl-plugin/</link>
+      <pubDate>Thu, 20 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://bmuschko.com/blog/writing-your-first-kubectl-plugin/</guid>
+      <description>The kubectl command line tool offers a powerful, client-side mechanism for communicating with the Kubernetes API server. kubectl comes with a lot of fine-grained commands, subcommands and options. Getting familiar with all of these options takes practice and time.
+ Despite its wide array of options, you sometimes wish that kubectl would provide higher-level functions or would simplify specific operations. For example, you may have to shell into a running container to inspect the environment in interactive mode.</description>
+    </item>
+    
+  </channel>
+</rss>
