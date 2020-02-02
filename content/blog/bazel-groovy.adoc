@@ -1,0 +1,197 @@
++++
+title = "Building Groovy with Bazel"
+tags = [
+    "groovy",
+    "bazel",
+    "build",
+    "cicd",
+]
+date = "2020-02-01"
+draft = true
+highlight = true
++++
+
+Bazel is a build automation tool that already contains support for specific languages out-of-the-box. For example, you can build Java projects right away without having to configure external functionality aka rules. A popular language in the JVM space is Groovy. As a developer, you'd expect the following features:
+
+* Compiling Groovy source code
+* Creating a JAR file from the class files
+* Executing Groovy-based tests written with JUnit or Spock
+* Generating API documentation in the form of Groovydoc
+
+You can probably think about more features that may be of interest. For this blog post, we'll focus on the essentials. I will show you how to build Groovy projects with the https://github.com/bazelbuild/rules_groovy[Groovy rules]. We'll also talk about functionality that is not supported (yet).
+
+== Consuming the Groovy rules
+
+Groovy is not one of the languages automatically supported by the Bazel runtime. You have to depend on rules that implement the functionality. Thankfully, an open source contributor from Google was kind enough to hammer out those rules. As usually in a Bazel project, you'd get started by creating a `WORKSPACE` file and one or many `BUILD` files. To consume the Groovy rules, add the code from listing 1 to your `WORKSPACE` file. Disclaimer: I noticed that the rules do not support Bazel 2.0.0 yet. You will have to use the latest 1.x version. I am sure https://github.com/bazelbuild/rules_groovy/issues/55[this issue] will be fixed in the near future.
+
+_WORKSPACE_
+[source,python]
+----
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "io_bazel_rules_groovy",
+    url = "https://github.com/bazelbuild/rules_groovy/archive/0.0.5.tar.gz",
+    sha256 = "d41ca1290de57f2eabc71d5a097689491e3afe7337367a7326396d55db4910f7",
+    strip_prefix = "rules_groovy-0.0.5",
+)
+
+load("@io_bazel_rules_groovy//groovy:groovy.bzl", "groovy_repositories")
+groovy_repositories()
+----
+
+_Listing 1. Creating a dependency on the Groovy rules_
+
+The Groovy rules internally depend on a specific version of the Groovy SDK. While the version of the SDK is hard-coded, you can always reconfigure it to the version you need. Next, we'll have a look the code required to build a binary.
+
+== Compiling code, creating a JAR file
+
+The Groovy rules can now be consumed from a `BUILD` file. We'll start with the easiest example possible, "Hello World". I won't go into the details of actually implementing Groovy code. There's plenty of content out there to reference if you want to dive deeper into the language. Imagine, we set up a Groovy source file with a `main` method under the root source code directory `src/main/groovy`. You might recognize that we are using the same conventional source code directory you might already know from other build tools like Maven and Gradle. There's nothing speaking against using a different path though. It's up to your preference.
+
+Listing 2 shows how to load the Groovy rules we already set up in the `WORKSPACE` file. The rule `groovy_binary` compiles the Groovy source code we point it to. For the purpose of making the code executable, we also have to set a main class.
+
+_BUILD_
+[source,python]
+----
+load("@io_bazel_rules_groovy//groovy:groovy.bzl", "groovy_binary")
+
+groovy_binary(
+    name = "hello-world",
+    srcs = glob(["src/main/groovy/com/bmuschko/**/*.groovy"]),
+    main_class = "com.bmuschko.HelloWorld"
+)
+----
+
+_Listing 2. Building a JAR file from a Groovy class_
+
+The target for compiling code and building the JAR file is called `hello-world`. You could have called it anything you want really. Let's execute the target from the command line. Navigate to the directory containing the `BUILD` file and run the `build` command, as shown below.
+
+[source,bash]
+----
+$ bazel build //:hello-world
+INFO: Writing tracer profile to '/private/var/tmp/_bazel_bmuschko/db126b824c509a76348765b600ae1c98/command.profile.gz'
+INFO: Analyzed target //:hello-world (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //:hello-world up-to-date:
+  bazel-bin/hello-world.jar
+  bazel-bin/hello-world
+INFO: Elapsed time: 0.204s, Critical Path: 0.01s
+INFO: 0 processes.
+INFO: Build completed successfully, 1 total action
+----
+
+Bazel automatically downloads the Groovy SDK if it is not available on your machine yet. It compiles the code using the SDK and builds the JAR file. You can find the binary file under the directory `bazel-bin`. Let's try it out quick.
+
+[source,bash]
+----
+$ cd bazel-bin
+$ ./hello-world
+Hello World!
+----
+
+Pretty straightforward, right?! In the next section, we'll have a look testing support.
+
+== Executing tests with JUnit 4
+
+For the longest time, Junit 4 was _the_ standard test framework for JVM projects. Nowadays, JUnit 5 (the API is not called Jupiter) took its place as the more modern, convenient and feature-rich version. The Groovy rules do not support JUnit 5 directly. You'd have to implement your own rule or extend the project. Nevertheless, JUnit 4 is supported and that's what we are going to have a look at more closely.
+
+Listing 3 first loads the relevant rules. We are also making the model of the build more structured by separating a Groovy library from the binary. The library simply compiles the code, the binary uses the compiled code as a reference and produces the JAR file. All the way at the bottom of the listing, you can find the portion of the code that compiles the test source code and provides a target for running the tests. We configured the build to search for Groovy test source code under the directory `src/test/groovy`.
+
+_BUILD_
+[source,python]
+----
+load("@io_bazel_rules_groovy//groovy:groovy.bzl", "groovy_binary", "groovy_library", "groovy_test")
+
+groovy_library(
+    name = "prodlib",
+    srcs = glob(["src/main/groovy/**/*.groovy"]),
+)
+
+groovy_binary(
+    name = "hello-world",
+    srcs = glob(["src/main/groovy/**/*.groovy"]),
+    main_class = "com.bmuschko.HelloWorld",
+    deps = [":prodlib"],
+)
+
+groovy_library(
+    name = "testlib",
+    srcs = glob(["src/test/groovy/**/*.groovy"]),
+    deps = [":prodlib"],
+)
+
+groovy_test(
+    name = "tests",
+    srcs = ["src/test/groovy/com/bmuschko/messenger/MessengerTest.groovy"],
+    deps = [":testlib"],
+)
+----
+
+_Listing 3. Executing JUnit 4 tests written in Groovy_
+
+Let's also give it a shot by executing the `test` command. Below, you can find the console output. It gives us a couple of hints on what's going on. Apparently, we are executing a single tests with JUnit 4 which seems to pass. But where is the JUnit 4 library coming from? It's also being downloaded automatically by the Groovy rules. Again, the hard-coded version of the library depends on the value configured in the Groovy rules.
+
+----
+$ bazel test //:tests
+INFO: Writing tracer profile to '/private/var/tmp/_bazel_bmuschko/d3fe1e22cf58ce848cb5c284730e1906/command.profile.gz'
+INFO: Analyzed target //:tests (26 packages loaded, 674 targets configured).
+INFO: Found 1 test target...
+INFO: Deleting stale sandbox base /private/var/tmp/_bazel_bmuschko/d3fe1e22cf58ce848cb5c284730e1906/sandbox
+Target //:tests up-to-date:
+  bazel-bin/tests
+INFO: Elapsed time: 9.919s, Critical Path: 3.07s
+INFO: 4 processes: 4 darwin-sandbox.
+INFO: Build completed successfully, 7 total actions
+//:tests                                                                 PASSED in 0.7s
+
+Executed 1 out of 1 test: 1 test passes.
+INFO: Build completed successfully, 7 total actions
+----
+
+JUnit 4 is not very popular among Groovy developers. Most developers I know use the Spock framework instead. The Groovy rules do support Spock and that's what'll have a look at next.
+
+== Executing tests with Spock
+
+The http://spockframework.org/[Spock framework] is a library for implement tests in Groovy with a BDD-style. It also provides many advanced features that JUnit 4 doesn't have e.g. data-driven test cases for executing a specific test cases with multiple variations. Say you did implement your test code with the help of Spock. There's only a minor change you'll have to make to your `BUILD` to make it work. You have to reference the external library of Spock when compiling and executing the test code. Listing 4 pretty much looks like listing 3 except for the reference to `//external:spock`.
+
+_BUILD_
+[source,python]
+----
+load("@io_bazel_rules_groovy//groovy:groovy.bzl", "groovy_binary", "groovy_library", "groovy_test")
+
+groovy_library(
+    name = "prodlib",
+    srcs = glob(["src/main/groovy/**/*.groovy"]),
+)
+
+groovy_binary(
+    name = "hello-world",
+    srcs = glob(["src/main/groovy/**/*.groovy"]),
+    main_class = "com.bmuschko.HelloWorld",
+    deps = [":prodlib"],
+)
+
+groovy_library(
+    name = "testlib",
+    srcs = glob(["src/test/groovy/**/*.groovy"]),
+    deps = [":prodlib", "//external:spock"],
+)
+
+groovy_test(
+    name = "tests",
+    srcs = ["src/test/groovy/com/bmuschko/messenger/MessengerTest.groovy"],
+    deps = [":testlib"],
+)
+----
+
+_Listing 4. Executing tests using the Spock framework_
+
+Upon executing of the command `bazel test //:tests`, you will see similar output in the console to the one we already looked at from the JUnit 4 example. The Groovy rules automatically download the Spock library with a hard-coded version if it isn't already available on your machine.
+
+== Conclusion
+
+We've learned that Groovy rules can get you started with building a Groovy project. I'd like to point you to https://github.com/bmuschko/bazel-examples/tree/master/groovy[this GitHub repository] that contains all examples we discussed if you want to dig deeper into the bit and pieces.
+
+For the most part, I only talked about the features that do work with Groovy rules. There are a couple of points that I want to make on features that do not work well or aren't available at all. I couldn't quite figure out how to reconfigure the default versions for the Groovy SDK, JUnit and Spock. I am sure it's possible but I couldn't get an example working. Another aspect that didn't work for me was Groovy/Java source code cross-compilation. The documentation of the Groovy rules provide an example, however, it didn't work for me. This might simply be a bug. Furthermore, generating Groovydoc is not a core functionality of the rules so you have to implement your own rule.
+
+I hope I could get you on your way for building Groovy with Bazel. If you feel like you want the rules to work better or with more functionality, then I'd love to see your contributions.
