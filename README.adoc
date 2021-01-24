@@ -1,4 +1,4 @@
-= Benjamin Muschko's Website image:https://travis-ci.org/bmuschko/bmuschko.com.svg?branch=master["Build Status", link="https://travis-ci.org/bmuschko/bmuschko.com"]
+= Benjamin Muschko's Website image:https://github.com/bmuschko/bmuschko.com/workflows/Build%20and%20Deploy%20%5BLinux%5D/badge.svg["Build Status", link="https://github.com/bmuschko/bmuschko.com/actions?query=workflow%3A%22Build+and+Deploy+%5BLinux%5D%22"]
 
 This is the source for https://www.bmuschko.com. I use the general-purpose website framework link:https://gohugo.io/[Hugo] to
 take the source here and create a static site which can be found at link:https://www.bmuschko.com[bmuschko.com].
