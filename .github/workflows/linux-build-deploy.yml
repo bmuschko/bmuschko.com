@@ -1,0 +1,37 @@
+name: Build and Deploy [Linux]
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+      - name: Clean
+        run: rm -rf public || exit 0
+      - name: Install tools
+        run: |
+          gem install asciidoctor
+          wget https://github.com/gohugoio/hugo/releases/download/v0.59.0/hugo_0.59.0_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
+          wget https://github.com/bmuschko/link-verifier/releases/download/v0.7/link-verifier-0.7-linux-amd64.tar.gz -O /tmp/link-verifier.tar.gz
+          tar -xvf /tmp/hugo.tar.gz
+          tar -xvf /tmp/link-verifier.tar.gz
+          export PATH=$PATH:$PWD/hugo/:$PWD/link-verifier/
+      - name: Build website
+        run: |
+          ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90
+          ./hugo
+          echo automatedascent.com >> public/CNAME
+      - name: Deploy website
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: ./public
