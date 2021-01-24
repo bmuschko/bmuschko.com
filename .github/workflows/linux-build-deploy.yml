@@ -30,7 +30,7 @@ jobs:
       - name: Build website
         run: |
           ./hugo
-          echo automatedascent.com >> public/CNAME
+          echo bmuschko.com >> public/CNAME
       - name: Deploy website
         uses: peaceiris/actions-gh-pages@v3
         with:
