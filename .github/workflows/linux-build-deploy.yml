@@ -25,9 +25,10 @@ jobs:
           tar -xvf /tmp/hugo.tar.gz
           tar -xvf /tmp/link-verifier.tar.gz
           export PATH=$PATH:$PWD/hugo/:$PWD/link-verifier/
+      - name: Verify links
+        run: ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90
       - name: Build website
         run: |
-          ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90
           ./hugo
           echo automatedascent.com >> public/CNAME
       - name: Deploy website
