@@ -51,9 +51,25 @@ The only efficient way to ace the CKAD exam is by practicing different scenarios
 2. Another great resource is the https://matthewpalmer.net/kubernetes-app-developer/#purchase[practice exam offered by Matthew Palmer]. You'll pay $119 for accessing a GitHub repository containing 30 questions. The practice exam is well made and offers a setup procedure that creates namespaces and existing Kubernetes domain objects to work with.
 3. The book https://learning.oreilly.com/library/view/kubernetes-patterns/9781492050278/[Kubernetes Patterns] helped me brush up on some of the material I was less familiar with. Especially the coverage of multi-container patterns proved to be helpful.
 
-In addition to third-party resources, I also started to created my own set of exam questions. It helps tremendously to think through all aspects of a given concept. By take on the role of an instructor, you might get a glimpse of how the actual exam question could be asked.
+In addition to third-party resources, I also started to created my own set of exam questions. It helps tremendously to think through all aspects of a given concept. By taking on the role of an instructor, you might get a glimpse of how the actual exam question could be asked.
 
 ++++
+<table>
+    <tr>
+        <td>
+            <a href="https://www.amazon.com/Certified-Kubernetes-Application-Developer-Depth-dp-1492083739/dp/1492083739">
+                <img src="/img/blog/ckad-prep/ckad-study-guide-cover.png" alt="Book Cover" width="340px" />
+            </a>
+        </td>
+        <td>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+        <td>
+            This <a href="https://www.amazon.com/Certified-Kubernetes-Application-Developer-Depth-dp-1492083739/dp/1492083739">study guide</a> walks you through all the topics you need to fully prepare for the exam. The book shares my personal experience with preparing for all aspects of the exam and comes with a full set of paractical exercise questions and answers.
+        </td>
+    </tr>
+</table>
+<br>
 <table>
     <tr>
         <td>
