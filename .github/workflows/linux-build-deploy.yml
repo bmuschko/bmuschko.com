@@ -26,7 +26,7 @@ jobs:
           tar -xvf /tmp/link-verifier.tar.gz
           export PATH=$PATH:$PWD/hugo/:$PWD/link-verifier/
       - name: Verify links
-        run: ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90
+        run: ./link-verifier --dirs content,data --includes *.yml,*.adoc --timeout 90 --ignore-status-codes 403
       - name: Build website
         run: |
           ./hugo
