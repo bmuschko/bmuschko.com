@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Publishing Javadocs with Gradle</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -96,15 +95,15 @@ if (!doNotTrack) {
 <p>Documentation is a must-have for any consumer-facing project. It can come in different shapes and sizes: documentation about the functionality of the project, DSL documentation, API documentation, usage examples and many more. For consumers of libraries the relevant part of the documentation often is the exposed API. In the Java world, API documentation materializes as Javadocs.</p>
 </div>
 <div class="paragraph">
-<p>Java provides the <a href="http://www.oracle.com/technetwork/articles/java/index-jsp-135444.html"><code>javadoc</code></a> tool for generating Javadocs documentation from source code. Running the tool is a no-brainer either from the command line or as an integration with any of the build tools available, like Ant, Maven or Gradle. Even if generating Javadocs is simple, there&#8217;s still the question of making the documentation accessible to consumers, the software developers using the library. If you are in the business of writing open-source libraries then you have various options. You could just publish your artifacts to Maven Central and reference it through <a href="http://www.javadoc.io/">javadoc.io</a> (e.g. as done by the <a href="http://site.mockito.org/">Mockito project</a>). However, you might prefer to publish your artifact to a different repository so javadoc.io disqualifies as option. Another hosting platform that has become increasing popular is <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+<p>Java provides the <a href="http://www.oracle.com/technetwork/articles/java/index-jsp-135444.html"><code>javadoc</code></a> tool for generating Javadocs documentation from source code. Running the tool is a no-brainer either from the command line or as an integration with any of the build tools available, like Ant, Maven or Gradle. Even if generating Javadocs is simple, there’s still the question of making the documentation accessible to consumers, the software developers using the library. If you are in the business of writing open-source libraries then you have various options. You could just publish your artifacts to Maven Central and reference it through <a href="http://www.javadoc.io/">javadoc.io</a> (e.g. as done by the <a href="http://site.mockito.org/">Mockito project</a>). However, you might prefer to publish your artifact to a different repository so javadoc.io disqualifies as option. Another hosting platform that has become increasing popular is <a href="https://pages.github.com/">GitHub Pages</a>.</p>
 </div>
 <div class="paragraph">
-<p>In this post you will learn how to generate Javadocs and publish them to GitHub Pages with the help of of an external plugin. Furthermore, we&#8217;ll learn of integrate the process with the Continuous Integration provider <a href="https://travis-ci.org/">Travis CI</a>.</p>
+<p>In this post you will learn how to generate Javadocs and publish them to GitHub Pages with the help of of an external plugin. Furthermore, we’ll learn of integrate the process with the Continuous Integration provider <a href="https://travis-ci.org/">Travis CI</a>.</p>
 </div>
 <div class="paragraph">
-<p>This post won&#8217;t go into a lot of details on Java or Gradle. Please consult the relevant documentation for more information.</p>
+<p>This post won’t go into a lot of details on Java or Gradle. Please consult the relevant documentation for more information.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -118,7 +117,7 @@ if (!doNotTrack) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">apply plugin: 'java'</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">apply plugin: &#39;java&#39;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -139,16 +138,16 @@ BUILD SUCCESSFUL</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Next, let&#8217;s have a look at how to publish the Javadoc files to GitHub Pages.</p>
+<p>Next, let’s have a look at how to publish the Javadoc files to GitHub Pages.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_publishing_to_github_pages">Publishing to GitHub Pages</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Publishing the pages is almost as easy as generating them. You might have guessed it - there&#8217;s a plugin for it. The plugin we&#8217;ll use for this example is called the <a href="https://github.com/ajoberstar/gradle-git/wiki/Github%20Pages%20Plugin">Github Pages Plugin</a>. It&#8217;s available on the <a href="https://plugins.gradle.org/plugin/org.ajoberstar.github-pages">Gradle plugin portal</a>. In the build script <code>ghpages.gradle</code>, we are applying the Github Pages Plugin. Moreover, we are configuring the plugin to map the output files from the <code>javadoc</code> task to the context path <code>docs/javadoc</code>. GitHub Pages will take the context page when exposing the URL for browsing the published artifacts. We also provide the URL of the GitHub repository. Depending on whether the environment variable <code>GH_TOKEN</code> is available, a URL is used that is either HTTPs-based or based on the <code>git</code> protocol.</p>
+<p>Publishing the pages is almost as easy as generating them. You might have guessed it - there’s a plugin for it. The plugin we’ll use for this example is called the <a href="https://github.com/ajoberstar/gradle-git/wiki/Github%20Pages%20Plugin">Github Pages Plugin</a>. It’s available on the <a href="https://plugins.gradle.org/plugin/org.ajoberstar.github-pages">Gradle plugin portal</a>. In the build script <code>ghpages.gradle</code>, we are applying the Github Pages Plugin. Moreover, we are configuring the plugin to map the output files from the <code>javadoc</code> task to the context path <code>docs/javadoc</code>. GitHub Pages will take the context page when exposing the URL for browsing the published artifacts. We also provide the URL of the GitHub repository. Depending on whether the environment variable <code>GH_TOKEN</code> is available, a URL is used that is either HTTPs-based or based on the <code>git</code> protocol.</p>
 </div>
 <div id="listing2" class="paragraph">
 <p><em>ghpages.gradle</em></p>
@@ -161,31 +160,31 @@ BUILD SUCCESSFUL</code></pre>
     }
 
     dependencies {
-        classpath 'org.ajoberstar:gradle-git:1.4.2'
+        classpath &#39;org.ajoberstar:gradle-git:1.4.2&#39;
     }
 }
 
 apply plugin: org.ajoberstar.gradle.git.ghpages.GithubPagesPlugin
 
 ext {
-    repoPath = 'bmuschko/gradle-docker-plugin'
-    ghToken = System.getenv('GH_TOKEN')
+    repoPath = &#39;bmuschko/gradle-docker-plugin&#39;
+    ghToken = System.getenv(&#39;GH_TOKEN&#39;)
 }
 
 githubPages {
     if (ghToken) {
-        repoUri = "https://github.com/${repoPath}.git"
+        repoUri = &#34;https://github.com/${repoPath}.git&#34;
         credentials {
             username = ghToken
-            password = ''
+            password = &#39;&#39;
         }
     } else {
-        repoUri = "git@github.com:${repoPath}.git"
+        repoUri = &#34;git@github.com:${repoPath}.git&#34;
     }
 
     pages {
         from(javadoc.outputs.files) {
-            into 'docs/javadoc'
+            into &#39;docs/javadoc&#39;
         }
     }
 }
@@ -216,16 +215,16 @@ BUILD SUCCESSFUL</code></pre>
 <p>Pages published to GitHub can be resolved through the HTTP URL pattern <em><a href="http://&lt;username&gt;.github.io" class="bare">http://&lt;username&gt;.github.io</a></em>. GitHub Pages organizes the published files with the name of the repository. Additionally, we provided the context path <em>docs/javadoc</em>.</p>
 </div>
 <div class="paragraph">
-<p>In the last section of this post, we&#8217;ll have a look at automatically running the publication process through Continuous Integration.</p>
+<p>In the last section of this post, we’ll have a look at automatically running the publication process through Continuous Integration.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_publishing_javadocs_with_every_commit">Publishing Javadocs with every commit</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>So far we automated the whole process of generating and publishing Javadocs. But what if we wanted to run this process as part of a build and deployment pipeline? Piece of cake. To demonstrate such a setup, we&#8217;ll assume that we are building an open-source project. The following section talks about how to create a job on <a href="https://travis-ci.org/">Travis CI</a>. Be aware that a functionally similar setup can be achieved by using other Continuous Integration providers.</p>
+<p>So far we automated the whole process of generating and publishing Javadocs. But what if we wanted to run this process as part of a build and deployment pipeline? Piece of cake. To demonstrate such a setup, we’ll assume that we are building an open-source project. The following section talks about how to create a job on <a href="https://travis-ci.org/">Travis CI</a>. Be aware that a functionally similar setup can be achieved by using other Continuous Integration providers.</p>
 </div>
 <div class="paragraph">
 <p>Getting started with Travis CI is straight forward. Log in with your GitHub account, activate the project to be built and create a <code>.travis.yml</code> for configuring the job. More information on these steps can be found on the <a href="https://docs.travis-ci.com/user/for-beginners">Travis CI getting started page</a>.</p>
@@ -234,13 +233,13 @@ BUILD SUCCESSFUL</code></pre>
 <p>The plugin configuration in <a href="#listing2">listing 2</a> is looking for an environment variable named <code>GH_TOKEN</code>. Generate this <a href="https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/">access token on Github</a> under <em>Settings &gt; Personal access tokens</em>. With the access token in hand, we can now provide it to our project by configuring an environment variable on Travis CI.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/publishing-javadocs/travis-ci-env-var.png" alt="Travis CI environment variable"></span></p>
+<p><span class="image"><img src="/img/blog/publishing-javadocs/travis-ci-env-var.png" alt="Travis CI environment variable"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 1. Declaring the Github token as environment variable on Travis CI</em></p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s also have a look at the required Travis configuration file. As shown in <a href="#listing3">listing 3</a>, we are configuring Travis to <a href="https://docs.travis-ci.com/user/languages/java/">build a Java-based project</a> with JDK 8. The actual command of the job runs the tasks <code>build</code> and <code>publishGhPages</code> with the help of the Gradle Wrapper (which of course should be checked in with the source code).</p>
+<p>Let’s also have a look at the required Travis configuration file. As shown in <a href="#listing3">listing 3</a>, we are configuring Travis to <a href="https://docs.travis-ci.com/user/languages/java/">build a Java-based project</a> with JDK 8. The actual command of the job runs the tasks <code>build</code> and <code>publishGhPages</code> with the help of the Gradle Wrapper (which of course should be checked in with the source code).</p>
 </div>
 <div id="listing3" class="paragraph">
 <p><em>.travis.yml</em></p>
@@ -270,7 +269,7 @@ cache:
 <p><em>Listing 3. Configuring the Travis CI job</em></p>
 </div>
 <div class="paragraph">
-<p>The Travis CI job configuration assumes that a new version of the Javadocs should be published whenever there&#8217;s a compilable code change. In a more realistic setting, we&#8217;d want to publish a new version of the library artifacts at the same time though a discussion of the topic is out of scope for this post.</p>
+<p>The Travis CI job configuration assumes that a new version of the Javadocs should be published whenever there’s a compilable code change. In a more realistic setting, we’d want to publish a new version of the library artifacts at the same time though a discussion of the topic is out of scope for this post.</p>
 </div>
 </div>
 </div>

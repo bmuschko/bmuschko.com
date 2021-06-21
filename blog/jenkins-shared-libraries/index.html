@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Best practices for writing Jenkins shared libraries</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -87,7 +86,7 @@ if (!doNotTrack) {
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Pipeline definitions in Jenkins start small and maintainble. You write a <code>Jenkinsfile</code> that declares a couple of stages. Nothing dramatic, simple, understandable code. As your adoption of Jenkins and "pipelines as code" grows within the organization, you&#8217;ll find out that other teams are copy-pasting pipeline code all over the place. What works for one project should work for other projects, right?! Soon requirements become more complex and your organization will enter a world of pain of unmaintainable, duplicated code.</p>
+<p>Pipeline definitions in Jenkins start small and maintainble. You write a <code>Jenkinsfile</code> that declares a couple of stages. Nothing dramatic, simple, understandable code. As your adoption of Jenkins and &#34;pipelines as code&#34; grows within the organization, you’ll find out that other teams are copy-pasting pipeline code all over the place. What works for one project should work for other projects, right?! Soon requirements become more complex and your organization will enter a world of pain of unmaintainable, duplicated code.</p>
 </div>
 <div class="paragraph">
 <p>Jenkins provides the concept of reusable pipeline functionality through <a href="https://jenkins.io/doc/book/pipeline/shared-libraries/">shared libraries</a>. With the help of shared libraries, you can implement more complex logic that can be shared across multiple pipelines. Shared libraries are somewhat comparable to libraries in other languages e.g. JARs in the JVM world or Go packages.</p>
@@ -117,7 +116,7 @@ if (!doNotTrack) {
 </li>
 </ul>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -131,7 +130,7 @@ if (!doNotTrack) {
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Global variables</strong> represent a loosely-defined script with little structure. Those scripts usually containing one or many methods and/or variables. Essentially, global variables are just externalized scripts that can be imported into a <code>Jenkinsfile</code> to break down logic. The naming doesn&#8217;t fully express its purpose and can lead to issues among team members when talking about shared library terminology.</p>
+<p><strong>Global variables</strong> represent a loosely-defined script with little structure. Those scripts usually containing one or many methods and/or variables. Essentially, global variables are just externalized scripts that can be imported into a <code>Jenkinsfile</code> to break down logic. The naming doesn’t fully express its purpose and can lead to issues among team members when talking about shared library terminology.</p>
 </li>
 <li>
 <p><strong>Class implementations</strong> represent the alternative to scripts. They support a much more structured approach to breaking down functionality into packages and classes, a coding approach you are likely already familiar with if you are writing application source code. One of the major benefits of class implementation is the cabilility to declare and download external libraries via <a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">Groovy Grape</a>.</p>
@@ -157,7 +156,7 @@ if (!doNotTrack) {
 <div class="sect2">
 <h3 id="_api_design">API design</h3>
 <div class="paragraph">
-<p>Independent of your choice to use global variables or class implementations, you will have to think about the method signatures you want to expose to consumers. Try to put yourself into the shoes of other developers that are calling the functionality from their pipeline. As a general guideline, I&#8217;d recommend to ask yourself the following questions when designing the API of your shared library.</p>
+<p>Independent of your choice to use global variables or class implementations, you will have to think about the method signatures you want to expose to consumers. Try to put yourself into the shoes of other developers that are calling the functionality from their pipeline. As a general guideline, I’d recommend to ask yourself the following questions when designing the API of your shared library.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -182,22 +181,22 @@ if (!doNotTrack) {
 <div class="sect2">
 <h3 id="_limitations">Limitations</h3>
 <div class="paragraph">
-<p>Initially, Jenkins shared libraries might give you the impression that you are writing plain old Groovy code. That&#8217;s only true to a certain extend. While the pipeline uses the Groovy compiler and parser, it runs the pipeline and shared libraries with a special interpreter. This interpreter induces certain limitations that affect the way you need to structure your code.</p>
+<p>Initially, Jenkins shared libraries might give you the impression that you are writing plain old Groovy code. That’s only true to a certain extend. While the pipeline uses the Groovy compiler and parser, it runs the pipeline and shared libraries with a special interpreter. This interpreter induces certain limitations that affect the way you need to structure your code.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>It doesn&#8217;t handle inheritance or method overrides very well which can lead to runtime issues. The resulting error messages are hard analyze and debug, also known as the <a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+CPS+method+mismatches">notorious CPS mismatch errors</a>. In most cases, I replace inheritance with delegation to work around this limitation.</p>
+<p>It doesn’t handle inheritance or method overrides very well which can lead to runtime issues. The resulting error messages are hard analyze and debug, also known as the <a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+CPS+method+mismatches">notorious CPS mismatch errors</a>. In most cases, I replace inheritance with delegation to work around this limitation.</p>
 </li>
 <li>
-<p>Given my recommendations about static typing above, you might feel tempted to use Groovy&#8217;s <a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/transform/CompileStatic.html">@CompileStatic</a> annotation to enforce the coding style. Unfortunately, Jenkins doesn&#8217;t deal well with the annotation and generates a runtime error.</p>
+<p>Given my recommendations about static typing above, you might feel tempted to use Groovy’s <a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/transform/CompileStatic.html">@CompileStatic</a> annotation to enforce the coding style. Unfortunately, Jenkins doesn’t deal well with the annotation and generates a runtime error.</p>
 </li>
 <li>
-<p>Not so much a limitation but more of a requirement. Don&#8217;t forget to implement <code>java.io.Serializable</code> by any of your classes to avoid issues for pipelines in case the Jenkins server needs to be restarted.</p>
+<p>Not so much a limitation but more of a requirement. Don’t forget to implement <code>java.io.Serializable</code> by any of your classes to avoid issues for pipelines in case the Jenkins server needs to be restarted.</p>
 </li>
 </ol>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -215,7 +214,7 @@ if (!doNotTrack) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;
 
 &lt;project&gt;
     &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
@@ -289,21 +288,21 @@ if (!doNotTrack) {
 <p>I tried to locate the compatible Jenkins versions used to compile and parse a Jenkins pipeline. The only hint I could find was under <em>Manage Jenkins &gt; About Jenkins</em>. For my version of Jenkins, the Maven GAV is <code>org.codehaus.groovy:groovy-all:2.4.12</code>. In the build script for your shared library, you should rely on that exact version to ensure optimal version compatibility. You will also get a hint about the compatible Groovy version by looking at the <a href="https://search.maven.org/artifact/com.cloudbees/groovy-cps-parent">parent POM</a> of the dependency <code>com.cloudbees:groovy-cps</code>.</p>
 </div>
 <div class="paragraph">
-<p>There&#8217;s nothing speaking against setting up a similar build with Gradle. While the syntax is completely different, the essence of the configuration would be the same. In a nutshell, apply the Groovy plugin, declare the relevant dependencies and reconfigure the source directory. There&#8217;s no need to configure the Groovy compiler explicitly. The Groovy plugin already takes care of it.</p>
+<p>There’s nothing speaking against setting up a similar build with Gradle. While the syntax is completely different, the essence of the configuration would be the same. In a nutshell, apply the Groovy plugin, declare the relevant dependencies and reconfigure the source directory. There’s no need to configure the Groovy compiler explicitly. The Groovy plugin already takes care of it.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="testing">Testing shared libraries</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Any code used in production should be tested. And by that I do not necessarily mean by hand. The Jenkins documentation doesn&#8217;t provide any hints on how to approach this problem. Here are the possible ways to tackle the testing for shared libraries.</p>
+<p>Any code used in production should be tested. And by that I do not necessarily mean by hand. The Jenkins documentation doesn’t provide any hints on how to approach this problem. Here are the possible ways to tackle the testing for shared libraries.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Setting up pipeline job for the sole purpose of consuming shared library code to see how things pan out. Sooner or later, you will have to go through this type of testing as there&#8217;s no way to emulate the runtime behavior of Jenkins.</p>
+<p>Setting up pipeline job for the sole purpose of consuming shared library code to see how things pan out. Sooner or later, you will have to go through this type of testing as there’s no way to emulate the runtime behavior of Jenkins.</p>
 </li>
 <li>
 <p>Write unit tests and mock out every portion of the code that calls off to the Jenkins API. This approach is really only possible if you are writing shared libraries as class implementations so that you can put the proper abstractions in place.</p>
@@ -311,7 +310,7 @@ if (!doNotTrack) {
 </ol>
 </div>
 <div class="paragraph">
-<p>Point 2 requires a little bit of extra work from your end. I am going to describe the setup below. There&#8217;s also a project called <a href="https://github.com/jenkinsci/JenkinsPipelineUnit">"Jenkins Pipeline Unit testing framework"</a>, however, I didn&#8217;t manage to even execute a single working test case with it successfully.</p>
+<p>Point 2 requires a little bit of extra work from your end. I am going to describe the setup below. There’s also a project called <a href="https://github.com/jenkinsci/JenkinsPipelineUnit">&#34;Jenkins Pipeline Unit testing framework&#34;</a>, however, I didn’t manage to even execute a single working test case with it successfully.</p>
 </div>
 <div class="sect2">
 <h3 id="_setting_up_the_build">Setting up the build</h3>
@@ -402,7 +401,7 @@ interface JenkinsExecutor extends Serializable {
 <p><em>Listing 3. Hiding the Jenkins API behind an interface</em></p>
 </div>
 <div class="paragraph">
-<p>The implementation of the interface looks straightforward, as shown in listing 4. First of all, you&#8217;ll have to inject the reference to the Jenkins <code>script</code>. This is done in the constructor of the class. The method simply uses the <code>script</code> reference to call the relevant Jenkins APIs.</p>
+<p>The implementation of the interface looks straightforward, as shown in listing 4. First of all, you’ll have to inject the reference to the Jenkins <code>script</code>. This is done in the constructor of the class. The method simply uses the <code>script</code> reference to call the relevant Jenkins APIs.</p>
 </div>
 <div class="paragraph">
 <p><em>DefaultJenkinsExecutor.groovy</em></p>
@@ -457,8 +456,8 @@ class MyCustomSteps implements Serializable {
     }
 
     void execute() {
-        jenkinsExecutor.sh('ls -l')
-        jenkinsExecutor.echo('Done!')
+        jenkinsExecutor.sh(&#39;ls -l&#39;)
+        jenkinsExecutor.echo(&#39;Done!&#39;)
     }
 }</code></pre>
 </div>
@@ -486,12 +485,12 @@ class Test {
     MyCustomSteps myCustomSteps = new MyCustomSteps(jenkinsExecutor)
 
     @Test
-    void "can execute custom steps"() {
-        when(jenkinsExecutor.sh('ls -l')).thenReturn("""total 1
--rw-r--r--@  1 bmuschko  staff  889 Jun 13  2018 README.adoc""")
+    void &#34;can execute custom steps&#34;() {
+        when(jenkinsExecutor.sh(&#39;ls -l&#39;)).thenReturn(&#34;&#34;&#34;total 1
+-rw-r--r--@  1 bmuschko  staff  889 Jun 13  2018 README.adoc&#34;&#34;&#34;)
         myCustomSteps.execute()
-        verify(jenkinsExecutor).sh('ls -l')
-        verify(jenkinsExecutor).echo('Done!')
+        verify(jenkinsExecutor).sh(&#39;ls -l&#39;)
+        verify(jenkinsExecutor).echo(&#39;Done!&#39;)
     }
 }</code></pre>
 </div>
@@ -499,7 +498,7 @@ class Test {
 <div class="paragraph">
 <p><em>Listing 6. Mocking Jenkins API calls in a test</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -517,7 +516,7 @@ class Test {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Library('deployment@4.2.6')
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Library(&#39;deployment@4.2.6&#39;)
 
 import com.bmuschko.jenkins.Deployment
 ...</code></pre>
@@ -527,9 +526,9 @@ import com.bmuschko.jenkins.Deployment
 <p><em>Listing 7. Using a shared library by referencing a concrete tag</em></p>
 </div>
 <div class="paragraph">
-<p>It goes without saying that every "release" aka tag should be documented with the help of release notes. Release notes can look as simple as a Markdown or Asciidoc file in the root directory of the shared library. If you are rolling out new releases to a wider audience, those release notes will help consumers to decide which feature set they actually want to adopt.</p>
+<p>It goes without saying that every &#34;release&#34; aka tag should be documented with the help of release notes. Release notes can look as simple as a Markdown or Asciidoc file in the root directory of the shared library. If you are rolling out new releases to a wider audience, those release notes will help consumers to decide which feature set they actually want to adopt.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -541,10 +540,10 @@ import com.bmuschko.jenkins.Deployment
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>High-level documentation</strong> that answers the question "What problem does the shared library solve?".</p>
+<p><strong>High-level documentation</strong> that answers the question &#34;What problem does the shared library solve?&#34;.</p>
 </li>
 <li>
-<p><strong>Groovydoc to document the API</strong> of the shared library that answers the question "How can I used it?".</p>
+<p><strong>Groovydoc to document the API</strong> of the shared library that answers the question &#34;How can I used it?&#34;.</p>
 </li>
 <li>
 <p><strong>Usage examples</strong> that show code snippets of the shared library as part of a pipeline.</p>
@@ -578,7 +577,7 @@ import com.bmuschko.jenkins.Deployment
 <p><em>Listing 8. Generating Groovydoc in a Maven build</em></p>
 </div>
 <div class="paragraph">
-<p>Publishing the Groovydoc files is a bit more complicated. Hosting the API documentation on Jenkins may be a good way to start. Assuming you already have a build pipeline in place for your shared library, adding another step for generating and publishing the API docs is easy. The listing below demonstrates such a stage in an example pipeline. Additionally, you will have to configure Jenkins' <a href="https://wiki.jenkins.io/display/JENKINS/Configuring+Content+Security+Policy">content security policy</a>.</p>
+<p>Publishing the Groovydoc files is a bit more complicated. Hosting the API documentation on Jenkins may be a good way to start. Assuming you already have a build pipeline in place for your shared library, adding another step for generating and publishing the API docs is easy. The listing below demonstrates such a stage in an example pipeline. Additionally, you will have to configure Jenkins&#39; <a href="https://wiki.jenkins.io/display/JENKINS/Configuring+Content+Security+Policy">content security policy</a>.</p>
 </div>
 <div class="paragraph">
 <p><em>Jenkinsfile.groovy</em></p>
@@ -587,12 +586,12 @@ import com.bmuschko.jenkins.Deployment
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">pipeline {
     ...
-    stage('Publish API Docs') {
+    stage(&#39;Publish API Docs&#39;) {
         when {
-            branch 'master'
+            branch &#39;master&#39;
         }
         steps {
-            sh './mvnw groovydoc:generate'
+            sh &#39;./mvnw groovydoc:generate&#39;
         }
         post {
             success {
@@ -600,9 +599,9 @@ import com.bmuschko.jenkins.Deployment
                     allowMissing: false,
                     alwaysLinkToLastBuild: false,
                     keepAll: true,
-                    reportDir: 'target/groovydoc',
-                    reportFiles: 'index.html',
-                    reportName: 'API Docs'])
+                    reportDir: &#39;target/groovydoc&#39;,
+                    reportFiles: &#39;index.html&#39;,
+                    reportName: &#39;API Docs&#39;])
             }
         }
     }
@@ -612,7 +611,7 @@ import com.bmuschko.jenkins.Deployment
 <div class="paragraph">
 <p><em>Listing 9. Generating and publishing Groovydoc in a Jenkins pipeline</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">

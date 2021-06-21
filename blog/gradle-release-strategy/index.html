@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Implementing an intuitive versioning and release strategy</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -91,7 +90,7 @@ if (!doNotTrack) {
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="blogpost">
-              <hr>
+              <hr/>
 <div class="paragraph">
 <p>Implementing a versioning and release strategy for a project can be daunting task. An effective strategy should be elegant and require little manual intervention. When forming a strategy the following factors need to be taken under consideration.</p>
 </div>
@@ -110,7 +109,7 @@ if (!doNotTrack) {
 <p>Is the version based on semantic versioning or a custom versioning scheme?</p>
 </li>
 <li>
-<p>When starting a new release cycle does a developer or release engineer have to "bump up" a version in a file manually and commit the change to version control?</p>
+<p>When starting a new release cycle does a developer or release engineer have to &#34;bump up&#34; a version in a file manually and commit the change to version control?</p>
 </li>
 <li>
 <p>How well does the worflow tie into the mechanics of your Continuous Delivery pipeline?</p>
@@ -127,7 +126,7 @@ if (!doNotTrack) {
 <h2 id="_assembling_the_artifact">Assembling the artifact</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The versioning and release strategy is best demonstrated by starting with a small and self-contained project. You&#8217;ll set up a Java-based project pointing to source code in the directory <code>src/main/java</code>. The Gradle build script applies the <a href="https://docs.gradle.org/current/userguide/java_library_plugin.html">Java library plugin</a> to produce a JAR file under <code>build/libs</code> whenever the task <code>assemble</code> is executed.</p>
+<p>The versioning and release strategy is best demonstrated by starting with a small and self-contained project. You’ll set up a Java-based project pointing to source code in the directory <code>src/main/java</code>. The Gradle build script applies the <a href="https://docs.gradle.org/current/userguide/java_library_plugin.html">Java library plugin</a> to produce a JAR file under <code>build/libs</code> whenever the task <code>assemble</code> is executed.</p>
 </div>
 <div class="paragraph">
 <p><em>build.gradle</em></p>
@@ -135,10 +134,10 @@ if (!doNotTrack) {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'java-library'
+    id &#39;java-library&#39;
 }
 
-group = 'com.bmuschko'</code></pre>
+group = &#39;com.bmuschko&#39;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -148,7 +147,7 @@ group = 'com.bmuschko'</code></pre>
 <p>By convention Gradle takes into account the project name and version to form the JAR file name. The project name is either derived of the root directory name or specified in the <code>settings.gradle</code> file. The project version needs to be assigned explicitly by providing a value to the property <a href="https://docs.gradle.org/current/dsl/org.gradle.api.Project.html#org.gradle.api.Project:version"><code>Project.version</code></a>. Listing 1 does not assign a project version. Therefore, the produced artifact will be named <code>gradle-release-strategy.jar</code>.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s change the naming convention and reflect the project version in the artifact name without having to explicitly hard-code a value.</p>
+<p>Let’s change the naming convention and reflect the project version in the artifact name without having to explicitly hard-code a value.</p>
 </div>
 </div>
 </div>
@@ -167,8 +166,8 @@ group = 'com.bmuschko'</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'org.ajoberstar.grgit' version '1.7.2'
-    id 'org.ajoberstar.release-opinion' version '1.7.2'
+    id &#39;org.ajoberstar.grgit&#39; version &#39;1.7.2&#39;
+    id &#39;org.ajoberstar.release-opinion&#39; version &#39;1.7.2&#39;
 }
 
 import org.ajoberstar.gradle.git.release.opinion.Strategies
@@ -177,7 +176,7 @@ release {
     versionStrategy Strategies.FINAL
     defaultVersionStrategy Strategies.SNAPSHOT
     tagStrategy {
-        generateMessage = { version -&gt; "Version $project.version" }
+        generateMessage = { version -&gt; &#34;Version $project.version&#34; }
     }
 }</code></pre>
 </div>
@@ -220,7 +219,7 @@ gradle-release-strategy-1.0.4-SNAPSHOT.jar</pre>
 <p>The plugin exposes a task named <code>release</code> to trigger a release. Upon execution, the task creates a new, final tag and pushes it to the remote repository. Optionally, the user can decide on the subsequent project version by incrementing major, minor or patch attribute. By default the plugin increments the patch version.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s say you&#8217;d want to cut a production-ready release with the version <code>1.1.0</code>.</p>
+<p>Let’s say you’d want to cut a production-ready release with the version <code>1.1.0</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -260,7 +259,7 @@ gradle-release-strategy-1.1.0.jar</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ echo "description = 'hello'" &gt;&gt; build.gradle
+<pre>$ echo &#34;description = &#39;hello&#39;&#34; &gt;&gt; build.gradle
 
 $ ./gradlew assemble
 
@@ -270,9 +269,9 @@ Inferred project: gradle-release-strategy, version: 1.1.1-SNAPSHOT</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_meaning_of_a_release">The meaning of a "release"</h3>
+<h3 id="_the_meaning_of_a_release">The meaning of a &#34;release&#34;</h3>
 <div class="paragraph">
-<p>Formally, this process releases a new version of the artifact. In practice we haven&#8217;t told Gradle what to do when the release process has been triggered apart from tagging the source code with a specific version. As the desired state the JAR file should be published to the binary repository JCenter. Next, you&#8217;ll learn how to create the necessary setup.</p>
+<p>Formally, this process releases a new version of the artifact. In practice we haven’t told Gradle what to do when the release process has been triggered apart from tagging the source code with a specific version. As the desired state the JAR file should be published to the binary repository JCenter. Next, you’ll learn how to create the necessary setup.</p>
 </div>
 </div>
 </div>
@@ -284,7 +283,7 @@ Inferred project: gradle-release-strategy, version: 1.1.1-SNAPSHOT</pre>
 <p>Publishing one or many artifacts with Gradle is relatively straightforward. The project needs to apply the necessary publishing plugins and provides additional metadata.</p>
 </div>
 <div class="paragraph">
-<p>You can set up Maven repositories on JCenter to host your released artifacts. Listing 3 shows how to publish the JAR file produced by the project to the repository named "experimental". Credentials can be provided through environment variables or project properties.</p>
+<p>You can set up Maven repositories on JCenter to host your released artifacts. Listing 3 shows how to publish the JAR file produced by the project to the repository named &#34;experimental&#34;. Credentials can be provided through environment variables or project properties.</p>
 </div>
 <div class="paragraph">
 <p><em>build.gradle</em></p>
@@ -292,8 +291,8 @@ Inferred project: gradle-release-strategy, version: 1.1.1-SNAPSHOT</pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.0'
+    id &#39;maven-publish&#39;
+    id &#39;com.jfrog.bintray&#39; version &#39;1.8.0&#39;
 }
 
 publishing {
@@ -305,26 +304,26 @@ publishing {
 }
 
 bintray {
-    user = resolveProperty('BINTRAY_USER', 'bintrayUser')
-    key = resolveProperty('BINTRAY_KEY', 'bintrayKey')
-    publications = ['mavenJava']
+    user = resolveProperty(&#39;BINTRAY_USER&#39;, &#39;bintrayUser&#39;)
+    key = resolveProperty(&#39;BINTRAY_KEY&#39;, &#39;bintrayKey&#39;)
+    publications = [&#39;mavenJava&#39;]
     publish = true
 
     pkg {
-        repo = 'experimental'
-        name = 'com.bmuschko:gradle-release-strategy'
-        desc = 'Release strategy interfering project version from latest Git tag.'
-        websiteUrl = "https://github.com/bmuschko/${project.name}"
-        issueTrackerUrl = "https://github.com/bmuschko/${project.name}/issues"
-        vcsUrl = "https://github.com/bmuschko/${project.name}.git"
-        licenses = ['Apache-2.0']
-        labels = ['gradle', 'release']
+        repo = &#39;experimental&#39;
+        name = &#39;com.bmuschko:gradle-release-strategy&#39;
+        desc = &#39;Release strategy interfering project version from latest Git tag.&#39;
+        websiteUrl = &#34;https://github.com/bmuschko/${project.name}&#34;
+        issueTrackerUrl = &#34;https://github.com/bmuschko/${project.name}/issues&#34;
+        vcsUrl = &#34;https://github.com/bmuschko/${project.name}.git&#34;
+        licenses = [&#39;Apache-2.0&#39;]
+        labels = [&#39;gradle&#39;, &#39;release&#39;]
         publicDownloadNumbers = true
-        githubRepo = "bmuschko/${project.name}"
+        githubRepo = &#34;bmuschko/${project.name}&#34;
 
         version {
             released = new Date()
-            vcsTag = "v$project.version"
+            vcsTag = &#34;v$project.version&#34;
         }
     }
 }
@@ -353,7 +352,7 @@ String resolveProperty(String envVarKey, String projectPropKey) {
 <p>Travis CI is helpful for formalizing deployment pipelines for open source projects. In the past, I have used the product extensively for building and publishing Gradle plugins andlibraries written in Java or Go.</p>
 </div>
 <div class="paragraph">
-<p>The CI job shown in listing 4 consists of two build stages: "build" and "release". The stage "build" simply compiles the code, runs the tests and assembles the artifact. "release" takes care of publishing the artifact to JCenter. The "release" stage only executes the assigned script if the commit was tagged beforehand. In all other cases, Travis will simply skip the deploy instructions.</p>
+<p>The CI job shown in listing 4 consists of two build stages: &#34;build&#34; and &#34;release&#34;. The stage &#34;build&#34; simply compiles the code, runs the tests and assembles the artifact. &#34;release&#34; takes care of publishing the artifact to JCenter. The &#34;release&#34; stage only executes the assigned script if the commit was tagged beforehand. In all other cases, Travis will simply skip the deploy instructions.</p>
 </div>
 <div class="paragraph">
 <p><em>.travis.yml</em></p>
@@ -382,21 +381,21 @@ jobs:
 <p><em>Listing 4. Build stages defined in Travis CI</em></p>
 </div>
 <div class="paragraph">
-<p>In this workflow, the tagging would be performed on the developer&#8217;s machine but could also be implemented as a push button-release as part of another CI job. The next section shoulds you how the job looks like upon execution.</p>
+<p>In this workflow, the tagging would be performed on the developer’s machine but could also be implemented as a push button-release as part of another CI job. The next section shoulds you how the job looks like upon execution.</p>
 </div>
 <div class="sect2">
 <h3 id="_a_successul_release_on_travis">A successul release on Travis</h3>
 <div class="paragraph">
-<p>Figure 1 shows the job execution on Travis CI for a release. The tag <code>v1.1.3</code> has been previously created by executing the <code>release</code> task from the developer&#8217;s machine.</p>
+<p>Figure 1 shows the job execution on Travis CI for a release. The tag <code>v1.1.3</code> has been previously created by executing the <code>release</code> task from the developer’s machine.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/gradle-release-strategy/travis-build-stages.png" alt="travis build stages"></span></p>
+<p><span class="image"><img src="/img/blog/gradle-release-strategy/travis-build-stages.png" alt="travis build stages"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 1. A tagged commit on CI triggering the release stage</em></p>
 </div>
 <div class="paragraph">
-<p>If you dig deeper into the log files of the "release" stage, you&#8217;d find a section called "Deploying application". It contains detailed information about the deployment process, more specifically the executed Gradle publishing tasks.</p>
+<p>If you dig deeper into the log files of the &#34;release&#34; stage, you’d find a section called &#34;Deploying application&#34;. It contains detailed information about the deployment process, more specifically the executed Gradle publishing tasks.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -420,7 +419,7 @@ BUILD SUCCESSFUL in 10s
 <h2 id="_summary">Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The use of Git tags to derive the project version is a clever way to avoid manual intervention. Gone are the days of having to "bump up" the version number in a file to initiate a new release cycle. With the help of relevant Gradle plugins, the build can infer a sensible project version by convention. It is fairly easy to make the process part of a Continuous Delivery pipeline to automate releases end-to-end.</p>
+<p>The use of Git tags to derive the project version is a clever way to avoid manual intervention. Gone are the days of having to &#34;bump up&#34; the version number in a file to initiate a new release cycle. With the help of relevant Gradle plugins, the build can infer a sensible project version by convention. It is fairly easy to make the process part of a Continuous Delivery pipeline to automate releases end-to-end.</p>
 </div>
 </div>
 </div>

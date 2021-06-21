@@ -6,18 +6,14 @@
     <description>Recent content in management on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 26 May 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/management/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 26 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/management/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Migrating from Glide to dep</title>
       <link>https://bmuschko.com/blog/migrating-glide-to-dep/</link>
       <pubDate>Sat, 26 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/migrating-glide-to-dep/</guid>
-      <description>Package management is a bread-and-butter task. Rarely does a Go developer write a Go program that doesn&amp;#8217;t reference an external package. Over the course of the years, the Go community has seen various approaches to solving the same problem. From go get over vendoring to package managers like Glide. Each solution comes with its benefits and drawbacks.
+      <description>Package management is a bread-and-butter task. Rarely does a Go developer write a Go program that doesn’t reference an external package. Over the course of the years, the Go community has seen various approaches to solving the same problem. From go get over vendoring to package managers like Glide. Each solution comes with its benefits and drawbacks.
  Recently, the Go community settled on dep as the canonical tool for package management.</description>
     </item>
     

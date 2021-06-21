@@ -6,11 +6,7 @@
     <description>Recent content in travis on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 17 May 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/travis/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 17 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/travis/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Implementing an intuitive versioning and release strategy</title>
       <link>https://bmuschko.com/blog/gradle-release-strategy/</link>
@@ -28,7 +24,7 @@
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/docker-integration-testing/</guid>
-      <description>In the first blog post on &#34;Docker with Gradle&#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
+      <description>In the first blog post on &amp;#34;Docker with Gradle&amp;#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
  Integration testing plays an important role in the software development lifecycle to ensure functional and non-functional requirements have been met.</description>
     </item>
     

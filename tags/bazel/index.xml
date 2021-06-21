@@ -6,18 +6,14 @@
     <description>Recent content in bazel on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 01 Feb 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/bazel/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 01 Feb 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/bazel/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Building Groovy with Bazel</title>
       <link>https://bmuschko.com/blog/bazel-groovy/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/bazel-groovy/</guid>
-      <description>Bazel is a build automation tool that ships with support for a variety of languages out-of-the-box. For example, you can build Java projects right away without having to configure external functionality, so-called rules. Groovy is a popular language in the JVM space. As a developer, you&amp;#8217;d expect the following features:
+      <description>Bazel is a build automation tool that ships with support for a variety of languages out-of-the-box. For example, you can build Java projects right away without having to configure external functionality, so-called rules. Groovy is a popular language in the JVM space. As a developer, you’d expect the following features:
    Compiling Groovy source code
   Creating a JAR file to bundle the class files
   Executing Groovy-based tests written with JUnit or Spock</description>

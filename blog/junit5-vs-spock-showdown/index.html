@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>JUnit 5 vs. Spock feature showdown</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -91,7 +90,7 @@ if (!doNotTrack) {
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For over a decade <a href="http://junit.org/junit4/">JUnit 4</a> has been the go-to test framework for JVM-based software projects. You can find the use of JUnit across the board in organizations from big entprises to small startups. Despite its popularity, the test framework&#8217;s features barely moved with the times. Due to its deep penetration among the industry, evolutionary changes became harder and harder to implement without introducing inevidable breakages to the API.</p>
+<p>For over a decade <a href="http://junit.org/junit4/">JUnit 4</a> has been the go-to test framework for JVM-based software projects. You can find the use of JUnit across the board in organizations from big entprises to small startups. Despite its popularity, the test framework’s features barely moved with the times. Due to its deep penetration among the industry, evolutionary changes became harder and harder to implement without introducing inevidable breakages to the API.</p>
 </div>
 <div class="paragraph">
 <p>With the rise of newer JVM languages like Groovy and Kotlin, feature-rich test frameworks emerged. The test framework <a href="http://spockframework.org/">Spock</a> became a welcome alternative for many projects fearless to adopt Groovy as part of their polyglot software stack.</p>
@@ -145,14 +144,14 @@ if (!doNotTrack) {
 </li>
 </ul>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_code_under_test">Code under test</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For the purpose of demonstrating the capabilities of both test frameworks, we&#8217;ll use two sets of classes and/or interfaces. The simplest class provides methods for executing arithmetic operations shown in listing 1. Most test framework features in this post can be demonstrated with the help of <code>ArithmeticOperation.java</code>.</p>
+<p>For the purpose of demonstrating the capabilities of both test frameworks, we’ll use two sets of classes and/or interfaces. The simplest class provides methods for executing arithmetic operations shown in listing 1. Most test framework features in this post can be demonstrated with the help of <code>ArithmeticOperation.java</code>.</p>
 </div>
 <div class="paragraph">
 <p><em>ArithmeticOperation.java</em></p>
@@ -215,7 +214,7 @@ public class DefaultFileReader implements FileReader {
     @Override
     public String readContent(Path path) throws IOException {
         if (Files.notExists(path)) {
-            throw new IOException("File does not exist");
+            throw new IOException(&#34;File does not exist&#34;);
         }
 
         return new String(Files.readAllBytes(path));
@@ -229,14 +228,14 @@ public class DefaultFileReader implements FileReader {
 <div class="paragraph">
 <p>You will find that the class <code>FileManager</code> is referenced in some of the test cases described below. <code>FileManager</code> is just a wrapper around <code>FileReader</code> to demonstrate mocking capabilities. You can find the <a href="https://github.com/bmuschko/junit5-vs-spock-feature-comparison/blob/master/src/main/java/com/bmuschko/test/comparison/FileManager.java">code for the class</a> in the source code repository.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="test-execution">Test execution</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Let&#8217;s start with the most simplistic use case: marking test methods or the whole class for execution with the test framework.</p>
+<p>Let’s start with the most simplistic use case: marking test methods or the whole class for execution with the test framework.</p>
 </div>
 <div class="sect2">
 <h3 id="_junit_5">JUnit 5</h3>
@@ -282,7 +281,7 @@ public class SimpleTest {
 <div class="sect2">
 <h3 id="_spock">Spock</h3>
 <div class="paragraph">
-<p>To indicate that all methods of a class should be treated as test methods, you&#8217;ll need to extend from <code>Specification</code>. On the one hand, extending from a class requires less work on your end to turn all methods into test methods. On the other hand, it makes it harder to create a hierarchy of parent classes in case you want to formalize reusable fixtures through inheritance. <a href="#disabling-tests">Disabling test cases</a> allows you to be more selective.</p>
+<p>To indicate that all methods of a class should be treated as test methods, you’ll need to extend from <code>Specification</code>. On the one hand, extending from a class requires less work on your end to turn all methods into test methods. On the other hand, it makes it harder to create a hierarchy of parent classes in case you want to formalize reusable fixtures through inheritance. <a href="#disabling-tests">Disabling test cases</a> allows you to be more selective.</p>
 </div>
 <div class="paragraph">
 <p><em>SimpleTest.groovy</em></p>
@@ -319,7 +318,7 @@ class SimpleTest extends Specification {
 <div class="paragraph">
 <p><em>Listing 5. Extending from abstract class Specification</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -354,7 +353,7 @@ public class FixtureSetupCleanup {
 
     @BeforeEach
     void setup() throws IOException {
-        testFile = Files.createTempFile("junit5", ".tmp");
+        testFile = Files.createTempFile(&#34;junit5&#34;, &#34;.tmp&#34;);
     }
 
     @AfterEach
@@ -364,7 +363,7 @@ public class FixtureSetupCleanup {
 
     @Test
     void canReadFile() throws IOException {
-        String text = "hello";
+        String text = &#34;hello&#34;;
         Files.write(testFile, text.getBytes());
         assertEquals(text, fileReader.readContent(testFile));
     }
@@ -390,16 +389,16 @@ public class FixtureSetupCleanup {
     def testFile
 
     def setup() {
-        testFile = Files.createTempFile("junit5", ".tmp")
+        testFile = Files.createTempFile(&#34;junit5&#34;, &#34;.tmp&#34;)
     }
 
     def cleanup() {
         testFile.toFile().delete()
     }
 
-    def "can read file"() {
+    def &#34;can read file&#34;() {
         given:
-        def text = "hello"
+        def text = &#34;hello&#34;
         testFile &lt;&lt; text
 
         when:
@@ -414,7 +413,7 @@ public class FixtureSetupCleanup {
 <div class="paragraph">
 <p><em>Listing 7. Fixture methods in Spock</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -440,25 +439,25 @@ public class DescriptiveTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @Test
-    @DisplayName("can add two numbers")
+    @DisplayName(&#34;can add two numbers&#34;)
     void canAdd() {
         assertEquals(3, arithmeticOperation.add(1, 2));
     }
 
     @Test
-    @DisplayName("can substract a number from another one")
+    @DisplayName(&#34;can substract a number from another one&#34;)
     void canSubstract() {
         assertEquals(1, arithmeticOperation.substract(2, 1));
     }
 
     @Test
-    @DisplayName("can multiple two numbers")
+    @DisplayName(&#34;can multiple two numbers&#34;)
     void canMultiply() {
         assertEquals(6, arithmeticOperation.multiply(2, 3));
     }
 
     @Test
-    @DisplayName("can divide two numbers")
+    @DisplayName(&#34;can divide two numbers&#34;)
     void canDivide() {
         assertEquals(3, arithmeticOperation.divide(6, 2));
     }
@@ -472,7 +471,7 @@ public class DescriptiveTest {
 <p>The executing environment takes the test description into account and uses it instead of the method name. The following screenshot shows the test execution in IntelliJ.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/descriptive-names-junit5.png" alt="descriptive names junit5"></span></p>
+<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/descriptive-names-junit5.png" alt="descriptive names junit5"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 1. Descriptive test names in IntelliJ</em></p>
@@ -491,22 +490,22 @@ public class DescriptiveTest {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">class DescriptiveTest extends Specification {
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
-    def "can add two numbers"() {
+    def &#34;can add two numbers&#34;() {
         expect:
         arithmeticOperation.add(1, 2) == 3
     }
 
-    def "can substract a number from another one"() {
+    def &#34;can substract a number from another one&#34;() {
         expect:
         arithmeticOperation.substract(2, 1) == 1
     }
 
-    def "can multiple two numbers"() {
+    def &#34;can multiple two numbers&#34;() {
         expect:
         arithmeticOperation.multiply(2, 3) == 6
     }
 
-    def "can divide two numbers"() {
+    def &#34;can divide two numbers&#34;() {
         expect:
         arithmeticOperation.divide(6, 2) == 3
     }
@@ -520,12 +519,12 @@ public class DescriptiveTest {
 <p>The runtime environment properly evaluates the provided String as method name. The following screenshot shows how IntelliJ renders the executed Spock test cases.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/descriptive-names-spock.png" alt="descriptive names spock"></span></p>
+<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/descriptive-names-spock.png" alt="descriptive names spock"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 2. Descriptive test names in IntelliJ</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -533,7 +532,7 @@ public class DescriptiveTest {
 <h2 id="disabling-tests">Disabling tests</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Under certain conditions, you might want to disable single test methods. That&#8217;s typically the case if a test is failing temporarily or if a test covers functionality that hasn&#8217;t been implemented yet.</p>
+<p>Under certain conditions, you might want to disable single test methods. That’s typically the case if a test is failing temporarily or if a test covers functionality that hasn’t been implemented yet.</p>
 </div>
 <div class="sect2">
 <h3 id="_junit_5_4">JUnit 5</h3>
@@ -551,7 +550,7 @@ public class IgnoredTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @Test
-    @Disabled("for demonstration purposes")
+    @Disabled(&#34;for demonstration purposes&#34;)
     void canAdd() {
         assertEquals(3, arithmeticOperation.add(1, 2));
     }
@@ -577,7 +576,7 @@ public class IgnoredTest {
 class IgnoredTest extends Specification {
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
-    @Ignore("for demonstration purposes")
+    @Ignore(&#34;for demonstration purposes&#34;)
     def canAdd() {
         expect:
         arithmeticOperation.add(1, 2) == 3
@@ -588,7 +587,7 @@ class IgnoredTest extends Specification {
 <div class="paragraph">
 <p><em>Listing 11. Using the Ignore annotation to disable a method</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -596,7 +595,7 @@ class IgnoredTest extends Specification {
 <h2 id="expecting-thrown-exceptions">Expecting thrown exceptions</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Methods can throw an exception. Being a good citizen you&#8217;ll want to test those cases as well to verify that the "sad path" behaves as expected.</p>
+<p>Methods can throw an exception. Being a good citizen you’ll want to test those cases as well to verify that the &#34;sad path&#34; behaves as expected.</p>
 </div>
 <div class="sect2">
 <h3 id="_junit_5_5">JUnit 5</h3>
@@ -616,7 +615,7 @@ public class ExpectedExceptionTest {
     @Test
     void cannotReadNonExistentFile() {
         assertThrows(IOException.class, () -&gt; {
-            fileReader.readContent(Paths.get("hello.text"));
+            fileReader.readContent(Paths.get(&#34;hello.text&#34;));
         });
     }
 }</code></pre>
@@ -629,7 +628,7 @@ public class ExpectedExceptionTest {
 <div class="sect2">
 <h3 id="_spock_5">Spock</h3>
 <div class="paragraph">
-<p>In Spock-based tests a class or method can be annotated with <code>@FailsWith</code> to signal that a declared exception should be thrown. If you want more fine-grained control over which portion of the code should throw the exception then you&#8217;ll have to implement a <code>try</code>/<code>catch</code> block and assert the exception type.</p>
+<p>In Spock-based tests a class or method can be annotated with <code>@FailsWith</code> to signal that a declared exception should be thrown. If you want more fine-grained control over which portion of the code should throw the exception then you’ll have to implement a <code>try</code>/<code>catch</code> block and assert the exception type.</p>
 </div>
 <div class="paragraph">
 <p>Alternatively, you can also use the method <code>thrown(Class)</code> to assert a thrown exception. The return value of the method grants access to the exception for further inspection.</p>
@@ -645,18 +644,18 @@ class ExpectedExceptionTest extends Specification {
     @Subject def fileReader = new DefaultFileReader()
 
     @FailsWith(IOException)
-    def "throws exception if file contents cannot be read"() {
+    def &#34;throws exception if file contents cannot be read&#34;() {
         expect:
-        fileReader.readContent(Paths.get('hello.text'))
+        fileReader.readContent(Paths.get(&#39;hello.text&#39;))
     }
 
-    def "throws exception if file contents cannot be read and assert message"() {
+    def &#34;throws exception if file contents cannot be read and assert message&#34;() {
         when:
-        fileReader.readContent(Paths.get('hello.text'))
+        fileReader.readContent(Paths.get(&#39;hello.text&#39;))
 
         then:
         def t = thrown(IOException)
-        t.message == 'File does not exist'
+        t.message == &#39;File does not exist&#39;
     }
 }</code></pre>
 </div>
@@ -664,7 +663,7 @@ class ExpectedExceptionTest extends Specification {
 <div class="paragraph">
 <p><em>Listing 13. Declaring an expected exception by annotation</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -672,7 +671,7 @@ class ExpectedExceptionTest extends Specification {
 <h2 id="repeating-test-execution">Repeating test execution</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Sometimes you&#8217;ll want to verify that exercising the same logic multiples times leads to the coequal result. There are various examples that come to mind that require repeating a test:</p>
+<p>Sometimes you’ll want to verify that exercising the same logic multiples times leads to the coequal result. There are various examples that come to mind that require repeating a test:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -707,7 +706,7 @@ public class RepetitionTest {
         assertEquals(3, arithmeticOperation.add(1, 2));
     }
 
-    @RepeatedTest(value = 5, name = "Iteration {currentRepetition} of {totalRepetitions}")
+    @RepeatedTest(value = 5, name = &#34;Iteration {currentRepetition} of {totalRepetitions}&#34;)
     void canSubstract() {
         assertEquals(1, arithmeticOperation.substract(2, 1));
     }
@@ -732,7 +731,7 @@ public class RepetitionTest {
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     @Unroll
-    def "can add"() {
+    def &#34;can add&#34;() {
         expect:
         arithmeticOperation.add(1, 2) == 3
 
@@ -741,7 +740,7 @@ public class RepetitionTest {
     }
 
     @Unroll
-    def "Iteration #i of 5"() {
+    def &#34;Iteration #i of 5&#34;() {
         expect:
         arithmeticOperation.substract(2, 1) == 1
 
@@ -754,7 +753,7 @@ public class RepetitionTest {
 <div class="paragraph">
 <p><em>Listing 15. Repeating a test method by counter</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -762,7 +761,7 @@ public class RepetitionTest {
 <h2 id="declaring-timeouts">Declaring test execution timeouts</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Code under test may take a little time to finish. Operations can be very costly, calls across network boundaries can take a longer than expected due to latency, load tests should finish in an predefined amount of time. JUnit 5 and Spock provide adequate support for declaring test execution timeout. The test fails if it doesn&#8217;t finish within the expected time frame.</p>
+<p>Code under test may take a little time to finish. Operations can be very costly, calls across network boundaries can take a longer than expected due to latency, load tests should finish in an predefined amount of time. JUnit 5 and Spock provide adequate support for declaring test execution timeout. The test fails if it doesn’t finish within the expected time frame.</p>
 </div>
 <div class="sect2">
 <h3 id="_junit_5_7">JUnit 5</h3>
@@ -790,7 +789,7 @@ public class TimeoutTest {
 </div>
 </div>
 <div class="paragraph">
-<p><em>Listing 16. Fail a test if it doesn&#8217;t finish in expected timeout threshold</em></p>
+<p><em>Listing 16. Fail a test if it doesn’t finish in expected timeout threshold</em></p>
 </div>
 </div>
 <div class="sect2">
@@ -819,7 +818,7 @@ class TimeoutTest extends Specification {
 <div class="paragraph">
 <p><em>Listing 17. Convenient timeout definition by annotation</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -827,7 +826,7 @@ class TimeoutTest extends Specification {
 <h2 id="conditional-test-execution">Conditional test execution</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In a large test suite you don&#8217;t necessarily want to execute all tests in every runtime environment. For example some tests should just run in a Windows environment but not on Linux. Or you might implement tests that should only run with a specific JDK version. Being able to control test execution proves to be extremely valuable if your test coverage becomes more complex or multifaceted.</p>
+<p>In a large test suite you don’t necessarily want to execute all tests in every runtime environment. For example some tests should just run in a Windows environment but not on Linux. Or you might implement tests that should only run with a specific JDK version. Being able to control test execution proves to be extremely valuable if your test coverage becomes more complex or multifaceted.</p>
 </div>
 <div class="sect2">
 <h3 id="_junit_5_8">JUnit 5</h3>
@@ -842,8 +841,8 @@ class TimeoutTest extends Specification {
 <pre class="highlight"><code class="language-java" data-lang="java">import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class ConditionalExecutionTest {
-    private final static String SYS_PROP_KEY = "junit5.test.enabled";
-    private final static String SYS_PROP_TRUE_VALUE = "true";
+    private final static String SYS_PROP_KEY = &#34;junit5.test.enabled&#34;;
+    private final static String SYS_PROP_TRUE_VALUE = &#34;true&#34;;
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
     @Test
@@ -861,7 +860,7 @@ public class ConditionalExecutionTest {
 <p>IntelliJ properly handles conditional execution for JUnit 5. The console renders the message <code>org.opentest4j.TestAbortedException: Assumption failed: assumption is not true</code> for an expression that evaluates to <code>false</code> and records the method as skipped.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/conditional-execution-junit5.png" alt="conditional execution junit5"></span></p>
+<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/conditional-execution-junit5.png" alt="conditional execution junit5"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 3. IntelliJ handles a TestAbortedException thrown by JUnit 5</em></p>
@@ -900,11 +899,11 @@ public class ConditionalExecutionTest {
             boolean enabled = SYS_PROP_TRUE_VALUE.equals(sysPropValue);
 
             if (enabled) {
-                return enabled(String.format("System property '%s' evaluates to true",
+                return enabled(String.format(&#34;System property &#39;%s&#39; evaluates to true&#34;,
                     SYS_PROP_KEY));
             }
 
-            return disabled(String.format("System property '%s' evaluates to false",
+            return disabled(String.format(&#34;System property &#39;%s&#39; evaluates to false&#34;,
                 SYS_PROP_KEY));
         }
     }
@@ -918,7 +917,7 @@ public class ConditionalExecutionTest {
 <div class="sect2">
 <h3 id="_spock_8">Spock</h3>
 <div class="paragraph">
-<p>Spock really shines when it comes to conditional test execution. You can define the condition with the help of a closure return any arbitrary expression. The closure is assigned to either the annotation <code>@Requires</code> or <code>@IgnoreIf</code>. Overall Spock&#8217;s support for conditional test execution feels more flexible than JUnit&#8217;s capabilities. The following example shows the use of the <code>@Requires</code> annotation.</p>
+<p>Spock really shines when it comes to conditional test execution. You can define the condition with the help of a closure return any arbitrary expression. The closure is assigned to either the annotation <code>@Requires</code> or <code>@IgnoreIf</code>. Overall Spock’s support for conditional test execution feels more flexible than JUnit’s capabilities. The following example shows the use of the <code>@Requires</code> annotation.</p>
 </div>
 <div class="paragraph">
 <p><em>ConditionalExecutionTest.groovy</em></p>
@@ -928,12 +927,12 @@ public class ConditionalExecutionTest {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import spock.lang.Requires
 
 class ConditionalExecutionTest extends Specification {
-    private final static String SYS_PROP_KEY = "spock.test.enabled"
-    private final static String SYS_PROP_TRUE_VALUE = "true"
+    private final static String SYS_PROP_KEY = &#34;spock.test.enabled&#34;
+    private final static String SYS_PROP_TRUE_VALUE = &#34;true&#34;
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     @Requires({ SYS_PROP_TRUE_VALUE == sys[SYS_PROP_KEY] })
-    def "can add"() {
+    def &#34;can add&#34;() {
         expect:
         arithmeticOperation.add(1, 2) == 3
     }
@@ -947,12 +946,12 @@ class ConditionalExecutionTest extends Specification {
 <p>The following screenshot shows the handling in IntelliJ.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/conditional-execution-spock.png" alt="conditional execution spock"></span></p>
+<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/conditional-execution-spock.png" alt="conditional execution spock"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 4. Conditional test execution by annotation in IntelliJ</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -960,15 +959,15 @@ class ConditionalExecutionTest extends Specification {
 <h2 id="data-driven-tests">Data-driven tests</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Production source code might behave differently at runtime if provided with varying inputs. Copy-pasting the same test case over and over again with different data sets leads to unmaintainable test classes. The better option is to run the same test case multiple times but with different inputs. Data-driven tests represent a feature I personally use in almost every project. I wouldn&#8217;t want to miss it.</p>
+<p>Production source code might behave differently at runtime if provided with varying inputs. Copy-pasting the same test case over and over again with different data sets leads to unmaintainable test classes. The better option is to run the same test case multiple times but with different inputs. Data-driven tests represent a feature I personally use in almost every project. I wouldn’t want to miss it.</p>
 </div>
 <div class="sect2">
 <h3 id="_junit_5_9">JUnit 5</h3>
 <div class="paragraph">
-<p>You have various options to feed data to a test case. First of all, you&#8217;ll need to mark the method with the annotation <code>@ParameterizedTest</code> to indicate that it receives data and should be executed multiple times. The annotation also allows for building a custom test description based on the parameter values.</p>
+<p>You have various options to feed data to a test case. First of all, you’ll need to mark the method with the annotation <code>@ParameterizedTest</code> to indicate that it receives data and should be executed multiple times. The annotation also allows for building a custom test description based on the parameter values.</p>
 </div>
 <div class="paragraph">
-<p>One way to feed the data is with the help of the annotation <code>@ValueSource</code>. I don&#8217;t find this annotation very helpful as it can only provide a flat list of single input values. To make the functionality useful you&#8217;ll most likely also need to provide a second or third input value, a corresponding result value and potentially a textual description that represents the test case. The annotation <code>@MethodSource</code> can refer to a method returning a more complex matrix combination of values. Unfortunately, there&#8217;s no way to provide an identifier to any of the values making it hard to parse and understand.</p>
+<p>One way to feed the data is with the help of the annotation <code>@ValueSource</code>. I don’t find this annotation very helpful as it can only provide a flat list of single input values. To make the functionality useful you’ll most likely also need to provide a second or third input value, a corresponding result value and potentially a textual description that represents the test case. The annotation <code>@MethodSource</code> can refer to a method returning a more complex matrix combination of values. Unfortunately, there’s no way to provide an identifier to any of the values making it hard to parse and understand.</p>
 </div>
 <div class="paragraph">
 <p><em>DataDrivenTest.java</em></p>
@@ -991,8 +990,8 @@ public class DataDrivenTest {
         assertTrue(arithmeticOperation.add(1, b) &gt;= 2);
     }
 
-    @ParameterizedTest(name = "can add {0} to {1} and receive {2}")
-    @MethodSource("additionProvider")
+    @ParameterizedTest(name = &#34;can add {0} to {1} and receive {2}&#34;)
+    @MethodSource(&#34;additionProvider&#34;)
     void canAddAndAssertExactResult(int a, int b, int result) {
         assertEquals(result, arithmeticOperation.add(a, b));
     }
@@ -1014,7 +1013,7 @@ public class DataDrivenTest {
 <p>IntelliJ groups data-driven execution per test method. The result is very readable. Furthermore, the IDE also renders the type for each input value in parathesis next to the test name.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/data-driven-test-junit5.png" alt="data driven test junit5"></span></p>
+<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/data-driven-test-junit5.png" alt="data driven test junit5"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 5. JUnit 5 data-driven test execution in IntelliJ</em></p>
@@ -1036,7 +1035,7 @@ class DataDrivenTest extends Specification {
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     @Unroll
-    def "can add"() {
+    def &#34;can add&#34;() {
         expect:
         arithmeticOperation.add(1, b) &gt;= 2
 
@@ -1045,7 +1044,7 @@ class DataDrivenTest extends Specification {
     }
 
     @Unroll
-    def "can add #a to #b and receive #result"() {
+    def &#34;can add #a to #b and receive #result&#34;() {
         expect:
         arithmeticOperation.add(a, b) == result
 
@@ -1065,12 +1064,12 @@ class DataDrivenTest extends Specification {
 <p>For Spock-based tests IntelliJ only renders a flat list of test executions.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/data-driven-test-spock.png" alt="data driven test spock"></span></p>
+<p><span class="image"><img src="/img/blog/junit5-vs-spock-showdown/data-driven-test-spock.png" alt="data driven test spock"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 6. IntelliJ renders each data line for Spock-based tests</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -1098,7 +1097,7 @@ public class MockTest {
 
     @BeforeEach
     void setup() throws IOException {
-        testFile = Files.createTempFile("junit5", ".tmp");
+        testFile = Files.createTempFile(&#34;junit5&#34;, &#34;.tmp&#34;);
     }
 
     @AfterEach
@@ -1108,7 +1107,7 @@ public class MockTest {
 
     @Test
     void canMockFileReadOperation() throws IOException {
-        String text = "hello";
+        String text = &#34;hello&#34;;
         FileReader fileReader = mock(FileReader.class);
         when(fileReader.readContent(testFile)).thenReturn(text);
         FileManager fileManager = new DefaultFileManager(fileReader);
@@ -1125,7 +1124,7 @@ public class MockTest {
 <div class="sect2">
 <h3 id="_spock_10">Spock</h3>
 <div class="paragraph">
-<p>Mocks and stubs are an integrated part of the Spock API. You do not have to pull in yet another external dependency to fulfill all testing needs. Creating mock objects and defining expected interactions in Spock is straightforward. You can learn more about Spock&#8217;s <a href="http://spockframework.org/spock/docs/1.1/interaction_based_testing.html">interaction based testing</a> in the user guide.</p>
+<p>Mocks and stubs are an integrated part of the Spock API. You do not have to pull in yet another external dependency to fulfill all testing needs. Creating mock objects and defining expected interactions in Spock is straightforward. You can learn more about Spock’s <a href="http://spockframework.org/spock/docs/1.1/interaction_based_testing.html">interaction based testing</a> in the user guide.</p>
 </div>
 <div class="paragraph">
 <p><em>MockTest.groovy</em></p>
@@ -1138,16 +1137,16 @@ public class MockTest {
     def testFile
 
     void setup() {
-        testFile = Files.createTempFile("junit5", ".tmp")
+        testFile = Files.createTempFile(&#34;junit5&#34;, &#34;.tmp&#34;)
     }
 
     void cleanup() {
         testFile.toFile().delete()
     }
 
-    def "can mock file read operation"() {
+    def &#34;can mock file read operation&#34;() {
         given:
-        def text = "hello"
+        def text = &#34;hello&#34;
         Files.write(testFile, text.getBytes())
 
         when:
@@ -1163,7 +1162,7 @@ public class MockTest {
 <div class="paragraph">
 <p><em>Listing 24. Built-in mock capabilities</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -1188,13 +1187,13 @@ public class MockTest {
 public class TaggedTest {
     private final ArithmeticOperation arithmeticOperation = new ArithmeticOperation();
 
-    @Tag("slow")
+    @Tag(&#34;slow&#34;)
     @Test
     void runsSlowly() {
         assertEquals(3, arithmeticOperation.add(1, 2));
     }
 
-    @Tag("fast")
+    @Tag(&#34;fast&#34;)
     @Test
     void runsFast() {
         assertEquals(1, arithmeticOperation.substract(2, 1));
@@ -1206,7 +1205,7 @@ public class TaggedTest {
 <p><em>Listing 25. Tagged test methods</em></p>
 </div>
 <div class="paragraph">
-<p>The description of a tagged test can serve as documentation for other developers. However, only in combination with test filtering, tagging becomes really beneficial. The following example sets up a test suite for running "fast" tests. Filtering tests requires the dependency <a href="http://junit.org/junit5/docs/current/user-guide/#dependency-metadata-junit-platform"><code>org.junit.platform:junit-platform-runner</code></a> to be available on the test compilation classpath.</p>
+<p>The description of a tagged test can serve as documentation for other developers. However, only in combination with test filtering, tagging becomes really beneficial. The following example sets up a test suite for running &#34;fast&#34; tests. Filtering tests requires the dependency <a href="http://junit.org/junit5/docs/current/user-guide/#dependency-metadata-junit-platform"><code>org.junit.platform:junit-platform-runner</code></a> to be available on the test compilation classpath.</p>
 </div>
 <div class="paragraph">
 <p><em>FilteredFastTest.java</em></p>
@@ -1219,8 +1218,8 @@ import org.junit.platform.suite.api.SelectPackages;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitPlatform.class)
-@SelectPackages("com.bmuschko.test.comparison.junit5.tagged")
-@IncludeTags("fast")
+@SelectPackages(&#34;com.bmuschko.test.comparison.junit5.tagged&#34;)
+@IncludeTags(&#34;fast&#34;)
 public class FilteredFastTest {
 }</code></pre>
 </div>
@@ -1232,7 +1231,7 @@ public class FilteredFastTest {
 <div class="sect2">
 <h3 id="_spock_11">Spock</h3>
 <div class="paragraph">
-<p>The Spock API does not define the concept of a tag. Nevertheless, it&#8217;s very easy to set up labeling yourself. The following two annotation classes serve the purpose of suggesting slow- and fast-running tests.</p>
+<p>The Spock API does not define the concept of a tag. Nevertheless, it’s very easy to set up labeling yourself. The following two annotation classes serve the purpose of suggesting slow- and fast-running tests.</p>
 </div>
 <div class="paragraph">
 <p><em>Slow.groovy</em></p>
@@ -1274,13 +1273,13 @@ public class FilteredFastTest {
     @Subject def arithmeticOperation = new ArithmeticOperation()
 
     @Slow
-    def "runs slowly"() {
+    def &#34;runs slowly&#34;() {
         expect:
         arithmeticOperation.add(1, 2) == 3
     }
 
     @Fast
-    def "runs fast"() {
+    def &#34;runs fast&#34;() {
         expect:
         arithmeticOperation.substract(2, 1) == 1
     }
@@ -1311,7 +1310,7 @@ runner {
 <div class="paragraph">
 <p>The approach is less convenient than the one provided by JUnit 5 especially if you have to deal with more than one test suite. Please be aware that you can also provide the configuration to the test JVM with the system property <code>spock.configuration</code>.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -1319,7 +1318,7 @@ runner {
 <h2 id="extending-test-framework">Extending the test framework</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>JUnit 5 and Spock are powerful tools with a lot of built-in functionality. Nevertheless, a test framework cannot anticipate all requirements a real world project might have. You can enhance the base functionality with an extension in case you need custom logic that ties into the existing API. This blog post won&#8217;t go very deep into the available options for each test framework. I&#8217;d highly encourage you to explore the API for yourself.</p>
+<p>JUnit 5 and Spock are powerful tools with a lot of built-in functionality. Nevertheless, a test framework cannot anticipate all requirements a real world project might have. You can enhance the base functionality with an extension in case you need custom logic that ties into the existing API. This blog post won’t go very deep into the available options for each test framework. I’d highly encourage you to explore the API for yourself.</p>
 </div>
 <div class="paragraph">
 <p>The simple example below demonstrates basic extension capabilities. The implementation reacts to lifecycle events emitted before and after executing a test case. Each event logs the name of test method to the standard output stream.</p>
@@ -1327,7 +1326,7 @@ runner {
 <div class="sect2">
 <h3 id="_junit_5_12">JUnit 5</h3>
 <div class="paragraph">
-<p>The test framework&#8217;s <a href="http://junit.org/junit5/docs/current/user-guide/#extensions">extension model</a> provides callback interfaces to react to prominent lifecycle events. As you can see in listing 31, the extension class implements the interfaces <code>BeforeTestExecutionCallback</code> and <code>AfterTestExecutionCallback</code>. The callback interfaces provide a context object of type <code>ExtensionContext</code> giving you access to detailed information about the executed test method.</p>
+<p>The test framework’s <a href="http://junit.org/junit5/docs/current/user-guide/#extensions">extension model</a> provides callback interfaces to react to prominent lifecycle events. As you can see in listing 31, the extension class implements the interfaces <code>BeforeTestExecutionCallback</code> and <code>AfterTestExecutionCallback</code>. The callback interfaces provide a context object of type <code>ExtensionContext</code> giving you access to detailed information about the executed test method.</p>
 </div>
 <div class="paragraph">
 <p><em>BeforeAfterLoggingExtension.java</em></p>
@@ -1342,13 +1341,13 @@ public class BeforeAfterLoggingExtension implements BeforeTestExecutionCallback,
     @Override
     public void beforeTestExecution(ExtensionContext context) {
         Method testMethod = context.getRequiredTestMethod();
-        System.out.println(String.format("Starting test method %s.%s", testMethod.getDeclaringClass(), testMethod.getName()));
+        System.out.println(String.format(&#34;Starting test method %s.%s&#34;, testMethod.getDeclaringClass(), testMethod.getName()));
     }
 
     @Override
     public void afterTestExecution(ExtensionContext context) {
         Method testMethod = context.getRequiredTestMethod();
-        System.out.println(String.format("Finishing test method %s.%s", testMethod.getDeclaringClass(), testMethod.getName()));
+        System.out.println(String.format(&#34;Finishing test method %s.%s&#34;, testMethod.getDeclaringClass(), testMethod.getName()));
     }
 }</code></pre>
 </div>
@@ -1357,7 +1356,7 @@ public class BeforeAfterLoggingExtension implements BeforeTestExecutionCallback,
 <p><em>Listing 31. Test execution callback handler</em></p>
 </div>
 <div class="paragraph">
-<p>Extensions can be applied to test classes or methods with the help of the annotation <code>@ExtendWith</code>. That&#8217;s it! You implemented your first extension.</p>
+<p>Extensions can be applied to test classes or methods with the help of the annotation <code>@ExtendWith</code>. That’s it! You implemented your first extension.</p>
 </div>
 <div class="paragraph">
 <p><em>LoggingTest.java</em></p>
@@ -1397,12 +1396,12 @@ import org.spockframework.runtime.model.FeatureInfo
 class BeforeAfterEventListener extends AbstractRunListener {
     @Override
     void beforeFeature(FeatureInfo feature) {
-        println "Starting test method ${feature.description.className}.${feature.description.methodName}"
+        println &#34;Starting test method ${feature.description.className}.${feature.description.methodName}&#34;
     }
 
     @Override
     void afterFeature(FeatureInfo feature) {
-        println "Finishing test method ${feature.description.className}.${feature.description.methodName}"
+        println &#34;Finishing test method ${feature.description.className}.${feature.description.methodName}&#34;
     }
 }</code></pre>
 </div>
@@ -1474,7 +1473,7 @@ class LoggingTest extends Specification {
 <div class="paragraph">
 <p><em>Listing 36. Using the logging extension in a test class</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 </div>
@@ -1485,7 +1484,7 @@ class LoggingTest extends Specification {
 <p>JUnit has come a long way since version 4. Not only does version 5 present an attractive feature set it also revolutionizes the underlying runtime platform. Almost all features available in Spock have an equivalent in JUnit 5 making it enterprise-ready tooling.</p>
 </div>
 <div class="paragraph">
-<p>Given JUnit&#8217;s popularity I am confident that many organizations will adopt the latest version of the test framework while at the same time keeping legacy, JUnit 4-based tests runnable through the <a href="http://junit.org/junit5/docs/current/user-guide/#dependency-metadata-junit-vintage">Jupiter Vintage test engine</a>.</p>
+<p>Given JUnit’s popularity I am confident that many organizations will adopt the latest version of the test framework while at the same time keeping legacy, JUnit 4-based tests runnable through the <a href="http://junit.org/junit5/docs/current/user-guide/#dependency-metadata-junit-vintage">Jupiter Vintage test engine</a>.</p>
 </div>
 <div class="paragraph">
 <p>Personally, I like the BDD-style of Spock tests better. Test cases are more readable, self-explantory and just a pleasure to write. <a href="#data-driven-tests">Data-driven tests</a> and <a href="#conditional-test-execution">conditional test execution</a> are features I use on a daily basis and hope JUnit 5 will catch up on them in a future version.</p>

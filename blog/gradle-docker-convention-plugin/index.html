@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Docker with Gradle: Writing a Node.js convention plugin</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -92,20 +91,20 @@ if (!doNotTrack) {
           <div class="panel-body">
             <div class="blogpost">
               <div class="paragraph">
-<p>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series "Docker with Gradle", we looked at creating a <a href="http://bmuschko.com/blog/dockerized-spring-boot-app/">Docker image for a Spring Boot application</a> and how to use the image as <a href="http://bmuschko.com/blog/docker-integration-testing/">fixture for integration testing</a>. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects. Gradle promotes the idea of reusibility and encapsulation. Plugins embody the preferred way to implement those non-functionality requirements.</p>
+<p>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series &#34;Docker with Gradle&#34;, we looked at creating a <a href="http://bmuschko.com/blog/dockerized-spring-boot-app/">Docker image for a Spring Boot application</a> and how to use the image as <a href="http://bmuschko.com/blog/docker-integration-testing/">fixture for integration testing</a>. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects. Gradle promotes the idea of reusibility and encapsulation. Plugins embody the preferred way to implement those non-functionality requirements.</p>
 </div>
 <div class="paragraph">
 <p>In this post, you will learn how to enhance the basic capabilities of the Gradle Docker plugin to establish conventions for your own projects. As an example, we will have a look at a very simpilistic Node.js application built and run by Gradle and packaged as Docker image.</p>
 </div>
 <div class="paragraph">
-<p>To understand the content, you won&#8217;t need to have proficient knowledge of Node.js nor Javascript. The main objective of this post is to demonstrate the concept <a href="https://guides.gradle.org/designing-gradle-plugins/#capabilities-vs-conventions">plugin composition</a> and how to establish opinionated conventions. You can find the <a href="https://github.com/bmuschko/gradle-docker-convention-plugin">full source code</a> on GitHub. I would recommend reading up on the most important <a href="https://guides.gradle.org/designing-gradle-plugins/">design considerations</a> and <a href="https://guides.gradle.org/implementing-gradle-plugins/">implementation concepts</a> if you are just starting out with plugin development.</p>
+<p>To understand the content, you won’t need to have proficient knowledge of Node.js nor Javascript. The main objective of this post is to demonstrate the concept <a href="https://guides.gradle.org/designing-gradle-plugins/#capabilities-vs-conventions">plugin composition</a> and how to establish opinionated conventions. You can find the <a href="https://github.com/bmuschko/gradle-docker-convention-plugin">full source code</a> on GitHub. I would recommend reading up on the most important <a href="https://guides.gradle.org/designing-gradle-plugins/">design considerations</a> and <a href="https://guides.gradle.org/implementing-gradle-plugins/">implementation concepts</a> if you are just starting out with plugin development.</p>
 </div>
-<hr>
+<hr/>
 <div class="sect1">
 <h2 id="_building_a_node_js_application_with_gradle">Building a Node.js application with Gradle</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Gradle is a polyglot build tool and supports building other languages than just Java as long as there&#8217;s a plugin for it. The <a href="https://github.com/srs/gradle-node-plugin">Node plugin</a> supports the full lifecycle of a modern Javascript application. It even takes care of installing Node.js and NPM packages at runtime without manual intervention. The following build script shows how to apply the plugin and configure it to use a specific Node.js version. The script also adds a task for executing a Node.js script as the main entry point.</p>
+<p>Gradle is a polyglot build tool and supports building other languages than just Java as long as there’s a plugin for it. The <a href="https://github.com/srs/gradle-node-plugin">Node plugin</a> supports the full lifecycle of a modern Javascript application. It even takes care of installing Node.js and NPM packages at runtime without manual intervention. The following build script shows how to apply the plugin and configure it to use a specific Node.js version. The script also adds a task for executing a Node.js script as the main entry point.</p>
 </div>
 <div class="paragraph">
 <p><em>application/build.gradle</em></p>
@@ -115,27 +114,27 @@ if (!doNotTrack) {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
     repositories {
         maven {
-            url 'https://plugins.gradle.org/m2/'
+            url &#39;https://plugins.gradle.org/m2/&#39;
         }
     }
     dependencies {
-        classpath 'com.moowork.gradle:gradle-node-plugin:1.2.0'
+        classpath &#39;com.moowork.gradle:gradle-node-plugin:1.2.0&#39;
     }
 }
 
-apply plugin: 'com.moowork.node'
+apply plugin: &#39;com.moowork.node&#39;
 
-version = '1.0.0'
-group = 'com.bmuschko'
+version = &#39;1.0.0&#39;
+group = &#39;com.bmuschko&#39;
 
 node {
-    version = '9.8.0'
+    version = &#39;9.8.0&#39;
     download = true
 }
 
 task helloWorld(type: NodeTask) {
     dependsOn npmInstall
-    script = file('src/node/index.js')
+    script = file(&#39;src/node/index.js&#39;)
 }</code></pre>
 </div>
 </div>
@@ -143,17 +142,17 @@ task helloWorld(type: NodeTask) {
 <p><em>Listing 1. Applying and configuring the Gradle Node plugin</em></p>
 </div>
 <div class="paragraph">
-<p>The task <code>helloWorld</code> points to the Javascript file <code>src/node/index.js</code> when executed. Judging by the name, it should print a "Hello World" message to the console. The index file uses the NPM package <a href="https://www.npmjs.com/package/figlet">figlet</a> to make the output visually appealing.</p>
+<p>The task <code>helloWorld</code> points to the Javascript file <code>src/node/index.js</code> when executed. Judging by the name, it should print a &#34;Hello World&#34; message to the console. The index file uses the NPM package <a href="https://www.npmjs.com/package/figlet">figlet</a> to make the output visually appealing.</p>
 </div>
 <div class="paragraph">
 <p><em>application/src/node.index.js</em></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">const figlet = require('figlet');
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">const figlet = require(&#39;figlet&#39;);
 
-var out = figlet.textSync('Hello World!', {
-    font: 'Standard'
+var out = figlet.textSync(&#39;Hello World!&#39;, {
+    font: &#39;Standard&#39;
 });
 
 console.log(out);</code></pre>
@@ -172,7 +171,7 @@ console.log(out);</code></pre>
 &gt; Task :helloWorld
   _   _      _ _        __        __         _     _ _
  | | | | ___| | | ___   \ \      / /__  _ __| | __| | |
- | |_| |/ _ \ | |/ _ \   \ \ /\ / / _ \| '__| |/ _` | |
+ | |_| |/ _ \ | |/ _ \   \ \ /\ / / _ \| &#39;__| |/ _` | |
  |  _  |  __/ | | (_) |   \ V  V / (_) | |  | | (_| |_|
  |_| |_|\___|_|_|\___/     \_/\_/ \___/|_|  |_|\__,_(_)
 
@@ -184,7 +183,7 @@ console.log(out);</code></pre>
 <p>Neat, you got your first Node.js application up and running without having to resort to a Javascript-based build tool like Grunt or Gulp.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s also inspect the application&#8217;s <code>package.json</code> file. As you can see in the listing below, we provided a name, a version and a description for the application. Most importantly, the file also declares the NPM dependency. Now, it&#8217;s a good idea to also check in a <a href="https://github.com/bmuschko/gradle-docker-convention-plugin/blob/master/application/package-lock.json">package lock file</a> to ensure that the same dependency version is resolved whenver the build is executed.</p>
+<p>Let’s also inspect the application’s <code>package.json</code> file. As you can see in the listing below, we provided a name, a version and a description for the application. Most importantly, the file also declares the NPM dependency. Now, it’s a good idea to also check in a <a href="https://github.com/bmuschko/gradle-docker-convention-plugin/blob/master/application/package-lock.json">package lock file</a> to ensure that the same dependency version is resolved whenver the build is executed.</p>
 </div>
 <div class="paragraph">
 <p><em>application/package.json</em></p>
@@ -192,35 +191,35 @@ console.log(out);</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">{
-  "name": "nodejs-hello-world",
-  "version": "1.0.0",
-  "description": "Prints hello world message",
-  "private": true,
-  "license": "Apache License 2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bmuschko/gradle-docker-convention-plugin"
+  &#34;name&#34;: &#34;nodejs-hello-world&#34;,
+  &#34;version&#34;: &#34;1.0.0&#34;,
+  &#34;description&#34;: &#34;Prints hello world message&#34;,
+  &#34;private&#34;: true,
+  &#34;license&#34;: &#34;Apache License 2.0&#34;,
+  &#34;repository&#34;: {
+    &#34;type&#34;: &#34;git&#34;,
+    &#34;url&#34;: &#34;https://github.com/bmuschko/gradle-docker-convention-plugin&#34;
   },
-  "dependencies": {
-    "figlet": "^1.2.0"
+  &#34;dependencies&#34;: {
+    &#34;figlet&#34;: &#34;^1.2.0&#34;
   }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Listing 3. The application&#8217;s package file</em></p>
+<p><em>Listing 3. The application’s package file</em></p>
 </div>
 <div class="paragraph">
 <p>So far the application has no touch point with Docker. In the next section, you will set up the infrastructure for building a Gradle plugin for the purpose of creating a Docker image for the application and pushing it to DockerHub.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_creating_the_basic_plugin_infrastructure">Creating the basic plugin infrastructure</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>It&#8217;s a good idea to implement a Gradle plugin as a standalone project to simplify the process of publishing it to a binary repository later. As part of this blog post, you are only going to build the plugin as part of a composite build. Usually, you&#8217;d go the additional mile and publish the artifact(s) so that it can be reused by other, independent projects. The following directory structure separates the plugin implementation from the actual application using it.</p>
+<p>It’s a good idea to implement a Gradle plugin as a standalone project to simplify the process of publishing it to a binary repository later. As part of this blog post, you are only going to build the plugin as part of a composite build. Usually, you’d go the additional mile and publish the artifact(s) so that it can be reused by other, independent projects. The following directory structure separates the plugin implementation from the actual application using it.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -241,13 +240,13 @@ console.log(out);</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">apply plugin: 'groovy'
-apply plugin: 'java-gradle-plugin'
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">apply plugin: &#39;groovy&#39;
+apply plugin: &#39;java-gradle-plugin&#39;
 
-version = '0.1'
-group = 'com.bmuschko'
+version = &#39;0.1&#39;
+group = &#39;com.bmuschko&#39;
 
-ext.compatibilityVersion = '1.6'
+ext.compatibilityVersion = &#39;1.6&#39;
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
 
@@ -256,21 +255,21 @@ repositories {
 }
 
 dependencies {
-    compile 'com.bmuschko:gradle-docker-plugin:3.2.5'
+    compile &#39;com.bmuschko:gradle-docker-plugin:3.2.5&#39;
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><em>Listing 4. Setting up the plugin&#8217;s build script</em></p>
+<p><em>Listing 4. Setting up the plugin’s build script</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_implementing_the_plugin_class">Implementing the plugin class</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Let&#8217;s talk about the requirements for the plugin before we get down to the actual implementation. In a nutshell the following aspects should be covered:</p>
+<p>Let’s talk about the requirements for the plugin before we get down to the actual implementation. In a nutshell the following aspects should be covered:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -306,11 +305,11 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Sync
 
 class DockerNodeJsApplicationPlugin implements Plugin&lt;Project&gt; {
-    public static final String NODE_JS_APPLICATION_EXTENSION_NAME = 'nodeJsApplication'
-    public static final String DOCKERFILE_TASK_NAME = 'createDockerfile'
-    public static final String SYNC_DIST_RESOURCES_TASK_NAME = 'syncNodeFiles'
-    public static final String BUILD_IMAGE_TASK_NAME = 'buildImage'
-    public static final String PUSH_IMAGE_TASK_NAME = 'pushImage'
+    public static final String NODE_JS_APPLICATION_EXTENSION_NAME = &#39;nodeJsApplication&#39;
+    public static final String DOCKERFILE_TASK_NAME = &#39;createDockerfile&#39;
+    public static final String SYNC_DIST_RESOURCES_TASK_NAME = &#39;syncNodeFiles&#39;
+    public static final String BUILD_IMAGE_TASK_NAME = &#39;buildImage&#39;
+    public static final String PUSH_IMAGE_TASK_NAME = &#39;pushImage&#39;
 
     @Override
     void apply(Project project) {
@@ -328,30 +327,30 @@ class DockerNodeJsApplicationPlugin implements Plugin&lt;Project&gt; {
 
     private Dockerfile createDockerfileTask(Project project, DockerNodeJsApplication dockerNodeJsApplication) {
         project.task(DOCKERFILE_TASK_NAME, type: Dockerfile) {
-            description = 'Creates the Docker image for the Node.js application.'
+            description = &#39;Creates the Docker image for the Node.js application.&#39;
             from { dockerNodeJsApplication.baseImage }
-            copyFile('package*.json', './')
-            copyFile('index.js', '/index.js')
-            runCommand('npm install')
-            entryPoint('node', 'index.js')
+            copyFile(&#39;package*.json&#39;, &#39;./&#39;)
+            copyFile(&#39;index.js&#39;, &#39;/index.js&#39;)
+            runCommand(&#39;npm install&#39;)
+            entryPoint(&#39;node&#39;, &#39;index.js&#39;)
             exposePort { dockerNodeJsApplication.ports }
         }
     }
 
     private Sync createDistSyncResourcesTask(Project project, Dockerfile createDockerfileTask) {
         project.task(SYNC_DIST_RESOURCES_TASK_NAME, type: Sync) {
-            description = "Copies the distribution resources to a temporary directory."
-            from('.') {
-                include 'package*.json'
+            description = &#34;Copies the distribution resources to a temporary directory.&#34;
+            from(&#39;.&#39;) {
+                include &#39;package*.json&#39;
             }
-            from 'src/node'
+            from &#39;src/node&#39;
             into createDockerfileTask.destFile.parentFile
         }
     }
 
     private DockerBuildImage createBuildImageTask(Project project, Dockerfile createDockerfileTask, DockerNodeJsApplication dockerNodeJsApplication) {
         project.task(BUILD_IMAGE_TASK_NAME, type: DockerBuildImage) {
-            description = 'Builds the Docker image for the Node.js application.'
+            description = &#39;Builds the Docker image for the Node.js application.&#39;
             dependsOn createDockerfileTask
             conventionMapping.inputDir = { createDockerfileTask.destFile.parentFile }
             conventionMapping.tag = { dockerNodeJsApplication.getTag() }
@@ -360,7 +359,7 @@ class DockerNodeJsApplicationPlugin implements Plugin&lt;Project&gt; {
 
     private void createPushImageTask(Project project, DockerBuildImage dockerBuildImageTask) {
         project.task(PUSH_IMAGE_TASK_NAME, type: DockerPushImage) {
-            description = 'Pushes created Docker image to the repository.'
+            description = &#39;Pushes created Docker image to the repository.&#39;
             dependsOn dockerBuildImageTask
             conventionMapping.imageName = { dockerBuildImageTask.getTag() }
         }
@@ -375,7 +374,7 @@ class DockerNodeJsApplicationPlugin implements Plugin&lt;Project&gt; {
 <p>We will disect the most important aspects of this rather lengthy code snippet. First of all, the plugin applies the <code>DockerRemoteApiPlugin</code> which brings the basic Docker capabilities. Most of the tasks created by the plugin rely on the task types introduced by the Docker plugin.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/gradle-docker-convention-plugin/plugin-composition.png" alt="plugin composition"></span></p>
+<p><span class="image"><img src="/img/blog/gradle-docker-convention-plugin/plugin-composition.png" alt="plugin composition"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 1. Building upon the capabilities of the Docker plugin</em></p>
@@ -384,7 +383,7 @@ class DockerNodeJsApplicationPlugin implements Plugin&lt;Project&gt; {
 <p>The plugin creates four tasks and establishes the proper dependencies between them to form a meaninful lifecycle. For example, executing the task <code>pushImage</code> takes care of building the image first.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/gradle-docker-convention-plugin/task-dependencies.png" alt="task dependencies"></span></p>
+<p><span class="image"><img src="/img/blog/gradle-docker-convention-plugin/task-dependencies.png" alt="task dependencies"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 2. The tasks and their dependencies created by the plugin</em></p>
@@ -412,14 +411,14 @@ class DockerNodeJsApplicationPlugin implements Plugin&lt;Project&gt; {
 </div>
 </blockquote>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_exposing_a_custom_dsl_for_configuring_runtime_behavior">Exposing a custom DSL for configuring runtime behavior</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Plugins should give users the ability to reconfigure default conventions if they don&#8217;t fit the project&#8217;s needs. The extension <code>DockerNodeJsApplication</code> exposes a <a href="https://guides.gradle.org/implementing-gradle-plugins/#modeling_dsl_like_apis">custom DSL</a> for configuring the base image, exposed container ports and the tag used for the produced image. As you can see in listing 6, most properties already come with a default value.</p>
+<p>Plugins should give users the ability to reconfigure default conventions if they don’t fit the project’s needs. The extension <code>DockerNodeJsApplication</code> exposes a <a href="https://guides.gradle.org/implementing-gradle-plugins/#modeling_dsl_like_apis">custom DSL</a> for configuring the base image, exposed container ports and the tag used for the produced image. As you can see in listing 6, most properties already come with a default value.</p>
 </div>
 <div class="paragraph">
 <p><em>DockerNodeJsApplication.groovy</em></p>
@@ -429,7 +428,7 @@ class DockerNodeJsApplicationPlugin implements Plugin&lt;Project&gt; {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">package com.bmuschko.gradle.docker
 
 class DockerNodeJsApplication {
-    String baseImage = 'node:9'
+    String baseImage = &#39;node:9&#39;
     Set&lt;Integer&gt; ports = [8080]
     String tag
 }</code></pre>
@@ -453,14 +452,14 @@ DockerNodeJsApplication dockerNodeJsApplication = dockerExtension.extensions.cre
 <div class="paragraph">
 <p>Next, you will see how simple the actual build script looks like to the end user.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_using_the_plugin_in_the_application_project">Using the plugin in the application project</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>It&#8217;s time to bring it all together. At the moment the plugin is <a href="https://plugins.gradle.org/search?term=bmuschko+docker">not available on the Gradle plugin portal</a> though I am considering making it part of the Docker plugin suite if more people are interested. Let me know what you think!</p>
+<p>It’s time to bring it all together. At the moment the plugin is <a href="https://plugins.gradle.org/search?term=bmuschko+docker">not available on the Gradle plugin portal</a> though I am considering making it part of the Docker plugin suite if more people are interested. Let me know what you think!</p>
 </div>
 <div class="paragraph">
 <p><em>application/build.gradle</em></p>
@@ -470,25 +469,25 @@ DockerNodeJsApplication dockerNodeJsApplication = dockerExtension.extensions.cre
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
     repositories {
         maven {
-            url 'https://plugins.gradle.org/m2/'
+            url &#39;https://plugins.gradle.org/m2/&#39;
         }
     }
     dependencies {
-        classpath 'com.bmuschko:gradle-docker-nodejs-plugin:0.1'
+        classpath &#39;com.bmuschko:gradle-docker-nodejs-plugin:0.1&#39;
     }
 }
 
-apply plugin: 'com.bmuschko.docker-nodejs-application'
+apply plugin: &#39;com.bmuschko.docker-nodejs-application&#39;
 
 docker {
     registryCredentials {
-        username = getConfigurationProperty('DOCKER_USERNAME', 'docker.username')
-        password = getConfigurationProperty('DOCKER_PASSWORD', 'docker.password')
-        email = getConfigurationProperty('DOCKER_EMAIL', 'docker.email')
+        username = getConfigurationProperty(&#39;DOCKER_USERNAME&#39;, &#39;docker.username&#39;)
+        password = getConfigurationProperty(&#39;DOCKER_PASSWORD&#39;, &#39;docker.password&#39;)
+        email = getConfigurationProperty(&#39;DOCKER_EMAIL&#39;, &#39;docker.email&#39;)
     }
 
     nodeJsApplication {
-        tag = "bmuschko/nodejs-hello-world:$project.version"
+        tag = &#34;bmuschko/nodejs-hello-world:$project.version&#34;
     }
 }
 
@@ -501,18 +500,18 @@ String getConfigurationProperty(String envVar, String sysProp) {
 <p><em>Listing 8. A build script applying and configuring the Docker Node.js plugin</em></p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s see the process in action. For the purpose of demonstration you can use composite builds to skip the step of publishing the plugin to a binary repository. Just navigate to the directory <code>application</code> and run the command <code>./gradlew --include-build ../plugin pushImage</code>.</p>
+<p>Let’s see the process in action. For the purpose of demonstration you can use composite builds to skip the step of publishing the plugin to a binary repository. Just navigate to the directory <code>application</code> and run the command <code>./gradlew --include-build ../plugin pushImage</code>.</p>
 </div>
-<a href="https://asciinema.org/a/172633" target="_blank"><img src="https://asciinema.org/a/172633.png" /></a>
-<br><br>
-<hr>
+<a href="https://asciinema.org/a/172633" target="_blank"><img src="https://asciinema.org/a/172633.png"/></a>
+<br/><br/>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_conclusion">Conclusion</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Implementing a convention plugin has a lot of benefits. First of all, the plugin encapsulates complex and imperative logic. As a result, the consuming build script becomes less cluttered with implementation details. Default conventions provide sensible defaults applicable to most users. Declarative custom language elements expose an "user interface" to control the runtime behavior and can seemlessly blend in with the Gradle core DSL.</p>
+<p>Implementing a convention plugin has a lot of benefits. First of all, the plugin encapsulates complex and imperative logic. As a result, the consuming build script becomes less cluttered with implementation details. Default conventions provide sensible defaults applicable to most users. Declarative custom language elements expose an &#34;user interface&#34; to control the runtime behavior and can seemlessly blend in with the Gradle core DSL.</p>
 </div>
 </div>
 </div>

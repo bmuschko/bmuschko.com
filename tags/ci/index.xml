@@ -6,18 +6,14 @@
     <description>Recent content in ci on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Jan 2019 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/ci/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 25 Jan 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/ci/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Building Go projects using modules on Jenkins</title>
       <link>https://bmuschko.com/blog/go-on-jenkins/</link>
       <pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/go-on-jenkins/</guid>
-      <description>The Go 1.11 release introduced experimental, opt-in support for Go modules. It is now possible to build Go projects outside of the $GOPATH. This profound change has a significant impact on developer workflows. For example, you don&amp;#8217;t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</description>
+      <description>The Go 1.11 release introduced experimental, opt-in support for Go modules. It is now possible to build Go projects outside of the $GOPATH. This profound change has a significant impact on developer workflows. For example, you don’t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</description>
     </item>
     
     <item>
@@ -37,7 +33,7 @@
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/docker-integration-testing/</guid>
-      <description>In the first blog post on &#34;Docker with Gradle&#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
+      <description>In the first blog post on &amp;#34;Docker with Gradle&amp;#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
  Integration testing plays an important role in the software development lifecycle to ensure functional and non-functional requirements have been met.</description>
     </item>
     

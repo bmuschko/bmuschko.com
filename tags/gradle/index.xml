@@ -6,18 +6,14 @@
     <description>Recent content in gradle on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 16 Oct 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/gradle/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 16 Oct 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/gradle/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Containerization workflow for Java apps with Jib</title>
       <link>https://bmuschko.com/blog/containerization-with-jib/</link>
       <pubDate>Tue, 16 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/containerization-with-jib/</guid>
-      <description>Containerizing a Java application is the natural extension to building a plain, executable JAR file: &#34;write once, run everywhere&#34;. Creating an optimized image for an application is far from straightforward and requires in-depth knowledge of Docker concepts and best practices.
+      <description>Containerizing a Java application is the natural extension to building a plain, executable JAR file: &amp;#34;write once, run everywhere&amp;#34;. Creating an optimized image for an application is far from straightforward and requires in-depth knowledge of Docker concepts and best practices.
  A typical developer worflow involves the following steps. First, you start out by writing a Dockerfile with the goal of producing an image small in size while at the same time ensuring cacheability of layers as much as possible.</description>
     </item>
     
@@ -47,7 +43,7 @@
       <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/gradle-docker-convention-plugin/</guid>
-      <description>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series &#34;Docker with Gradle&#34;, we looked at creating a Docker image for a Spring Boot application and how to use the image as fixture for integration testing. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects.</description>
+      <description>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series &amp;#34;Docker with Gradle&amp;#34;, we looked at creating a Docker image for a Spring Boot application and how to use the image as fixture for integration testing. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects.</description>
     </item>
     
     <item>
@@ -65,7 +61,7 @@
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/docker-integration-testing/</guid>
-      <description>In the first blog post on &#34;Docker with Gradle&#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
+      <description>In the first blog post on &amp;#34;Docker with Gradle&amp;#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
  Integration testing plays an important role in the software development lifecycle to ensure functional and non-functional requirements have been met.</description>
     </item>
     
@@ -93,7 +89,7 @@
       <pubDate>Sat, 29 Jul 2017 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/golang-with-gradle/</guid>
-      <description>Introduction In July 2017 Google Go made a big jump on the TIOBE index. It&amp;#8217;s now ranked among the top 10 most popular programming languages. With the rise of Moby aka Docker, Kubernetes and InfluxDB the language has become the go-to tool in the DevOps space. The complexity of automating the process of building, assembling and distributing the source code and binaries for any medium- to large-sized project is high. It&amp;#8217;s somewhat shocking to see that the predominant tooling of automating in Go is still a mixture of Make files and shell scripts as it can be observed in the Moby and Kubernetes code base.</description>
+      <description>Introduction In July 2017 Google Go made a big jump on the TIOBE index. It’s now ranked among the top 10 most popular programming languages. With the rise of Moby aka Docker, Kubernetes and InfluxDB the language has become the go-to tool in the DevOps space. The complexity of automating the process of building, assembling and distributing the source code and binaries for any medium- to large-sized project is high. It’s somewhat shocking to see that the predominant tooling of automating in Go is still a mixture of Make files and shell scripts as it can be observed in the Moby and Kubernetes code base.</description>
     </item>
     
     <item>

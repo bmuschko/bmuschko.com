@@ -6,11 +6,7 @@
     <description>Recent content in plugin on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 20 Jun 2019 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/plugin/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 20 Jun 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/plugin/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Writing your first kubectl plugin with Go</title>
       <link>https://bmuschko.com/blog/writing-your-first-kubectl-plugin/</link>
@@ -27,7 +23,7 @@
       <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/gradle-docker-convention-plugin/</guid>
-      <description>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series &#34;Docker with Gradle&#34;, we looked at creating a Docker image for a Spring Boot application and how to use the image as fixture for integration testing. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects.</description>
+      <description>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series &amp;#34;Docker with Gradle&amp;#34;, we looked at creating a Docker image for a Spring Boot application and how to use the image as fixture for integration testing. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects.</description>
     </item>
     
   </channel>

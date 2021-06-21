@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Crushing the Certified Kubernetes Application Developer (CKAD) exam</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -84,24 +83,24 @@ if (!doNotTrack) {
           <div class="panel-body">
             <div class="blogpost">
               <table>
-    <tr>
+    <tbody><tr>
         <td>
             I recently decided the take the <a href="https://www.cncf.io/certification/ckad/">Certified Kubernetes Application Developer (CKAD) exam</a>. Unlike other certification exams, the CKAD exam is 100% hands-on. You are not expected to select one or many answers from a multiple choice question but instead solve problems on a Kubernetes cluster. Each question focuses on a practical aspect of Kubernetes and applying it to real-world use cases. By passing the exam, you demonstrated practical proficiency with Kubernetes concepts in the role of an application developer.
         </td>
         <td>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  
         </td>
         <td>
-            <a href="https://www.cncf.io/certification/ckad/"><img src="/img/blog/ckad-prep/ckad-logo.png" alt="CKAD Logo" /></a>
+            <a href="https://www.cncf.io/certification/ckad/"><img src="/img/blog/ckad-prep/ckad-logo.png" alt="CKAD Logo"/></a>
         </td>
     </tr>
-</table>
-<br>
+</tbody></table>
+<br/>
 <div class="paragraph">
 <p>Passing the exam is not easy and will put you under immense time pressure. You will have to solve 19 scenarios in two hours. Out of these 19 scenarios I was only able to solve 17. Unfortunatley, I ran out of time.</p>
 </div>
 <div class="paragraph">
-<p>There&#8217;s a lot of work that goes into the preparation for the exam. The most important aspect is <em>practice</em>. You will have to become comfortable with the command line tool <code>kubectl</code>. Furthermore, you will have to gain a good understanding of all topics stated in the exam outline.</p>
+<p>There’s a lot of work that goes into the preparation for the exam. The most important aspect is <em>practice</em>. You will have to become comfortable with the command line tool <code>kubectl</code>. Furthermore, you will have to gain a good understanding of all topics stated in the exam outline.</p>
 </div>
 <div class="paragraph">
 <p>In this post, I want to summarize the resources I used to prepare for the CKAD exam. I hope they will help you with succeeding the exam with flying colors.</p>
@@ -110,7 +109,7 @@ if (!doNotTrack) {
 <h2 id="_setting_up_a_kubernetes_environment_for_practice">Setting up a Kubernetes environment for practice</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In order to practice, you&#8217;ll have to have access to an environment running Kubernetes. This environment doesn&#8217;t have to be complex. It doesn&#8217;t even have to be a full-fledge cluster. Here&#8217;re some options:</p>
+<p>In order to practice, you’ll have to have access to an environment running Kubernetes. This environment doesn’t have to be complex. It doesn’t even have to be a full-fledge cluster. Here’re some options:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -142,7 +141,7 @@ if (!doNotTrack) {
 <p>The GitHub repository <a href="https://github.com/dgkanatsios/CKAD-exercises">dgkanatsios/CKAD-exercises</a> offers a wide range of free practice questions. I worked through the scenarios probably three or four times.</p>
 </li>
 <li>
-<p>Another great resource is the <a href="https://matthewpalmer.net/kubernetes-app-developer/#purchase">practice exam offered by Matthew Palmer</a>. You&#8217;ll pay $119 for accessing a GitHub repository containing 30 questions. The practice exam is well made and offers a setup procedure that creates namespaces and existing Kubernetes domain objects to work with.</p>
+<p>Another great resource is the <a href="https://matthewpalmer.net/kubernetes-app-developer/#purchase">practice exam offered by Matthew Palmer</a>. You’ll pay $119 for accessing a GitHub repository containing 30 questions. The practice exam is well made and offers a setup procedure that creates namespaces and existing Kubernetes domain objects to work with.</p>
 </li>
 <li>
 <p>The book <a href="https://learning.oreilly.com/library/view/kubernetes-patterns/9781492050278/">Kubernetes Patterns</a> helped me brush up on some of the material I was less familiar with. Especially the coverage of multi-container patterns proved to be helpful.</p>
@@ -153,36 +152,36 @@ if (!doNotTrack) {
 <p>In addition to third-party resources, I also started to created my own set of exam questions. It helps tremendously to think through all aspects of a given concept. By taking on the role of an instructor, you might get a glimpse of how the actual exam question could be asked.</p>
 </div>
 <table>
-    <tr>
+    <tbody><tr>
         <td>
             <a href="https://www.amazon.com/Certified-Kubernetes-Application-Developer-Depth-dp-1492083739/dp/1492083739">
-                <img src="/img/blog/ckad-prep/ckad-study-guide-cover.png" alt="Book Cover" width="340px" />
+                <img src="/img/blog/ckad-prep/ckad-study-guide-cover.png" alt="Book Cover" width="340px"/>
             </a>
         </td>
         <td>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  
         </td>
         <td>
             This <a href="https://www.amazon.com/Certified-Kubernetes-Application-Developer-Depth-dp-1492083739/dp/1492083739">study guide</a> walks you through all the topics you need to fully prepare for the exam. The book shares my personal experience with preparing for all aspects of the exam and comes with a full set of paractical exercise questions and answers.
         </td>
     </tr>
-</table>
-<br>
+</tbody></table>
+<br/>
 <table>
-    <tr>
+    <tbody><tr>
         <td>
             <a href="https://learning.oreilly.com/learning-paths/learning-path-certified/9781492061021/">
-                <img src="/img/blog/ckad-prep/oreilly-learning-path-logo.jpg" alt="Learning Path Cover" />
+                <img src="/img/blog/ckad-prep/oreilly-learning-path-logo.jpg" alt="Learning Path Cover"/>
             </a>
         </td>
         <td>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  
         </td>
         <td>
-            After passing the exam, I decided to create a learning resource to help students with their journey of becoming a CKAD. In cooperation with O'Reilly Media, I produced a video course, the <a href="https://learning.oreilly.com/learning-paths/learning-path-certified/9781492061021/">Certified Kubernetes Application Developer (CKAD) Prep Course</a>, that explains the theory of all topics covered in the exam and reinforces the material with the help of <a href="https://github.com/bmuschko/ckad-prep">practical demos</a>. Check it out! It's free for subscribers of the Safari program.
+            After passing the exam, I decided to create a learning resource to help students with their journey of becoming a CKAD. In cooperation with O&#39;Reilly Media, I produced a video course, the <a href="https://learning.oreilly.com/learning-paths/learning-path-certified/9781492061021/">Certified Kubernetes Application Developer (CKAD) Prep Course</a>, that explains the theory of all topics covered in the exam and reinforces the material with the help of <a href="https://github.com/bmuschko/ckad-prep">practical demos</a>. Check it out! It&#39;s free for subscribers of the Safari program.
         </td>
     </tr>
-</table>
+</tbody></table>
 </div>
 </div>
 <div class="sect1">
@@ -192,10 +191,10 @@ if (!doNotTrack) {
 <p>There are a couple of things you need to consider for the actual exam. <strong>Proper time management</strong> is extremely important. If you happen to get stuck on a question, simply move on. Solve other scenarios that help you score points. You can always come back to a question later during the exam if you have additional time left.</p>
 </div>
 <div class="paragraph">
-<p>During the exam you are allowed to open a single browser tab with the <a href="https://kubernetes.io/docs/home/">official Kubernetes documentation</a>. While this can be helpful to find particular code snippets, don&#8217;t get hung up on searching the web page too much. As part of your exam preparation, read the whole documentation page at least once. It&#8217;s important to <strong>know where to find the right information</strong> without spending too much time. The search functionality helped me tremendiously.</p>
+<p>During the exam you are allowed to open a single browser tab with the <a href="https://kubernetes.io/docs/home/">official Kubernetes documentation</a>. While this can be helpful to find particular code snippets, don’t get hung up on searching the web page too much. As part of your exam preparation, read the whole documentation page at least once. It’s important to <strong>know where to find the right information</strong> without spending too much time. The search functionality helped me tremendiously.</p>
 </div>
 <div class="paragraph">
-<p>There are some simple <strong>shortcuts and time savers</strong> I used during the exam. First of all, use an <a href="https://github.com/bmuschko/ckad-prep/blob/master/8-bonus.md#using-an-alias-for-kubectl">alias for the kubectl command</a>. There&#8217;s really no point in typing the full command every time you need to run it. Furthermore, ensure to <a href="https://github.com/bmuschko/ckad-prep/blob/master/8-bonus.md#setting-the-namespace-per-context">set the proper context and namespace per question</a>. It helps to set both options at the beginning of every question to avoid forgetting about it in the heat of the moment. You might know that deleting Kubernetes object can take up to a couple of seconds. Kubernetes tries to gracefully shut down the resource. In case you need to delete one of your object during the exam, simply <a href="https://github.com/bmuschko/ckad-prep/blob/master/8-bonus.md#deleting-kubernetes-objects-quickly">force the deletion</a> to speed up the process.</p>
+<p>There are some simple <strong>shortcuts and time savers</strong> I used during the exam. First of all, use an <a href="https://github.com/bmuschko/ckad-prep/blob/master/8-bonus.md#using-an-alias-for-kubectl">alias for the kubectl command</a>. There’s really no point in typing the full command every time you need to run it. Furthermore, ensure to <a href="https://github.com/bmuschko/ckad-prep/blob/master/8-bonus.md#setting-the-namespace-per-context">set the proper context and namespace per question</a>. It helps to set both options at the beginning of every question to avoid forgetting about it in the heat of the moment. You might know that deleting Kubernetes object can take up to a couple of seconds. Kubernetes tries to gracefully shut down the resource. In case you need to delete one of your object during the exam, simply <a href="https://github.com/bmuschko/ckad-prep/blob/master/8-bonus.md#deleting-kubernetes-objects-quickly">force the deletion</a> to speed up the process.</p>
 </div>
 </div>
 </div>

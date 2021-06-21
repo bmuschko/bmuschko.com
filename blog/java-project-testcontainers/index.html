@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Testing a Java project with TestContainers on JUnit 5</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -101,7 +100,7 @@ if (!doNotTrack) {
 <h2 id="_configuring_the_dependencies">Configuring the dependencies</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before you can get started writing tests with JUnit 5 and TestContainers, you&#8217;ll have to add the relevant dependencies to your project. The example project uses the build tool Gradle. Listing 1 shows how to declare the dependencies for the latest version of JUnit 5 and TestContainers. Both libraries are available on Maven Central or JCenter.</p>
+<p>Before you can get started writing tests with JUnit 5 and TestContainers, you’ll have to add the relevant dependencies to your project. The example project uses the build tool Gradle. Listing 1 shows how to declare the dependencies for the latest version of JUnit 5 and TestContainers. Both libraries are available on Maven Central or JCenter.</p>
 </div>
 <div class="paragraph">
 <p><em>build.gradle</em></p>
@@ -113,11 +112,11 @@ if (!doNotTrack) {
 }
 
 dependencies {
-    def junitJupiterVersion = '5.3.1'
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
-    testImplementation 'org.testcontainers:junit-jupiter:1.10.1'
+    def junitJupiterVersion = &#39;5.3.1&#39;
+    testImplementation &#34;org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion&#34;
+    testImplementation &#34;org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion&#34;
+    testRuntimeOnly &#34;org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion&#34;
+    testImplementation &#39;org.testcontainers:junit-jupiter:1.10.1&#39;
 }</code></pre>
 </div>
 </div>
@@ -125,7 +124,7 @@ dependencies {
 <p><em>Listing 1. Declaring the dependencies for JUnit Jupiter and TestContainers</em></p>
 </div>
 <div class="paragraph">
-<p>Next, you&#8217;ll also need to configure test execution in Gradle.</p>
+<p>Next, you’ll also need to configure test execution in Gradle.</p>
 </div>
 </div>
 </div>
@@ -133,14 +132,14 @@ dependencies {
 <h2 id="_configuring_test_execution">Configuring test execution</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By default, Gradle uses JUnit 4.x as the default test framework. To switch to JUnit 5, you&#8217;ll have to explicitly call the method <code>useJUnitPlatform()</code> on the <code>test</code> task. When building the Docker image for a Java application, your test code needs to know where to find the JAR file of your application. You can provide the path by setting a system property. Listing 2 demonstrates the necessary setup for testing a Spring Boot application in a Gradle build. To ensure that the JAR file always contains the latest changes, the <code>test</code> task defines a task dependency on <code>assemble</code>.</p>
+<p>By default, Gradle uses JUnit 4.x as the default test framework. To switch to JUnit 5, you’ll have to explicitly call the method <code>useJUnitPlatform()</code> on the <code>test</code> task. When building the Docker image for a Java application, your test code needs to know where to find the JAR file of your application. You can provide the path by setting a system property. Listing 2 demonstrates the necessary setup for testing a Spring Boot application in a Gradle build. To ensure that the JAR file always contains the latest changes, the <code>test</code> task defines a task dependency on <code>assemble</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">tasks.withType(Test) {
     useJUnitPlatform()
-    systemProperty 'distribution.dir', bootJar.destinationDir
-    systemProperty 'archive.name', bootJar.archiveName
+    systemProperty &#39;distribution.dir&#39;, bootJar.destinationDir
+    systemProperty &#39;archive.name&#39;, bootJar.archiveName
 }
 
 test.dependsOn assemble</code></pre>
@@ -150,7 +149,7 @@ test.dependsOn assemble</code></pre>
 <p><em>Listing 2. Ensuring the proper setup for executing JUnit 5 tests with TestContainers</em></p>
 </div>
 <div class="paragraph">
-<p>The build should be ready to go. Let&#8217;s have a look at the actual test implementation.</p>
+<p>The build should be ready to go. Let’s have a look at the actual test implementation.</p>
 </div>
 </div>
 </div>
@@ -170,8 +169,8 @@ test.dependsOn assemble</code></pre>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Testcontainers
 public class ToDoWebServiceFunctionalTest {
-    private final static File DISTRIBUTION_DIR = new File(System.getProperty("distribution.dir"));
-    private final static String ARCHIVE_NAME = System.getProperty("archive.name");
+    private final static File DISTRIBUTION_DIR = new File(System.getProperty(&#34;distribution.dir&#34;));
+    private final static String ARCHIVE_NAME = System.getProperty(&#34;archive.name&#34;);
 
     @Container
     private GenericContainer appContainer = createContainer();
@@ -179,7 +178,7 @@ public class ToDoWebServiceFunctionalTest {
     private static GenericContainer createContainer() {
         return new GenericContainer(buildImageDockerfile())
                 .withExposedPorts(8080)
-                .waitingFor(Wait.forHttp("/actuator/health")
+                .waitingFor(Wait.forHttp(&#34;/actuator/health&#34;)
                 .forStatusCode(200));
     }
 
@@ -187,9 +186,9 @@ public class ToDoWebServiceFunctionalTest {
         return new ImageFromDockerfile()
                 .withFileFromFile(ARCHIVE_NAME, new File(DISTRIBUTION_DIR, ARCHIVE_NAME))
                 .withDockerfileFromBuilder(builder -&gt; builder
-                        .from("openjdk:jre-alpine")
-                        .copy(ARCHIVE_NAME, "/app/" + ARCHIVE_NAME)
-                        .entryPoint("java", "-jar", "/app/" + ARCHIVE_NAME)
+                        .from(&#34;openjdk:jre-alpine&#34;)
+                        .copy(ARCHIVE_NAME, &#34;/app/&#34; + ARCHIVE_NAME)
+                        .entryPoint(&#34;java&#34;, &#34;-jar&#34;, &#34;/app/&#34; + ARCHIVE_NAME)
                         .build());
     }
 }</code></pre>
@@ -199,7 +198,7 @@ public class ToDoWebServiceFunctionalTest {
 <p><em>Listing 3. Creating and starting a container as test fixture</em></p>
 </div>
 <div class="paragraph">
-<p>I want to point out of a couple of interesting pieces in the listing. The Dockerfile consists of only three instructions. It uses the base image named <code>openjdk:jre-alpine</code> to make the resuting image as small as possible. Then it copies the JAR file and points the <code>java</code> command to it as entrypoint. When starting the container, test execution blocks until the Spring Boot application becomes "healthy". In this case, the application uses <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html">Actuator</a> to expose a health status endpoint.</p>
+<p>I want to point out of a couple of interesting pieces in the listing. The Dockerfile consists of only three instructions. It uses the base image named <code>openjdk:jre-alpine</code> to make the resuting image as small as possible. Then it copies the JAR file and points the <code>java</code> command to it as entrypoint. When starting the container, test execution blocks until the Spring Boot application becomes &#34;healthy&#34;. In this case, the application uses <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready.html">Actuator</a> to expose a health status endpoint.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -212,7 +211,7 @@ public class ToDoWebServiceFunctionalTest {
 </blockquote>
 </div>
 <div class="paragraph">
-<p>It&#8217;s the test cases' responsibility to verify the application&#8217;s endpoints by making a HTTP call and inspecting the response. The <code>GenericContainer</code> class exposes methods for retrieving the the container&#8217;s IP address and its exposed ports. With this information, you can determine the endpoint URL exposed by the container, as shown in listing 4.</p>
+<p>It’s the test cases&#39; responsibility to verify the application’s endpoints by making a HTTP call and inspecting the response. The <code>GenericContainer</code> class exposes methods for retrieving the the container’s IP address and its exposed ports. With this information, you can determine the endpoint URL exposed by the container, as shown in listing 4.</p>
 </div>
 <div class="paragraph">
 <p><em>ToDoWebServiceFunctionalTest.java</em></p>
@@ -220,23 +219,23 @@ public class ToDoWebServiceFunctionalTest {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Test
-@DisplayName("can retrieve all items before and after inserting new ones")
+@DisplayName(&#34;can retrieve all items before and after inserting new ones&#34;)
 void retrieveAllItems() {
     // Use endpoint URL to make HTTP calls
 }
 
 private URL buildEndpointUrl(String context) {
     StringBuilder url = new StringBuilder();
-    url.append("http://");
+    url.append(&#34;http://&#34;);
     url.append(appContainer.getContainerIpAddress());
-    url.append(":");
+    url.append(&#34;:&#34;);
     url.append(appContainer.getFirstMappedPort());
     url.append(context);
 
     try {
         return new URL(url.toString());
     } catch (MalformedURLException e) {
-        throw new RuntimeException("Invalid URL", e);
+        throw new RuntimeException(&#34;Invalid URL&#34;, e);
     }
 }</code></pre>
 </div>
@@ -253,7 +252,7 @@ private URL buildEndpointUrl(String context) {
 <h2 id="_executing_tests_from_the_ide">Executing tests from the IDE</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Developers live and breathe in the IDE. Unfortunately, the integration between the IDE and a build tool is not as tight as it could. For example if you execute the same test case from the IDE, you&#8217;d run into a similar exception shown below.</p>
+<p>Developers live and breathe in the IDE. Unfortunately, the integration between the IDE and a build tool is not as tight as it could. For example if you execute the same test case from the IDE, you’d run into a similar exception shown below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -268,7 +267,7 @@ Caused by: java.lang.NullPointerException
 </div>
 </div>
 <div class="paragraph">
-<p>Obviously, the system properties we set in the build file couldn&#8217;t not be resolved. Even if you&#8217;d create the system properties, you&#8217;d still have an issue when changing the source code. By default, test execution from the IDE doesn&#8217;t create the JAR file. As a result, the latest changes wouldn&#8217;t be reflected in the binary file leading to incorrect behavior.</p>
+<p>Obviously, the system properties we set in the build file couldn’t not be resolved. Even if you’d create the system properties, you’d still have an issue when changing the source code. By default, test execution from the IDE doesn’t create the JAR file. As a result, the latest changes wouldn’t be reflected in the binary file leading to incorrect behavior.</p>
 </div>
 <div class="paragraph">
 <p>So what can you do to run the tests from the IDE? Really, the only option you have at the moment is to delegate test execution to the build. In IntelliJ, this <a href="https://www.jetbrains.com/help/idea/gradle.html#delegate_build_gradle">setting is configurable</a>.</p>

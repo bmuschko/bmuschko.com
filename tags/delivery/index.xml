@@ -6,11 +6,7 @@
     <description>Recent content in delivery on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 30 Oct 2017 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/delivery/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 30 Oct 2017 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/delivery/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Build pipelines with Jenkins 2 by example</title>
       <link>https://bmuschko.com/blog/jenkins-build-pipeline/</link>

@@ -6,11 +6,7 @@
     <description>Recent content in bdd on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 13 Jun 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/bdd/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Wed, 13 Jun 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/bdd/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Exploring the landscape of Go testing frameworks</title>
       <link>https://bmuschko.com/blog/go-testing-frameworks/</link>

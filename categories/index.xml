@@ -5,11 +5,7 @@
     <link>https://bmuschko.com/categories/</link>
     <description>Recent content in Categories on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-	<atom:link href="https://bmuschko.com/categories/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>en-us</language><atom:link href="https://bmuschko.com/categories/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>talks</title>
       <link>https://bmuschko.com/categories/talks/</link>

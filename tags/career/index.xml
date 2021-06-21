@@ -6,11 +6,7 @@
     <description>Recent content in career on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 14 May 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/career/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 14 May 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/career/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Starting a new chapter...</title>
       <link>https://bmuschko.com/blog/starting-a-new-chapter/</link>
@@ -18,7 +14,7 @@
       
       <guid>https://bmuschko.com/blog/starting-a-new-chapter/</guid>
       <description>The news has been out for over two weeks, but I just got around to writing a blog post about it. April 30th marked my last day at Gradle Inc., the company behind the open source build tool Gradle and Gradle Enterprise, the complimentary commercial offering.
- It&amp;#8217;s been almost 5 years full of challenges and learning experiences. Over the course of that time, I had the opportunity to help several companies migrate their build environment to Gradle and adopt Continuous Delivery in the process.</description>
+ It’s been almost 5 years full of challenges and learning experiences. Over the course of that time, I had the opportunity to help several companies migrate their build environment to Gradle and adopt Continuous Delivery in the process.</description>
     </item>
     
   </channel>

@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Containerization workflow for Java apps with Jib</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -92,10 +91,10 @@ if (!doNotTrack) {
           <div class="panel-body">
             <div class="blogpost">
               <div class="paragraph">
-<p>Containerizing a Java application is the natural extension to building a plain, executable JAR file: "write once, run everywhere". Creating an optimized image for an application is far from straightforward and requires in-depth knowledge of Docker concepts and <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">best practices</a>.</p>
+<p>Containerizing a Java application is the natural extension to building a plain, executable JAR file: &#34;write once, run everywhere&#34;. Creating an optimized image for an application is far from straightforward and requires in-depth knowledge of Docker concepts and <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/">best practices</a>.</p>
 </div>
 <div class="paragraph">
-<p>A typical developer worflow involves the following steps. First, you start out by writing a Dockerfile with the goal of producing an image small in size while at the same time ensuring cacheability of layers as much as possible. Next, you&#8217;ll have think about how to build and push the image to a registry. This process usually involves installing the Docker engine and providing registry credentials. If you are a beginner to containers and/or Docker, Google&#8217;s containization tool <a href="https://github.com/GoogleContainerTools/jib">Jib</a> might be a good fit for you.</p>
+<p>A typical developer worflow involves the following steps. First, you start out by writing a Dockerfile with the goal of producing an image small in size while at the same time ensuring cacheability of layers as much as possible. Next, you’ll have think about how to build and push the image to a registry. This process usually involves installing the Docker engine and providing registry credentials. If you are a beginner to containers and/or Docker, Google’s containization tool <a href="https://github.com/GoogleContainerTools/jib">Jib</a> might be a good fit for you.</p>
 </div>
 <div class="sect1">
 <h2 id="_meet_jib">Meet Jib</h2>
@@ -104,10 +103,10 @@ if (!doNotTrack) {
 <p>Jib is a library for building and pushing OCI-compatible images for Java applications available as Maven and Gradle plugin. Setting up the tool for a project requires very little configuration.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/containerization-with-jib/jib-logo.png" alt="jib logo"></span></p>
+<p><span class="image"><img src="/img/blog/containerization-with-jib/jib-logo.png" alt="jib logo"/></span></p>
 </div>
 <div class="paragraph">
-<p>Jib&#8217;s main goal is fast image creation by using a <a href="https://github.com/GoogleContainerTools/distroless">distroless base image</a> and splitting up the application into meaningful, fine-grained layers. Jib doesn&#8217;t require setting up a Dockerfile or even installing the Docker engine to get the job done. Let&#8217;s have a look at an example in a Gradle build.</p>
+<p>Jib’s main goal is fast image creation by using a <a href="https://github.com/GoogleContainerTools/distroless">distroless base image</a> and splitting up the application into meaningful, fine-grained layers. Jib doesn’t require setting up a Dockerfile or even installing the Docker engine to get the job done. Let’s have a look at an example in a Gradle build.</p>
 </div>
 </div>
 </div>
@@ -123,9 +122,9 @@ if (!doNotTrack) {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'java'
-    id 'org.springframework.boot' version '2.0.5.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
+    id &#39;java&#39;
+    id &#39;org.springframework.boot&#39; version &#39;2.0.5.RELEASE&#39;
+    id &#39;io.spring.dependency-management&#39; version &#39;1.0.6.RELEASE&#39;
 }
 
 repositories {
@@ -133,10 +132,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtime 'org.postgresql:postgresql:42.2.5'
+    implementation &#39;org.springframework.boot:spring-boot-starter-web&#39;
+    implementation &#39;org.springframework.boot:spring-boot-starter-actuator&#39;
+    implementation &#39;org.springframework.boot:spring-boot-starter-data-jpa&#39;
+    runtime &#39;org.postgresql:postgresql:42.2.5&#39;
 }</code></pre>
 </div>
 </div>
@@ -152,10 +151,10 @@ dependencies {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'com.google.cloud.tools.jib' version '0.9.11'
+    id &#39;com.google.cloud.tools.jib&#39; version &#39;0.9.11&#39;
 }
 
-jib.to.image = 'bmuschko/my-java-app:1.0'</code></pre>
+jib.to.image = &#39;bmuschko/my-java-app:1.0&#39;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -170,7 +169,7 @@ jib.to.image = 'bmuschko/my-java-app:1.0'</code></pre>
 &gt; Task :compileJava UP-TO-DATE
 &gt; Task :processResources UP-TO-DATE
 &gt; Task :classes UP-TO-DATE
-warning: Base image 'gcr.io/distroless/java' does not use a specific image digest - build may not be reproducible
+warning: Base image &#39;gcr.io/distroless/java&#39; does not use a specific image digest - build may not be reproducible
 
 Containerizing application to bmuschko/java-app-jib:1.0...
 
@@ -191,10 +190,10 @@ Built and pushed image as bmuschko/java-app-jib:1.0</code></pre>
 <p>You can see in the console output that the tool creates separate layers for the application dependencies, the resource files and the class files. Jib also determines the main class name by scanning the classpath.</p>
 </div>
 <div class="paragraph">
-<p>Based on the provided image name, Jib identifies that the image should be pushed to Docker Hub, retrieves my stored credentials with the help of <a href="https://github.com/docker/docker-credential-helpers">docker-credential-helpers</a> and finally performs the operation. You can verify that Jib didn&#8217;t actually create an image via the Docker engine by running <code>docker images</code>. There&#8217;s no image with the tag <code>bmuschko/java-app-jib:1.0</code> to be found.</p>
+<p>Based on the provided image name, Jib identifies that the image should be pushed to Docker Hub, retrieves my stored credentials with the help of <a href="https://github.com/docker/docker-credential-helpers">docker-credential-helpers</a> and finally performs the operation. You can verify that Jib didn’t actually create an image via the Docker engine by running <code>docker images</code>. There’s no image with the tag <code>bmuschko/java-app-jib:1.0</code> to be found.</p>
 </div>
 <div class="paragraph">
-<p>Building and pushing images independent of the Docker engine can be extremely powerful. Jib completely abstracts the implementation details from the developer. There&#8217;s no need to fully understand the details. You can simply trust that Jib produces the desired outcome. Avoiding the need to install Docker is highly beneficial in CI/CD environments. CI agents can perform containerization tasks without the burden of setting up and maintaining yet another tool.</p>
+<p>Building and pushing images independent of the Docker engine can be extremely powerful. Jib completely abstracts the implementation details from the developer. There’s no need to fully understand the details. You can simply trust that Jib produces the desired outcome. Avoiding the need to install Docker is highly beneficial in CI/CD environments. CI agents can perform containerization tasks without the burden of setting up and maintaining yet another tool.</p>
 </div>
 </div>
 </div>
@@ -212,7 +211,7 @@ bmuschko/java-app-jib  1.0  a6feced9e4b7  48 years ago  152MB</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>By default the <code>jibDockerBuild</code> task builds the image "on the fly" and doesn&#8217;t leave behind temporary artifacts. Sometimes you might want to understand the processing step on a Docker-level though. The task <code>jibExportDockerContext</code> prepares the Dockerfile context in the directory <code>build/jib-docker-context</code> for further inspection. The context directory includes the <code>Dockerfile</code> shown in listing 3.</p>
+<p>By default the <code>jibDockerBuild</code> task builds the image &#34;on the fly&#34; and doesn’t leave behind temporary artifacts. Sometimes you might want to understand the processing step on a Docker-level though. The task <code>jibExportDockerContext</code> prepares the Dockerfile context in the directory <code>build/jib-docker-context</code> for further inspection. The context directory includes the <code>Dockerfile</code> shown in listing 3.</p>
 </div>
 <div class="paragraph">
 <p><em>Dockerfile</em></p>
@@ -225,7 +224,7 @@ COPY libs /app/libs/
 COPY resources /app/resources/
 COPY classes /app/classes/
 
-ENTRYPOINT ["java","-cp","/app/resources:/app/classes:/app/libs/*","com.bmuschko.todo.webservice.Application"]
+ENTRYPOINT [&#34;java&#34;,&#34;-cp&#34;,&#34;/app/resources:/app/classes:/app/libs/*&#34;,&#34;com.bmuschko.todo.webservice.Application&#34;]
 CMD []</code></pre>
 </div>
 </div>
@@ -233,7 +232,7 @@ CMD []</code></pre>
 <p><em>Listing 3. A Dockerfile created by Jib</em></p>
 </div>
 <div class="paragraph">
-<p>It turns out that Jib doesn&#8217;t even produce a JAR file to run a containerized Java application. Running the image in a container executes the <code>java</code> command and points to the necessary classpath resources. In a large project with a thousands of source files, avoiding the execution of the <code>jar</code> task can slightly improve the overall build time.</p>
+<p>It turns out that Jib doesn’t even produce a JAR file to run a containerized Java application. Running the image in a container executes the <code>java</code> command and points to the necessary classpath resources. In a large project with a thousands of source files, avoiding the execution of the <code>jar</code> task can slightly improve the overall build time.</p>
 </div>
 </div>
 </div>
@@ -241,7 +240,7 @@ CMD []</code></pre>
 <h2 id="_summary">Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Jib is great for simple containerization workflows. Adopt, adopt, adopt if don&#8217;t want to dig deeper into Docker. More complex workflows or intricate customization of image instructions call for a different tool. Jib stops at "build an image and push it to a registry". The <a href="https://github.com/bmuschko/gradle-docker-plugin">Gradle Docker plugin</a> is a suitable alternative for any Gradle build process that wants to go further.</p>
+<p>Jib is great for simple containerization workflows. Adopt, adopt, adopt if don’t want to dig deeper into Docker. More complex workflows or intricate customization of image instructions call for a different tool. Jib stops at &#34;build an image and push it to a registry&#34;. The <a href="https://github.com/bmuschko/gradle-docker-plugin">Gradle Docker plugin</a> is a suitable alternative for any Gradle build process that wants to go further.</p>
 </div>
 </div>
 </div>

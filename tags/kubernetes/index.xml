@@ -6,11 +6,7 @@
     <description>Recent content in kubernetes on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 04 Aug 2019 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 04 Aug 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Crushing the Certified Kubernetes Application Developer (CKAD) exam</title>
       <link>https://bmuschko.com/blog/ckad-prep/</link>

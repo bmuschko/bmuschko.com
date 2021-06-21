@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Talks</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" />
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
@@ -33,7 +33,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -86,7 +85,6 @@ if (!doNotTrack) {
             </p>
     
             <p><p>Go projects need to rely on an automated process that ushers changes through all aspects of a delivery pipeline. A typical pipeline involves resolving packages, compilation, testing, generation of code coverage, static code analysis, binary creation, and the actual release of the binaries.</p>
-
 <p>This session discusses automation aspects and tools helpful for streamlining Go projects. First, you’ll get to know individual tools and why they are so useful. Then you’ll tie it all together to form a simple delivery pipeline for Go projects powered by Travis CI or Jenkins. You will leave the session with a recipe for implementing a sensible, yet simple end-to-end automation approach for your own Go projects to ensure reliable and reproducible builds.</p>
 </p>
     
@@ -117,7 +115,6 @@ if (!doNotTrack) {
             </p>
     
             <p><p>Continuous Delivery is key to delivering software fast and frequently. Jenkins 2 has made great strides in providing a solution for modeling a build pipeline as code. In addition, Docker invoked from a Gradle build can help with implementing certain aspects of your pipeline. Combining the benefits of these tools makes it possible to implement a streamlined and bulletproof process.</p>
-
 <p>In this demo-driven session, you will learn how to construct and operate a declarative pipeline with Jenkins. You’ll see a Spring Boot application taken all the way through the pipeline, from building the Docker image to pushing the image to a registry, using it for integration testing, and finally deploying the application to a Docker Swarm or Kubernetes.</p>
 </p>
     
@@ -142,9 +139,7 @@ if (!doNotTrack) {
             </p>
     
             <p><p>With the rise of newer JVM languages like Groovy and Kotlin, feature-rich test frameworks emerged. The test framework Spock became a welcome alternative for many projects fearless to adopt Groovy as part of their polyglot software stack.</p>
-
 <p>With the first GA release of JUnit 5 in September 2017, the JUnit team brought real innovation to the established space of testing JVM code. Not only is the release packed with new features comparable to the ones provided by Spock, JUnit 5 also serves as a platform for launching other test frameworks on the JVM.</p>
-
 <p>In this demo-driven talk, we will compare typical testing usage patterns and features available for JUnit 5 and Spock. You&rsquo;ll leave with a firm understanding of the benefits and tradeoffs delivered by both test frameworks.</p>
 </p>
     
@@ -171,7 +166,6 @@ if (!doNotTrack) {
             </p>
     
             <p><p>Many organizations struggle with maintaining tests that require more complex setup procedures. As a result, tests become flaky, unreliable and require manual intervention. In a world of &ldquo;automate all the things&rdquo; this is very counterproductive and unnecessarily costs organizations time and money.</p>
-
 <p>In this lightning talk, we&rsquo;ll have a look at setting up and running integration &amp; functional tests with the help of the open source library TestContainers. You will learn how to stand up lightweight, disposable Docker instances running your application as reliable test fixtures.</p>
 </p>
     
@@ -198,7 +192,6 @@ if (!doNotTrack) {
             </p>
     
             <p><p>Continuous Delivery is key to delivering software fast and frequently. Jenkins 2 has made great strides in providing a solution for modeling a build pipeline as code. In addition, Docker invoked from a Gradle build can help with implementing certain aspects of your pipeline. Let&rsquo;s combine the benefits of these tools to implement a streamlined and bullet-proof process.</p>
-
 <p>In this demo-driven talk, you will learn how to construct and operate a declarative pipeline with Jenkins. We&rsquo;ll take a Spring Boot application all the way through the pipeline from building the Docker image, pushing the image to a registry, using it for integration testing and finally deploying the application to a Docker Swarm.</p>
 </p>
     
@@ -221,7 +214,6 @@ if (!doNotTrack) {
             </p>
     
             <p><p>For many Go projects, Make and shell scripts are the predominant tools of choice for automating the process of building source code as well as assembling and distributing binaries. While powerful tools, they do not provide any higher level abstractions like conventions and generalized concepts to minimize the burden on maintainability and readability. There must be a better way to avoid copy-pasting the same automation code from project to project!</p>
-
 <p>In this demo-driven talk, we will discuss how the build tool Gradle can help with bootstrapping and streamlining the automation of Go projects. In the process, we’ll identify some typical challenges with the help of a sample project and how to overcome them with GoGradle, a community plugin for Gradle.</p>
 </p>
     
@@ -245,14 +237,14 @@ if (!doNotTrack) {
                
             </p>
     
-            <p>Implementing plugins can be a daunting task for Gradle beginners and advanced users alike. The task requires many intricate considerations, decisions and deep knowledge about (sometimes undocumented) features. Have you ever asked yourself one of the following questions, then this session is for you!</p>
-
+            <p><p>Implementing plugins can be a daunting task for Gradle beginners and advanced users alike. The task requires many intricate considerations, decisions and deep knowledge about (sometimes undocumented) features. Have you ever asked yourself one of the following questions, then this session is for you!</p>
 <ul>
 <li>What&rsquo;s the best structure for my plugin code?</li>
 <li>How do I make my plugin as performant, flexible and user-friendly as possible?</li>
 <li>How do I ensure the best forward and backward compatibility for builds consuming my plugin?</li>
 <li>How do I expose a declarative DSL to configure my plugin&rsquo;s runtime behavior?</li>
-</ul></p>
+</ul>
+</p>
     
             <p>
                 <a href="https://speakerdeck.com/bmuschko/designing-and-writing-gradle-plugins">Slides</a> 

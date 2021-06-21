@@ -6,18 +6,14 @@
     <description>Recent content in junit5 on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 01 Jan 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/junit5/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 01 Jan 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/junit5/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>JUnit 5 vs. Spock feature showdown</title>
       <link>https://bmuschko.com/blog/junit5-vs-spock-showdown/</link>
       <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/junit5-vs-spock-showdown/</guid>
-      <description>Introduction For over a decade JUnit 4 has been the go-to test framework for JVM-based software projects. You can find the use of JUnit across the board in organizations from big entprises to small startups. Despite its popularity, the test framework&amp;#8217;s features barely moved with the times. Due to its deep penetration among the industry, evolutionary changes became harder and harder to implement without introducing inevidable breakages to the API.</description>
+      <description>Introduction For over a decade JUnit 4 has been the go-to test framework for JVM-based software projects. You can find the use of JUnit across the board in organizations from big entprises to small startups. Despite its popularity, the test framework’s features barely moved with the times. Due to its deep penetration among the industry, evolutionary changes became harder and harder to implement without introducing inevidable breakages to the API.</description>
     </item>
     
   </channel>

@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Writing your first kubectl plugin with Go</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -87,15 +86,15 @@ if (!doNotTrack) {
 <p>The <code>kubectl</code> command line tool offers a powerful, client-side mechanism for communicating with the Kubernetes API server. <code>kubectl</code> comes with a lot of fine-grained commands, subcommands and options. Getting familiar with all of these options takes practice and time.</p>
 </div>
 <div class="paragraph">
-<p>Despite its wide array of options, you sometimes wish that <code>kubectl</code> would provide higher-level functions or would simplify specific operations. For example, you may have to shell into a running container to inspect the environment in interactive mode. That&#8217;s easy to achieve with the command <code>kubectl exec mypod -it --namespace=abc &#8201;&#8212;&#8201;/bin/sh</code>, however, there are various options you have to remember. Wouldn&#8217;t it be easier if there would be a simplied command say <code>kubectl iexec mypod</code>? That&#8217;s where <a href="https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/">kubectl plugins</a> come in. You can write your own commands and the behavior they should expose.</p>
+<p>Despite its wide array of options, you sometimes wish that <code>kubectl</code> would provide higher-level functions or would simplify specific operations. For example, you may have to shell into a running container to inspect the environment in interactive mode. That’s easy to achieve with the command <code>kubectl exec mypod -it --namespace=abc  — /bin/sh</code>, however, there are various options you have to remember. Wouldn’t it be easier if there would be a simplied command say <code>kubectl iexec mypod</code>? That’s where <a href="https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/">kubectl plugins</a> come in. You can write your own commands and the behavior they should expose.</p>
 </div>
 <div class="paragraph">
-<p>In this blog post, I want to show how to write a simple <code>kubectl</code> plugin that leverages the Go client to communicate with the API server. You will learn how to stand up the Go project, declare the dependency on the Go client library with the help of Go Modules and write the source code. You will be able to find the <a href="https://github.com/bmuschko/kubectl-server-version">source code on GitHub</a> if you&#8217;d like to have a look at the details.</p>
+<p>In this blog post, I want to show how to write a simple <code>kubectl</code> plugin that leverages the Go client to communicate with the API server. You will learn how to stand up the Go project, declare the dependency on the Go client library with the help of Go Modules and write the source code. You will be able to find the <a href="https://github.com/bmuschko/kubectl-server-version">source code on GitHub</a> if you’d like to have a look at the details.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>The Go library isn&#8217;t the only option for writing a <code>kubectl</code> plugin. Kubernetes supports <a href="https://kubernetes.io/docs/reference/using-api/client-libraries/">other languages</a> though they won&#8217;t be subject of this blog post. I personally haven&#8217;t tried any of the other client libraries. I would think that the Go library is likely the most well-maintained as Kubernetes itself is written in Go.</p>
+<p>The Go library isn’t the only option for writing a <code>kubectl</code> plugin. Kubernetes supports <a href="https://kubernetes.io/docs/reference/using-api/client-libraries/">other languages</a> though they won’t be subject of this blog post. I personally haven’t tried any of the other client libraries. I would think that the Go library is likely the most well-maintained as Kubernetes itself is written in Go.</p>
 </div>
 </blockquote>
 </div>
@@ -112,7 +111,7 @@ Hello from Kubernetes server with version v1.10.11!</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Furthermore, it&#8217;s a good idea to provide a subcommand that renders the version of the plugin so that the end user knows which feature set to expect. It will help tremendously with the upgrade process if you know which plugin version has been installed on your machine already. The following console output indicates that the plugin with version <code>0.2.0</code> is used.</p>
+<p>Furthermore, it’s a good idea to provide a subcommand that renders the version of the plugin so that the end user knows which feature set to expect. It will help tremendously with the upgrade process if you know which plugin version has been installed on your machine already. The following console output indicates that the plugin with version <code>0.2.0</code> is used.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -121,7 +120,7 @@ kubectl server-version v0.2.0</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>We defined the commands we want to expose and their functionality. Let&#8217;s start by setting up the project structure.</p>
+<p>We defined the commands we want to expose and their functionality. Let’s start by setting up the project structure.</p>
 </div>
 </div>
 </div>
@@ -129,10 +128,10 @@ kubectl server-version v0.2.0</code></pre>
 <h2 id="_setting_up_the_project">Setting up the project</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There&#8217;s really nothing special about setting up a Go project that implements a <code>kubectl</code> plugin. You&#8217;d follow the same conventions as you usually would for any other Go project.</p>
+<p>There’s really nothing special about setting up a Go project that implements a <code>kubectl</code> plugin. You’d follow the same conventions as you usually would for any other Go project.</p>
 </div>
 <div class="paragraph">
-<p>We&#8217;ll start by adding a <code>main.go</code> file, the entrypoint into the application. Next, we&#8217;ll generate the Go Module with <code>go mod init github.com/bmuschko/kubectl-server-version</code>. You&#8217;ll end up with a <code>go.mod</code> and <code>go.sum</code> file that we will populate later. The package <code>cmd</code> is going to contain all relevant CLI command handling. Moreover, I personally like to provide a license for the project and a README file that explains how to use the plugin. In the end, you should end up with a project layout shown below.</p>
+<p>We’ll start by adding a <code>main.go</code> file, the entrypoint into the application. Next, we’ll generate the Go Module with <code>go mod init github.com/bmuschko/kubectl-server-version</code>. You’ll end up with a <code>go.mod</code> and <code>go.sum</code> file that we will populate later. The package <code>cmd</code> is going to contain all relevant CLI command handling. Moreover, I personally like to provide a license for the project and a README file that explains how to use the plugin. In the end, you should end up with a project layout shown below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -146,7 +145,7 @@ kubectl server-version v0.2.0</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In the next section, we&#8217;ll add the necessary dependencies.</p>
+<p>In the next section, we’ll add the necessary dependencies.</p>
 </div>
 </div>
 </div>
@@ -200,7 +199,7 @@ require (
 </div>
 </div>
 <div class="paragraph">
-<p>Next up, we&#8217;ll implement the plugin functionality.</p>
+<p>Next up, we’ll implement the plugin functionality.</p>
 </div>
 </div>
 </div>
@@ -208,7 +207,7 @@ require (
 <h2 id="_implementing_the_plugin_functionality">Implementing the plugin functionality</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Not surprisingly, we will start by filling the <code>main.go</code> with life. The implementation logic is straightforward. First, we&#8217;ll create a new command by calling the function <code>NewServerVersionCommand</code>. Standard input, standard output and standard error have been wrapped with <code>genericclioptions.IOStreams</code> and passed in as parameter. Next, we&#8217;ll execute the newly created command and handle a potential error case.</p>
+<p>Not surprisingly, we will start by filling the <code>main.go</code> with life. The implementation logic is straightforward. First, we’ll create a new command by calling the function <code>NewServerVersionCommand</code>. Standard input, standard output and standard error have been wrapped with <code>genericclioptions.IOStreams</code> and passed in as parameter. Next, we’ll execute the newly created command and handle a potential error case.</p>
 </div>
 <div class="paragraph">
 <p><em>main.go</em></p>
@@ -218,12 +217,12 @@ require (
 <pre class="highlight"><code class="language-go" data-lang="go">package main
 
 import (
-	"github.com/bmuschko/kubectl-server-version/cmd"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
-	"os"
+	&#34;github.com/bmuschko/kubectl-server-version/cmd&#34;
+	&#34;k8s.io/cli-runtime/pkg/genericclioptions&#34;
+	&#34;os&#34;
 )
 
-var version = "undefined"
+var version = &#34;undefined&#34;
 
 func main() {
 	cmd.SetVersion(version)
@@ -236,10 +235,10 @@ func main() {
 </div>
 </div>
 <div class="paragraph">
-<p>The value of the variable <code>version</code> can be injected at build-time and represents the plugin version. We&#8217;ll pass on the value to the package <code>cmd</code> for later use in the <code>version</code> subcommand.</p>
+<p>The value of the variable <code>version</code> can be injected at build-time and represents the plugin version. We’ll pass on the value to the package <code>cmd</code> for later use in the <code>version</code> subcommand.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s have a look at the meat of the plugin functionality, the command that communicates with the API server and renders the returned Kubernetes server version. I split up the code into multiple, digestiable pieces. The code block below uses the <a href="https://github.com/spf13/cobra">Cobra library</a> to create the new command. Apart from the Kubernetes package imports, there&#8217;s nothing special about this implementation. You can easily imagine similar code as part of any other CLI tool written in Go.</p>
+<p>Let’s have a look at the meat of the plugin functionality, the command that communicates with the API server and renders the returned Kubernetes server version. I split up the code into multiple, digestiable pieces. The code block below uses the <a href="https://github.com/spf13/cobra">Cobra library</a> to create the new command. Apart from the Kubernetes package imports, there’s nothing special about this implementation. You can easily imagine similar code as part of any other CLI tool written in Go.</p>
 </div>
 <div class="paragraph">
 <p><em>cmd/server_version.go</em></p>
@@ -247,13 +246,13 @@ func main() {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-go" data-lang="go">import (
-	"errors"
-	"fmt"
-	"github.com/spf13/cobra"
-	"io"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/clientcmd"
+	&#34;errors&#34;
+	&#34;fmt&#34;
+	&#34;github.com/spf13/cobra&#34;
+	&#34;io&#34;
+	&#34;k8s.io/cli-runtime/pkg/genericclioptions&#34;
+	&#34;k8s.io/client-go/kubernetes&#34;
+	&#34;k8s.io/client-go/tools/clientcmd&#34;
 )
 
 type serverVersionCmd struct {
@@ -267,12 +266,12 @@ func NewServerVersionCommand(streams genericclioptions.IOStreams) *cobra.Command
 	}
 
 	cmd := &amp;cobra.Command{
-		Use:          "server-version",
-		Short:        "Prints Kubernetes server version",
+		Use:          &#34;server-version&#34;,
+		Short:        &#34;Prints Kubernetes server version&#34;,
 		SilenceUsage: true,
 		RunE: func(c *cobra.Command, args []string) error {
 			if len(args) != 0 {
-				return errors.New("this command does not accept arguments")
+				return errors.New(&#34;this command does not accept arguments&#34;)
 			}
 			return helloWorldCmd.run()
 		},
@@ -288,7 +287,7 @@ func (sv *serverVersionCmd) run() error {
 		return err
 	}
 
-	_, err = fmt.Fprintf(sv.out, "Hello from Kubernetes server with version %s!\n", serverVersion)
+	_, err = fmt.Fprintf(sv.out, &#34;Hello from Kubernetes server with version %s!\n&#34;, serverVersion)
 	if err != nil {
 		return err
 	}
@@ -300,7 +299,7 @@ func (sv *serverVersionCmd) run() error {
 <p>The most important portion of this file is the call to the function <code>getServerVersion()</code>. In here, we are actually interacting with the Go client.</p>
 </div>
 <div class="paragraph">
-<p>The "client" instance is called a <code>clientset</code> and is represented by the struct <code>kubernetes.Clientset</code>. For the creation of the the struct, you will have to provide additional client configuration in the form of a <code>restclient.Config</code>. Once created, the <code>clientset</code> gives access to the whole Kubernetes API and all relevant operations for querying, creating, updating and deleting Kubernetes objects.</p>
+<p>The &#34;client&#34; instance is called a <code>clientset</code> and is represented by the struct <code>kubernetes.Clientset</code>. For the creation of the the struct, you will have to provide additional client configuration in the form of a <code>restclient.Config</code>. Once created, the <code>clientset</code> gives access to the whole Kubernetes API and all relevant operations for querying, creating, updating and deleting Kubernetes objects.</p>
 </div>
 <div class="paragraph">
 <p>The function below retrieves the <code>DiscoveryClient</code> which can discover server-supported API groups, versions and resources. For example, the function <code>ServerVersion()</code> returns the Kubernetes server version.</p>
@@ -317,17 +316,17 @@ func (sv *serverVersionCmd) run() error {
 
 	config, err := kubeConfig.ClientConfig()
 	if err != nil {
-		return "", err
+		return &#34;&#34;, err
 	}
 
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		return "", err
+		return &#34;&#34;, err
 	}
 
 	sv, err := clientset.Discovery().ServerVersion()
 	if err != nil {
-		return "", err
+		return &#34;&#34;, err
 	}
 
 	return sv.String(), nil
@@ -335,7 +334,7 @@ func (sv *serverVersionCmd) run() error {
 </div>
 </div>
 <div class="paragraph">
-<p>That&#8217;s really all there is to the implementation. The most important aspect is to get familiar with Go client API. Everything else is really just plain old Go programming.</p>
+<p>That’s really all there is to the implementation. The most important aspect is to get familiar with Go client API. Everything else is really just plain old Go programming.</p>
 </div>
 </div>
 </div>
@@ -362,7 +361,7 @@ func (sv *serverVersionCmd) run() error {
 </ol>
 </div>
 <div class="paragraph">
-<p>In this post, we didn&#8217;t even talk about the option of writing a plugin as bash script. For more information, see the <a href="https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/#example-plugin">Kubernetes documentation</a>. Our plugin has been written in Go so we&#8217;ll have to build the binary first. The easiest option is to use the <code>go build</code> command. The "installation process" isn&#8217;t complicated at all. You simply copy the binary into the <code>PATH</code>, as described <a href="https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/#installing-kubectl-plugins">here</a>.</p>
+<p>In this post, we didn’t even talk about the option of writing a plugin as bash script. For more information, see the <a href="https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/#example-plugin">Kubernetes documentation</a>. Our plugin has been written in Go so we’ll have to build the binary first. The easiest option is to use the <code>go build</code> command. The &#34;installation process&#34; isn’t complicated at all. You simply copy the binary into the <code>PATH</code>, as described <a href="https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/#installing-kubectl-plugins">here</a>.</p>
 </div>
 <div class="paragraph">
 <p>The following commands build the binary of the plugin and copy it into the <code>PATH</code>. Under MacOSX the <code>PATH</code> is represented by <code>/usr/local/bin</code>.</p>
@@ -378,7 +377,7 @@ The following kubectl-compatible plugins are available:
 </div>
 </div>
 <div class="paragraph">
-<p>Awesome, the plugin has been installed. We can now go ahead and execute it as described earlier. As you can see, the development and installation process is not very burdensome. But what if you wanted to share the plugin with the team or the Kubernetes community? Let&#8217;s talk about distribution the plugin in the next section.</p>
+<p>Awesome, the plugin has been installed. We can now go ahead and execute it as described earlier. As you can see, the development and installation process is not very burdensome. But what if you wanted to share the plugin with the team or the Kubernetes community? Let’s talk about distribution the plugin in the next section.</p>
 </div>
 </div>
 </div>
@@ -386,12 +385,12 @@ The following kubectl-compatible plugins are available:
 <h2 id="_distributing_the_plugin_on_github_releases">Distributing the plugin on GitHub Releases</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There are various options for distributing the binary of your plugin. In this post, we&#8217;ll discuss the distribution of the plugin on <a href="https://help.github.com/en/articles/creating-releases">GitHub Releases</a>.</p>
+<p>There are various options for distributing the binary of your plugin. In this post, we’ll discuss the distribution of the plugin on <a href="https://help.github.com/en/articles/creating-releases">GitHub Releases</a>.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>Another popular option is to use the package manager for <code>kubectl</code> plugins called <a href="https://github.com/kubernetes-sigs/krew">krew</a>. It&#8217;s your best option when it comes to easy of use and making the plugin available to the world. I will leave this topic for another blog post.</p>
+<p>Another popular option is to use the package manager for <code>kubectl</code> plugins called <a href="https://github.com/kubernetes-sigs/krew">krew</a>. It’s your best option when it comes to easy of use and making the plugin available to the world. I will leave this topic for another blog post.</p>
 </div>
 </blockquote>
 </div>
@@ -404,7 +403,7 @@ The following kubectl-compatible plugins are available:
 <h2 id="_conclusion">Conclusion</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The blog post taught you how to get started with writing a <code>kubectl</code> plugin using the Go language. We created a new project from scratch and took it all the way from inception to distribution. I hope I could inspire you to write your own plugins. In the course of the next couple of months, I intend to write more blog posts on this topic so stay tuned! In the meantime, check out the all the <a href="https://github.com/topics/kubectl-plugins">kubectl plugins that have been published by the community</a>. Maybe you will find the functionality you&#8217;ve been missing for so long from the standard <code>kubectl</code> command.</p>
+<p>The blog post taught you how to get started with writing a <code>kubectl</code> plugin using the Go language. We created a new project from scratch and took it all the way from inception to distribution. I hope I could inspire you to write your own plugins. In the course of the next couple of months, I intend to write more blog posts on this topic so stay tuned! In the meantime, check out the all the <a href="https://github.com/topics/kubectl-plugins">kubectl plugins that have been published by the community</a>. Maybe you will find the functionality you’ve been missing for so long from the standard <code>kubectl</code> command.</p>
 </div>
 </div>
 </div>

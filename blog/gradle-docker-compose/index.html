@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Docker with Gradle: Getting started with Docker Compose</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -94,7 +93,7 @@ if (!doNotTrack) {
               <div class="paragraph">
 <p><a href="https://docs.docker.com/compose/">Docker Compose</a> is a tool for defining and running entire application stacks in containers. Gradle plays well with Docker Compose and can automate the bootstrapping of those containers from the build process. In a previous post, I discussed how to use Gradle to <a href="http://bmuschko.com/blog/docker-integration-testing/">start and stop a Docker container for integration testing</a>. In this blog post, I want to continue the discussion by explaining how to manage multiple containers with Compose. You can find the <a href="https://github.com/bmuschko/docker-compose-integration-testing">full source code</a> on Github.</p>
 </div>
-<hr>
+<hr/>
 <div class="sect1">
 <h2 id="_managing_an_application_stack_with_compose">Managing an application stack with Compose</h2>
 <div class="sectionbody">
@@ -102,7 +101,7 @@ if (!doNotTrack) {
 <p>The sample project used to discuss the functionality is a Python + Redis application stack explained on the <a href="https://docs.docker.com/compose/gettingstarted/">official Docker Compose page</a>. It starts a web application that increments a counter whenever the main entry point is called and renders a message on screen. The counter is stored in the Redis database.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/gradle-docker-compose/application-counter.png" alt="application counter"></span></p>
+<p><span class="image"><img src="/img/blog/gradle-docker-compose/application-counter.png" alt="application counter"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 1. A simple Python web application capturing the number of visits to the page</em></p>
@@ -119,11 +118,11 @@ if (!doNotTrack) {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'com.avast.gradle.docker-compose' version '0.7.1'
+    id &#39;com.avast.gradle.docker-compose&#39; version &#39;0.7.1&#39;
 }
 
 dockerCompose {
-    useComposeFiles = ['docker-compose.yml']
+    useComposeFiles = [&#39;docker-compose.yml&#39;]
 }</code></pre>
 </div>
 </div>
@@ -140,22 +139,22 @@ dockerCompose {
 &gt; Task :composeUp
 redis uses an image, skipping
 Building web
-Creating network "dockercomposeintegrationtesting_counter-net" with the default driver
-Creating volume "dockercomposeintegrationtesting_counter-vol" with default driver
+Creating network &#34;dockercomposeintegrationtesting_counter-net&#34; with the default driver
+Creating volume &#34;dockercomposeintegrationtesting_counter-vol&#34; with default driver
 Creating dockercomposeintegrationtesting_redis_1 ... done
 Creating dockercomposeintegrationtesting_web_1 ... done
 Will use localhost as host of redis
 Will use localhost as host of web
-Waiting for redis_1 to become healthy (it's starting)
-Waiting for redis_1 to become healthy (it's starting)
-Waiting for redis_1 to become healthy (it's starting)
-redis_1 health state reported as 'healthy' - continuing...
-Waiting for web_1 to become healthy (it's starting)
-Waiting for web_1 to become healthy (it's starting)
-Waiting for web_1 to become healthy (it's starting)
-web_1 health state reported as 'healthy' - continuing...
-Probing TCP socket on localhost:5000 of service 'web_1'
-TCP socket on localhost:5000 of service 'web_1' is ready
+Waiting for redis_1 to become healthy (it&#39;s starting)
+Waiting for redis_1 to become healthy (it&#39;s starting)
+Waiting for redis_1 to become healthy (it&#39;s starting)
+redis_1 health state reported as &#39;healthy&#39; - continuing...
+Waiting for web_1 to become healthy (it&#39;s starting)
+Waiting for web_1 to become healthy (it&#39;s starting)
+Waiting for web_1 to become healthy (it&#39;s starting)
+web_1 health state reported as &#39;healthy&#39; - continuing...
+Probing TCP socket on localhost:5000 of service &#39;web_1&#39;
+TCP socket on localhost:5000 of service &#39;web_1&#39; is ready
 
 BUILD SUCCESSFUL in 1m 48s
 1 actionable task: 1 executed</code></pre>
@@ -183,17 +182,17 @@ BUILD SUCCESSFUL in 3s
 <div class="paragraph">
 <p>Managing Compose via Gradle tasks is helpful for manually testing or experimenting with an application stack. In some situations, you may want to bind the operations to more complex workflows. In the next section, you will learn how to use an application stack as a fixture for integration testing.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_using_compose_as_fixture_for_integration_testing">Using Compose as fixture for integration testing</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Microservice applications represent a collection of individual services communicating with each other. It&#8217;s common for a developer to work on one or many services to implement new features or bugfixes. Testing those changes in conjunction with other services needed at runtime requires all dependencies to be available. The Gradle Docker compose plugin makes it really easy to bootstrap an application stack and tie it into the task execution lifecycle of a test task.</p>
+<p>Microservice applications represent a collection of individual services communicating with each other. It’s common for a developer to work on one or many services to implement new features or bugfixes. Testing those changes in conjunction with other services needed at runtime requires all dependencies to be available. The Gradle Docker compose plugin makes it really easy to bootstrap an application stack and tie it into the task execution lifecycle of a test task.</p>
 </div>
 <div class="paragraph">
-<p>We&#8217;ll pick Java and the test framework JUnit 5 for writing integration tests. In listing 2, you can see that the test case calls the expected service endpoint using the incubating <a href="https://openjdk.java.net/groups/net/httpclient/intro.html">JDK HTTP Client</a>. You&#8217;ll make the service endpoint host name and port available through system properties passed in by the build. The assertion logic verifies the expected response from the HTTP call with every iteration of the test case.</p>
+<p>We’ll pick Java and the test framework JUnit 5 for writing integration tests. In listing 2, you can see that the test case calls the expected service endpoint using the incubating <a href="https://openjdk.java.net/groups/net/httpclient/intro.html">JDK HTTP Client</a>. You’ll make the service endpoint host name and port available through system properties passed in by the build. The assertion logic verifies the expected response from the HTTP call with every iteration of the test case.</p>
 </div>
 <div class="paragraph">
 <p><em>src/test/java/com/bmuschko/ApplicationIntegrationTest.java</em></p>
@@ -214,11 +213,11 @@ import java.net.URI;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ApplicationIntegrationTest {
-    private static final String WEB_SERVICE_HOST = System.getProperty("web.host");
-    private static final Integer WEB_SERVICE_PORT = Integer.getInteger("web.tcp.5000");
-    private static final String WEB_SERVICE_URI = "http://" + WEB_SERVICE_HOST + ":" + WEB_SERVICE_PORT + "/";
+    private static final String WEB_SERVICE_HOST = System.getProperty(&#34;web.host&#34;);
+    private static final Integer WEB_SERVICE_PORT = Integer.getInteger(&#34;web.tcp.5000&#34;);
+    private static final String WEB_SERVICE_URI = &#34;http://&#34; + WEB_SERVICE_HOST + &#34;:&#34; + WEB_SERVICE_PORT + &#34;/&#34;;
 
-    @ParameterizedTest(name = "can resolve application URL {0} times")
+    @ParameterizedTest(name = &#34;can resolve application URL {0} times&#34;)
     @ValueSource(ints = { 1, 2, 3 })
     void canResolveApplicationUrl(int times) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
@@ -227,7 +226,7 @@ public class ApplicationIntegrationTest {
             .build();
         HttpResponse&lt;String&gt; response = HttpClient.newHttpClient()
             .send(request, HttpResponse.BodyHandler.asString());
-        assertTrue(response.body().contains(String.format("Welcome to this awesome page! You've visited me %s times.", times)));
+        assertTrue(response.body().contains(String.format(&#34;Welcome to this awesome page! You&#39;ve visited me %s times.&#34;, times)));
     }
 }</code></pre>
 </div>
@@ -236,7 +235,7 @@ public class ApplicationIntegrationTest {
 <p><em>Listing 2. Test class calling service endpoint</em></p>
 </div>
 <div class="paragraph">
-<p>Listing 3 demonstrates the application of the Java plugin and the necessary configuration required to use Compose as fixture for the <code>test</code> task. The convenience method <code>isRequiredBy</code> establishes a task dependency on <code>composeUp</code> with the help of <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#dependsOn-java.lang.Object&#8230;&#8203;-"><code>dependsOn</code></a> and another task dependency on <code>composeDown</code> via <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#finalizedBy-java.lang.Object&#8230;&#8203;-"><code>finalizedBy</code></a>. Furthermore, the method <code>exposeAsSystemProperties</code> automatically provides system properties <code>&lt;service-name&gt;.host</code> and <code>&lt;service-name&gt;.tcp.&lt;exposed-port&gt;</code> to the test JVM process. For more information, see the <a href="https://github.com/avast/gradle-docker-compose-plugin/blob/master/README.md">plugin documentation</a>.</p>
+<p>Listing 3 demonstrates the application of the Java plugin and the necessary configuration required to use Compose as fixture for the <code>test</code> task. The convenience method <code>isRequiredBy</code> establishes a task dependency on <code>composeUp</code> with the help of <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#dependsOn-java.lang.Object…​-"><code>dependsOn</code></a> and another task dependency on <code>composeDown</code> via <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#finalizedBy-java.lang.Object…​-"><code>finalizedBy</code></a>. Furthermore, the method <code>exposeAsSystemProperties</code> automatically provides system properties <code>&lt;service-name&gt;.host</code> and <code>&lt;service-name&gt;.tcp.&lt;exposed-port&gt;</code> to the test JVM process. For more information, see the <a href="https://github.com/avast/gradle-docker-compose-plugin/blob/master/README.md">plugin documentation</a>.</p>
 </div>
 <div class="paragraph">
 <p><em>build.gradle</em></p>
@@ -244,7 +243,7 @@ public class ApplicationIntegrationTest {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'java'
+    id &#39;java&#39;
 }
 
 dockerCompose {
@@ -257,7 +256,7 @@ dockerCompose {
 <p><em>Listing 3. Using Compose as fixture for test task</em></p>
 </div>
 <div class="paragraph">
-<p>JDK&#8217;s HTTP Client has been introduced with Java 9. You&#8217;ll have to explicitly configure the build to use the incubating module for compilation and test execution. Furthermore, the build has to declare the module dependencies on JUnit 5 and indicate that the test task should use this particular test framework.</p>
+<p>JDK’s HTTP Client has been introduced with Java 9. You’ll have to explicitly configure the build to use the incubating module for compilation and test execution. Furthermore, the build has to declare the module dependencies on JUnit 5 and indicate that the test task should use this particular test framework.</p>
 </div>
 <div class="paragraph">
 <p><em>build.gradle</em></p>
@@ -267,7 +266,7 @@ dockerCompose {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">sourceCompatibility = 9
 targetCompatibility = 9
 
-def httpclientModuleJvmArg = '--add-modules=jdk.incubator.httpclient'
+def httpclientModuleJvmArg = &#39;--add-modules=jdk.incubator.httpclient&#39;
 
 compileTestJava {
     options.compilerArgs.add(httpclientModuleJvmArg)
@@ -283,10 +282,10 @@ repositories {
 }
 
 dependencies {
-    def junitJupiterVersion = '5.1.1'
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+    def junitJupiterVersion = &#39;5.1.1&#39;
+    testImplementation &#34;org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion&#34;
+    testImplementation &#34;org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion&#34;
+    testRuntimeOnly &#34;org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion&#34;
 }</code></pre>
 </div>
 </div>
@@ -314,7 +313,7 @@ BUILD SUCCESSFUL in 1m 57s
 4 actionable tasks: 4 executed</code></pre>
 </div>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">

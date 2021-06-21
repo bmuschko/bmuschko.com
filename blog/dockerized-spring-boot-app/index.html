@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Docker with Gradle: Dockerizing a Spring Boot application</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -104,20 +103,20 @@ if (!doNotTrack) {
 </blockquote>
 </div>
 <div class="paragraph">
-<p>This blog post is the first installment of a series on using Docker from Gradle. As a starting point for our journey, we&#8217;ll want to package a Spring Boot application as a Docker image and push it to the cloud-based registry service <a href="https://docs.docker.com/docker-hub/">Docker Hub</a>. You will also learn how to automate the process as a Continuous Integration job on <a href="https://travis-ci.org/">Travis CI</a>. You can find the <a href="https://github.com/bmuschko/dockerized-spring-boot-app">full source code</a> used in this post on GitHub.</p>
+<p>This blog post is the first installment of a series on using Docker from Gradle. As a starting point for our journey, we’ll want to package a Spring Boot application as a Docker image and push it to the cloud-based registry service <a href="https://docs.docker.com/docker-hub/">Docker Hub</a>. You will also learn how to automate the process as a Continuous Integration job on <a href="https://travis-ci.org/">Travis CI</a>. You can find the <a href="https://github.com/bmuschko/dockerized-spring-boot-app">full source code</a> used in this post on GitHub.</p>
 </div>
-<hr>
+<hr/>
 <div class="sect1">
 <h2 id="_configuring_the_docker_plugin">Configuring the Docker plugin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Docker plugin for Gradle provides two main sets of functionality out-of-the-box. It comes with a <a href="https://github.com/bmuschko/gradle-docker-plugin#remote-api-plugin">base plugin</a> for modeling and executing typical Docker commands e.g. for creating an image or starting a container. The base plugin gives you full control over the process you&#8217;d like to define.</p>
+<p>The Docker plugin for Gradle provides two main sets of functionality out-of-the-box. It comes with a <a href="https://github.com/bmuschko/gradle-docker-plugin#remote-api-plugin">base plugin</a> for modeling and executing typical Docker commands e.g. for creating an image or starting a container. The base plugin gives you full control over the process you’d like to define.</p>
 </div>
 <div class="paragraph">
-<p>Additionally, it ships with a convenience <a href="https://github.com/bmuschko/gradle-docker-plugin#java-application-plugin">abstraction for packaging Java applications as a Docker image</a>. Unfortunately, the Java application abstraction won&#8217;t quite work for building Spring Boot applications. In the future, I might implement an abstraction suited for this specific use case. For now, we&#8217;ll just use the most basic functionality giving us the most freedom in defining the process we need.</p>
+<p>Additionally, it ships with a convenience <a href="https://github.com/bmuschko/gradle-docker-plugin#java-application-plugin">abstraction for packaging Java applications as a Docker image</a>. Unfortunately, the Java application abstraction won’t quite work for building Spring Boot applications. In the future, I might implement an abstraction suited for this specific use case. For now, we’ll just use the most basic functionality giving us the most freedom in defining the process we need.</p>
 </div>
 <div class="paragraph">
-<p>Getting started with the Docker plugin is straightforward. You just have to apply the plugin with the identifier <code>com.bmuschko.docker-remote-api</code> and the concrete version. Furthermore, you will also have to provide the credentials for the registry we&#8217;ll want to use for hosting our image. As you can see in listing 1, the credentials have not been hard-coded in the build script. They can either be provided as environment variables or as project properties (e.g. in a <code>gradle.properties</code> file in your user home directory). In this workflow, we want to push an image to Docker Hub. The Docker plugin uses the Docker Hub registry by default so no additional configuration is required.</p>
+<p>Getting started with the Docker plugin is straightforward. You just have to apply the plugin with the identifier <code>com.bmuschko.docker-remote-api</code> and the concrete version. Furthermore, you will also have to provide the credentials for the registry we’ll want to use for hosting our image. As you can see in listing 1, the credentials have not been hard-coded in the build script. They can either be provided as environment variables or as project properties (e.g. in a <code>gradle.properties</code> file in your user home directory). In this workflow, we want to push an image to Docker Hub. The Docker plugin uses the Docker Hub registry by default so no additional configuration is required.</p>
 </div>
 <div id="listing1" class="paragraph">
 <p><em>build.gradle</em></p>
@@ -125,14 +124,14 @@ if (!doNotTrack) {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">plugins {
-    id 'com.bmuschko.docker-remote-api' version '3.2.3'
+    id &#39;com.bmuschko.docker-remote-api&#39; version &#39;3.2.3&#39;
 }
 
 docker {
     registryCredentials {
-        username = getConfigurationProperty('DOCKER_USERNAME', 'docker.username')
-        password = getConfigurationProperty('DOCKER_PASSWORD', 'docker.password')
-        email = getConfigurationProperty('DOCKER_EMAIL', 'docker.email')
+        username = getConfigurationProperty(&#39;DOCKER_USERNAME&#39;, &#39;docker.username&#39;)
+        password = getConfigurationProperty(&#39;DOCKER_PASSWORD&#39;, &#39;docker.password&#39;)
+        email = getConfigurationProperty(&#39;DOCKER_EMAIL&#39;, &#39;docker.email&#39;)
     }
 }
 
@@ -145,7 +144,7 @@ String getConfigurationProperty(String envVar, String sysProp) {
 <p><em>Listing 1. Configuring the Docker plugin</em></p>
 </div>
 <div class="paragraph">
-<p>With this build script, you just layed the ground work for defining the Docker process. As part of the Docker process, we&#8217;ll want to achieve the following tasks:</p>
+<p>With this build script, you just layed the ground work for defining the Docker process. As part of the Docker process, we’ll want to achieve the following tasks:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -167,9 +166,9 @@ String getConfigurationProperty(String envVar, String sysProp) {
 </ul>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s get started by creating the Dockerfile.</p>
+<p>Let’s get started by creating the Dockerfile.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -179,7 +178,7 @@ String getConfigurationProperty(String envVar, String sysProp) {
 <p>The Docker plugins provides custom task types for implementing the most common operations in the Docker world. One of the operations is the creation of a <a href="https://docs.docker.com/engine/reference/builder/">Dockerfile</a>. The task type <code>Dockerfile</code> exposes methods for populating a Dockerfile with the necessary instructions for an image.</p>
 </div>
 <div class="paragraph">
-<p>Listing 2 demonstrates the use of the task type in a build script. An important aspect of the task definition is that we&#8217;ll want to copy the WAR file when creating the image. When starting the image inside of a container, the application&#8217;s main class is automatically executed with the <code>java</code> command. As soon as the application is up and running, the Docker container will expose its functionality through port 8080. You can also see that the Dockerfile performs a health check on the service to indicate its readiness to serve requests. The health check can be achived by calling a <code>curl</code> command. Notice that there are more <a href="https://blog.sixeyed.com/docker-healthchecks-why-not-to-use-curl-or-iwr/">lightweight approaches</a> available.</p>
+<p>Listing 2 demonstrates the use of the task type in a build script. An important aspect of the task definition is that we’ll want to copy the WAR file when creating the image. When starting the image inside of a container, the application’s main class is automatically executed with the <code>java</code> command. As soon as the application is up and running, the Docker container will expose its functionality through port 8080. You can also see that the Dockerfile performs a health check on the service to indicate its readiness to serve requests. The health check can be achived by calling a <code>curl</code> command. Notice that there are more <a href="https://blog.sixeyed.com/docker-healthchecks-why-not-to-use-curl-or-iwr/">lightweight approaches</a> available.</p>
 </div>
 <div class="paragraph">
 <p><em>build.gradle</em></p>
@@ -189,15 +188,15 @@ String getConfigurationProperty(String envVar, String sysProp) {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.bmuschko.gradle.docker.tasks.image.Dockerfile
 
 task createDockerfile(type: Dockerfile) {
-    destFile = project.file('build/docker/Dockerfile')
-    from 'openjdk:8-jre-alpine'
-    maintainer 'Benjamin Muschko "benjamin.muschko@gmail.com"'
-    copyFile war.archiveName, '/app/account-web-service.war'
-    entryPoint 'java'
-    defaultCommand '-jar', '/app/account-web-service.war'
+    destFile = project.file(&#39;build/docker/Dockerfile&#39;)
+    from &#39;openjdk:8-jre-alpine&#39;
+    maintainer &#39;Benjamin Muschko &#34;benjamin.muschko@gmail.com&#34;&#39;
+    copyFile war.archiveName, &#39;/app/account-web-service.war&#39;
+    entryPoint &#39;java&#39;
+    defaultCommand &#39;-jar&#39;, &#39;/app/account-web-service.war&#39;
     exposePort 8080
-    runCommand 'apk --update --no-cache add curl'
-    instruction 'HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1'
+    runCommand &#39;apk --update --no-cache add curl&#39;
+    instruction &#39;HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1&#39;
 }
 
 task syncWebAppArchive(type: Sync) {
@@ -221,10 +220,10 @@ createDockerfile.dependsOn syncWebAppArchive</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre>FROM openjdk:8-jre-alpine
-MAINTAINER Benjamin Muschko "benjamin.muschko@gmail.com"
+MAINTAINER Benjamin Muschko &#34;benjamin.muschko@gmail.com&#34;
 COPY account-web-service-1.0.0.war /app/account-web-service.war
-ENTRYPOINT ["java"]
-CMD ["-jar", "/app/account-web-service.war"]
+ENTRYPOINT [&#34;java&#34;]
+CMD [&#34;-jar&#34;, &#34;/app/account-web-service.war&#34;]
 EXPOSE 8080
 RUN apk --update --no-cache add curl
 HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1</pre>
@@ -234,9 +233,9 @@ HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1</pre>
 <p><em>Listing 3. The generated Dockerfile</em></p>
 </div>
 <div class="paragraph">
-<p>The task automatically translates its declarative syntax into the underlying Docker instructions. For the most part (except for the <code>HEALTHCHECK</code>) you don&#8217;t even have to know how they need to look like in Docker lingo.</p>
+<p>The task automatically translates its declarative syntax into the underlying Docker instructions. For the most part (except for the <code>HEALTHCHECK</code>) you don’t even have to know how they need to look like in Docker lingo.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -255,21 +254,21 @@ HEALTHCHECK CMD curl -f http://localhost:8080/health || exit 1</pre>
 task buildImage(type: DockerBuildImage) {
     dependsOn createDockerfile
     inputDir = createDockerfile.destFile.parentFile
-    tag = "bmuschko/account-web-service:$war.version"
+    tag = &#34;bmuschko/account-web-service:$war.version&#34;
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p><em>Listing 4. Building the Docker image</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_running_the_image_in_a_container">Running the image in a container</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before pushing the image to the public repository, you should make sure that it is working as expected. First, we&#8217;ll want to identify that the image exists and then start up the container to see if the Spring Boot application behaves as expected. For now, we&#8217;ll just run the plain Docker commands.</p>
+<p>Before pushing the image to the public repository, you should make sure that it is working as expected. First, we’ll want to identify that the image exists and then start up the container to see if the Spring Boot application behaves as expected. For now, we’ll just run the plain Docker commands.</p>
 </div>
 <div class="paragraph">
 <p>The <code>images</code> command lists the available images. Alternatively, you can also create a task of type <code>DockerListImages</code> in your build script.</p>
@@ -300,25 +299,25 @@ bmuschko/account-web-service   1.0.0               91db93d1be41        5 days ag
 <div class="content">
 <pre>$ docker container ls
 CONTAINER ID        IMAGE                                COMMAND                  CREATED             STATUS                    PORTS                    NAMES
-670757d71ccc        bmuschko/account-web-service:1.0.0   "java -jar /app/acco…"   32 minutes ago      Up 32 minutes (healthy)   0.0.0.0:8080-&gt;8080/tcp   angry_einstein</pre>
+670757d71ccc        bmuschko/account-web-service:1.0.0   &#34;java -jar /app/acco…&#34;   32 minutes ago      Up 32 minutes (healthy)   0.0.0.0:8080-&gt;8080/tcp   angry_einstein</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The application is ready for use as soon as the status turns "healthy". In practice that means that the <code>curl</code> command could successfully resolve the URL in the Dockerfile. We can verify one of the application&#8217;s endpoints by calling the URL <code><a href="http://localhost:8080/accounts?id=1" class="bare">http://localhost:8080/accounts?id=1</a></code> in a browser. The HTTP response returns a JSON structure representing a bank account.</p>
+<p>The application is ready for use as soon as the status turns &#34;healthy&#34;. In practice that means that the <code>curl</code> command could successfully resolve the URL in the Dockerfile. We can verify one of the application’s endpoints by calling the URL <code><a href="http://localhost:8080/accounts?id=1" class="bare">http://localhost:8080/accounts?id=1</a></code> in a browser. The HTTP response returns a JSON structure representing a bank account.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre>{
-   "id":1,
-   "owner":"John Doe",
-   "balance":34024.2300000000032014213502407073974609375
+   &#34;id&#34;:1,
+   &#34;owner&#34;:&#34;John Doe&#34;,
+   &#34;balance&#34;:34024.2300000000032014213502407073974609375
 }</pre>
 </div>
 </div>
 <div class="paragraph">
 <p>We know that the application works properly within a Docker container. Next, you will push the image for consumption by other users.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -349,7 +348,7 @@ task pushImage(type: DockerPushImage) {
 <div class="paragraph">
 <p>This task represents the main entry point for our worflow. You might have noticed that we established task dependencies between the tasks shown in the previous sections. Executing <code>pushImage</code> will create the Dockerfile, produce the image with the latest changes in the WAR file and push the image to Docker Hub.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -359,7 +358,7 @@ task pushImage(type: DockerPushImage) {
 <p>You may want to integrate this workflow on a CI server to enable Continuous Deployment for your project. In this section, you will learn how to achieve this with Travis CI. Travis CI can build Docker images and push them to a registry. To use Docker, you will need to <a href="https://docs.travis-ci.com/user/docker/">enable the service</a>.</p>
 </div>
 <div class="paragraph">
-<p>With the Travis CI configuration shown in listing 6, you will automatically build a new image of the application and push it to Docker Hub - with every single commit! Remember that you&#8217;ll need to create the <a href="#listing1">environment variables</a> for the Docker Hub credentials and your email.</p>
+<p>With the Travis CI configuration shown in listing 6, you will automatically build a new image of the application and push it to Docker Hub - with every single commit! Remember that you’ll need to create the <a href="#listing1">environment variables</a> for the Docker Hub credentials and your email.</p>
 </div>
 <div class="paragraph">
 <p><em>.travis.yml</em></p>

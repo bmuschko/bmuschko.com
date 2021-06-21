@@ -1,452 +1,272 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://bmuschko.com/tags/bazel/</loc>
     <lastmod>2020-02-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/</loc>
     <lastmod>2020-02-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/</loc>
     <lastmod>2020-02-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/build/</loc>
     <lastmod>2020-02-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/bazel-groovy/</loc>
     <lastmod>2020-02-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/cicd/</loc>
     <lastmod>2020-02-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/groovy/</loc>
     <lastmod>2020-02-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/</loc>
     <lastmod>2020-02-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/certification/</loc>
     <lastmod>2020-01-30T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/cje/</loc>
     <lastmod>2020-01-30T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/cje-prep/</loc>
     <lastmod>2020-01-30T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/jenkins/</loc>
     <lastmod>2020-01-30T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/jenkins-shared-libraries/</loc>
     <lastmod>2019-10-31T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/ckad/</loc>
     <lastmod>2019-08-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/ckad-prep/</loc>
     <lastmod>2019-08-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/kubernetes/</loc>
     <lastmod>2019-08-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/kubectl/</loc>
     <lastmod>2019-06-20T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/plugin/</loc>
     <lastmod>2019-06-20T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/writing-your-first-kubectl-plugin/</loc>
     <lastmod>2019-06-20T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/go-on-jenkins/</loc>
     <lastmod>2019-01-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/ci/</loc>
     <lastmod>2019-01-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/golang/</loc>
     <lastmod>2019-01-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/modules/</loc>
     <lastmod>2019-01-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/asciidoc/</loc>
     <lastmod>2018-11-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/asciidoctor/</loc>
     <lastmod>2018-11-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/documentation/</loc>
     <lastmod>2018-11-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/extension/</loc>
     <lastmod>2018-11-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/testing/</loc>
     <lastmod>2018-11-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/asciidoctorj-extension/</loc>
     <lastmod>2018-11-25T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/boot/</loc>
     <lastmod>2018-11-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/container/</loc>
     <lastmod>2018-11-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/docker/</loc>
     <lastmod>2018-11-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/java/</loc>
     <lastmod>2018-11-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/spring/</loc>
     <lastmod>2018-11-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/testcontainers/</loc>
     <lastmod>2018-11-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/java-project-testcontainers/</loc>
     <lastmod>2018-11-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/docker-secret-spring-boot/</loc>
     <lastmod>2018-11-05T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/containerization-with-jib/</loc>
     <lastmod>2018-10-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/google/</loc>
     <lastmod>2018-10-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/gradle/</loc>
     <lastmod>2018-10-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/maven/</loc>
     <lastmod>2018-10-16T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/assertion/</loc>
     <lastmod>2018-06-13T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/bdd/</loc>
     <lastmod>2018-06-13T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/go-testing-frameworks/</loc>
     <lastmod>2018-06-13T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/integration/</loc>
     <lastmod>2018-06-13T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/tdd/</loc>
     <lastmod>2018-06-13T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/unit/</loc>
     <lastmod>2018-06-13T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/management/</loc>
     <lastmod>2018-05-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/migrating-glide-to-dep/</loc>
     <lastmod>2018-05-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/package/</loc>
     <lastmod>2018-05-26T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/git/</loc>
     <lastmod>2018-05-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/gradle-release-strategy/</loc>
     <lastmod>2018-05-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/release/</loc>
     <lastmod>2018-05-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/travis/</loc>
     <lastmod>2018-05-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/versioning/</loc>
     <lastmod>2018-05-17T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/career/</loc>
     <lastmod>2018-05-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/starting-a-new-chapter/</loc>
     <lastmod>2018-05-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/compose/</loc>
     <lastmod>2018-04-27T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/gradle-docker-compose/</loc>
     <lastmod>2018-04-27T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/python/</loc>
     <lastmod>2018-04-27T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/redis/</loc>
     <lastmod>2018-04-27T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/gradle-docker-convention-plugin/</loc>
     <lastmod>2018-03-28T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/javascript/</loc>
     <lastmod>2018-03-28T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/nodejs/</loc>
     <lastmod>2018-03-28T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/gradle-project-generation/</loc>
     <lastmod>2018-03-06T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/generation/</loc>
     <lastmod>2018-03-06T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/init/</loc>
     <lastmod>2018-03-06T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/project/</loc>
     <lastmod>2018-03-06T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/docker-integration-testing/</loc>
     <lastmod>2018-02-18T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/spock/</loc>
     <lastmod>2018-02-18T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/dockerized-spring-boot-app/</loc>
     <lastmod>2018-02-08T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/junit5-vs-spock-showdown/</loc>
     <lastmod>2018-01-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/junit5/</loc>
     <lastmod>2018-01-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/mock/</loc>
     <lastmod>2018-01-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/mockito/</loc>
     <lastmod>2018-01-01T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/jenkins-build-pipeline/</loc>
     <lastmod>2017-10-30T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/continuous/</loc>
     <lastmod>2017-10-30T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/delivery/</loc>
     <lastmod>2017-10-30T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/heroku/</loc>
     <lastmod>2017-10-30T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/golang-with-gradle/</loc>
     <lastmod>2017-07-29T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/author/</loc>
     <lastmod>2017-07-18T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/book/</loc>
     <lastmod>2017-07-18T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/writing-tech-book/</loc>
     <lastmod>2017-07-18T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/tech/</loc>
     <lastmod>2017-07-18T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/writing/</loc>
     <lastmod>2017-07-18T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/tags/javadoc/</loc>
     <lastmod>2017-05-21T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/blog/publishing-javadocs/</loc>
     <lastmod>2017-05-21T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/talks/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://bmuschko.com/categories/talks/</loc>
   </url>
-  
 </urlset>

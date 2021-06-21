@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Migrating from Glide to dep</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -83,16 +82,16 @@ if (!doNotTrack) {
         <div class="panel panel-default">
           <div class="panel-body">
             <div class="blogpost">
-              <hr>
+              <hr/>
 <div class="paragraph">
-<p>Package management is a bread-and-butter task. Rarely does a Go developer write a Go program that doesn&#8217;t reference an external package. Over the course of the years, the Go community has seen various approaches to solving the same problem. From <code>go get</code> over vendoring to package managers like <a href="https://github.com/Masterminds/glide">Glide</a>. Each solution comes with its benefits and drawbacks.</p>
+<p>Package management is a bread-and-butter task. Rarely does a Go developer write a Go program that doesn’t reference an external package. Over the course of the years, the Go community has seen various approaches to solving the same problem. From <code>go get</code> over vendoring to package managers like <a href="https://github.com/Masterminds/glide">Glide</a>. Each solution comes with its benefits and drawbacks.</p>
 </div>
 <div class="paragraph">
 <p>Recently, the Go community settled on <a href="https://github.com/golang/dep">dep</a> as the canonical tool for package management. In this blog post, I am going to describe the migration path from Glide to dep. <a href="https://research.swtch.com/vgo">Versioned Go</a> aka <code>vgo</code>, the proposed next generation of package management, will be neglected in this post. I am planning to write up a more detailed blog post on <code>vgo</code> later.</p>
 </div>
-<hr>
+<hr/>
 <div class="sect1">
-<h2 id="_using_glide_the_old_world">Using Glide: The "old" world</h2>
+<h2 id="_using_glide_the_old_world">Using Glide: The &#34;old&#34; world</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Glide has been around for a couple of years. Coming from Java using Glide made me feel right at home. In Glide, you have a definition file that describes your versioned dependencies either for your production source code or your test source code. This file is called <code>glide.yaml</code>. In listing 1 you can see an example for such a file.</p>
@@ -115,7 +114,7 @@ testImport:
 <p><em>Listing 1. Glide package definition</em></p>
 </div>
 <div class="paragraph">
-<p>It&#8217;s a good idea to lock down your dependency versions and their transitive dependencies to ensure reproducibility for the build. Glide takes care of this aspect by generating a lock file. The lock file named <code>glide.lock</code> pins each package to the commit hash of a specific dependency. Listing 2 shows the locked versions of the packages declared in the previous example.</p>
+<p>It’s a good idea to lock down your dependency versions and their transitive dependencies to ensure reproducibility for the build. Glide takes care of this aspect by generating a lock file. The lock file named <code>glide.lock</code> pins each package to the commit hash of a specific dependency. Listing 2 shows the locked versions of the packages declared in the previous example.</p>
 </div>
 <div class="paragraph">
 <p><em>glide.lock</em></p>
@@ -149,9 +148,9 @@ testImports:
 <p>The command <code>glide install</code> reads the lock file and installs each package with the denoted commit ID into the vendor directory. With the lock file in place, the source code can be built at any given time without the risk of packages silently changing the API underneath and breaking the build.</p>
 </div>
 <div class="paragraph">
-<p>Glide discontinued its development efforts in favor of dep. It&#8217;s highly recommended to migrate the dependency definitions. Let&#8217;s see how this can be achieved with the built-in tooling of dep.</p>
+<p>Glide discontinued its development efforts in favor of dep. It’s highly recommended to migrate the dependency definitions. Let’s see how this can be achieved with the built-in tooling of dep.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -184,12 +183,12 @@ Old vendor backed up to /Users/bmuschko/go/src/github.com/bmuschko/link-verifier
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-toml" data-lang="toml">[[constraint]]
-  name = "github.com/mvdan/xurls"
-  version = "1.1.0"
+  name = &#34;github.com/mvdan/xurls&#34;
+  version = &#34;1.1.0&#34;
 
 [[constraint]]
-  name = "github.com/stretchr/testify"
-  version = "1.1.4"
+  name = &#34;github.com/stretchr/testify&#34;
+  version = &#34;1.1.4&#34;
 
 [prune]
   go-tests = true
@@ -208,32 +207,32 @@ Old vendor backed up to /Users/bmuschko/go/src/github.com/bmuschko/link-verifier
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-toml" data-lang="toml">[[projects]]
-  name = "github.com/davecgh/go-spew"
-  packages = ["spew"]
-  revision = "6d212800a42e8ab5c146b8ace3490ee17e5225f9"
+  name = &#34;github.com/davecgh/go-spew&#34;
+  packages = [&#34;spew&#34;]
+  revision = &#34;6d212800a42e8ab5c146b8ace3490ee17e5225f9&#34;
 
 [[projects]]
-  name = "github.com/mvdan/xurls"
-  packages = ["."]
-  revision = "d315b61cf6727664f310fa87b3197e9faf2a8513"
-  version = "v1.1.0"
+  name = &#34;github.com/mvdan/xurls&#34;
+  packages = [&#34;.&#34;]
+  revision = &#34;d315b61cf6727664f310fa87b3197e9faf2a8513&#34;
+  version = &#34;v1.1.0&#34;
 
 [[projects]]
-  name = "github.com/pmezard/go-difflib"
-  packages = ["difflib"]
-  revision = "d8ed2627bdf02c080bf22230dbb337003b7aba2d"
+  name = &#34;github.com/pmezard/go-difflib&#34;
+  packages = [&#34;difflib&#34;]
+  revision = &#34;d8ed2627bdf02c080bf22230dbb337003b7aba2d&#34;
 
 [[projects]]
-  name = "github.com/stretchr/testify"
-  packages = ["assert"]
-  revision = "69483b4bd14f5845b5a1e55bca19e954e827f1d0"
-  version = "v1.1.4"
+  name = &#34;github.com/stretchr/testify&#34;
+  packages = [&#34;assert&#34;]
+  revision = &#34;69483b4bd14f5845b5a1e55bca19e954e827f1d0&#34;
+  version = &#34;v1.1.4&#34;
 
 [solve-meta]
-  analyzer-name = "dep"
+  analyzer-name = &#34;dep&#34;
   analyzer-version = 1
-  inputs-digest = "dc6228ad4f235c0b15f417683e0556d99443a9231695bf8cbad5239062df2aac"
-  solver-name = "gps-cdcl"
+  inputs-digest = &#34;dc6228ad4f235c0b15f417683e0556d99443a9231695bf8cbad5239062df2aac&#34;
+  solver-name = &#34;gps-cdcl&#34;
   solver-version = 1</code></pre>
 </div>
 </div>
@@ -241,9 +240,9 @@ Old vendor backed up to /Users/bmuschko/go/src/github.com/bmuschko/link-verifier
 <p><em>Listing 4. Locked package versions in dep</em></p>
 </div>
 <div class="paragraph">
-<p>Next, you will learn how to enable and use dep integration in an IDE. For this purpose, we&#8217;ll have a look at GoLand, JetBrains' premiere Go tooling support.</p>
+<p>Next, you will learn how to enable and use dep integration in an IDE. For this purpose, we’ll have a look at GoLand, JetBrains&#39; premiere Go tooling support.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -255,10 +254,10 @@ Old vendor backed up to /Users/bmuschko/go/src/github.com/bmuschko/link-verifier
 <div class="sect2">
 <h3 id="_enabling_dep_integration">Enabling dep integration</h3>
 <div class="paragraph">
-<p>Dep received first-class support in GoLand. To configure and enable dep integration go to the menu option <em>GoLand &gt; Preferences&#8230;&#8203; &gt; Go &gt; Dep</em>. Simply point to the dep executable and enable the tooling as shown in figure 1.</p>
+<p>Dep received first-class support in GoLand. To configure and enable dep integration go to the menu option <em>GoLand &gt; Preferences…​ &gt; Go &gt; Dep</em>. Simply point to the dep executable and enable the tooling as shown in figure 1.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/migrating-glide-to-dep/goland-enabled-dep-integration.png" alt="goland enabled dep integration"></span></p>
+<p><span class="image"><img src="/img/blog/migrating-glide-to-dep/goland-enabled-dep-integration.png" alt="goland enabled dep integration"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 1. Enabling dep integration in Goland</em></p>
@@ -267,10 +266,10 @@ Old vendor backed up to /Users/bmuschko/go/src/github.com/bmuschko/link-verifier
 <div class="sect2">
 <h3 id="_resolving_dependencies">Resolving dependencies</h3>
 <div class="paragraph">
-<p><span class="image right"><img src="/img/blog/migrating-glide-to-dep/goland-vendor-directory.png" alt="goland vendor directory"></span></p>
+<p><span class="image right"><img src="/img/blog/migrating-glide-to-dep/goland-vendor-directory.png" alt="goland vendor directory"/></span></p>
 </div>
 <div class="paragraph">
-<p>At the time of writing, GoLand does not automatically resolve dependencies even if dep integration has been enabled. You will have to run <code>dep ensure</code> from the command line or click on the link "Run dep ensure" in the "Event log" proposed by Goland. You should see the vendor directory rendered in figure 2 as soon as you select one of the options.</p>
+<p>At the time of writing, GoLand does not automatically resolve dependencies even if dep integration has been enabled. You will have to run <code>dep ensure</code> from the command line or click on the link &#34;Run dep ensure&#34; in the &#34;Event log&#34; proposed by Goland. You should see the vendor directory rendered in figure 2 as soon as you select one of the options.</p>
 </div>
 <div class="paragraph">
 <p>Any further action in the IDE uses the dependencies in the vendor directory. From now on, you can run/debug the program or execute tests.</p>

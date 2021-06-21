@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Building Groovy with Bazel</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -86,7 +85,7 @@ if (!doNotTrack) {
           <div class="panel-body">
             <div class="blogpost">
               <div class="paragraph">
-<p><a href="https://bazel.build/">Bazel</a> is a build automation tool that ships with support for a variety of languages out-of-the-box. For example, you can build Java projects right away without having to configure external functionality, so-called <a href="https://docs.bazel.build/versions/2.0.0/rules.html">rules</a>. Groovy is a popular language in the JVM space. As a developer, you&#8217;d expect the following features:</p>
+<p><a href="https://bazel.build/">Bazel</a> is a build automation tool that ships with support for a variety of languages out-of-the-box. For example, you can build Java projects right away without having to configure external functionality, so-called <a href="https://docs.bazel.build/versions/2.0.0/rules.html">rules</a>. Groovy is a popular language in the JVM space. As a developer, you’d expect the following features:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -105,13 +104,13 @@ if (!doNotTrack) {
 </ul>
 </div>
 <div class="paragraph">
-<p>You can probably think about more features that may be of interest. For this blog post, we&#8217;ll focus on the essentials. I will show you how to build Groovy projects with the <a href="https://github.com/bazelbuild/rules_groovy">Groovy rule set</a>. We&#8217;ll also talk about functionality that is not supported (yet).</p>
+<p>You can probably think about more features that may be of interest. For this blog post, we’ll focus on the essentials. I will show you how to build Groovy projects with the <a href="https://github.com/bazelbuild/rules_groovy">Groovy rule set</a>. We’ll also talk about functionality that is not supported (yet).</p>
 </div>
 <div class="sect1">
 <h2 id="_consuming_the_groovy_rules">Consuming the Groovy rules</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Groovy is not one of the languages automatically supported by the Bazel runtime. You have to depend on rules that implement the functionality. Thankfully, an open source contributor from Google was kind enough to hammer out those rules. As usual in a Bazel project, you&#8217;d get started by creating a <code>WORKSPACE</code> file and one or many <code>BUILD</code> files. To consume the Groovy rules, add the code from listing 1 to your <code>WORKSPACE</code> file.</p>
+<p>Groovy is not one of the languages automatically supported by the Bazel runtime. You have to depend on rules that implement the functionality. Thankfully, an open source contributor from Google was kind enough to hammer out those rules. As usual in a Bazel project, you’d get started by creating a <code>WORKSPACE</code> file and one or many <code>BUILD</code> files. To consume the Groovy rules, add the code from listing 1 to your <code>WORKSPACE</code> file.</p>
 </div>
 <div class="paragraph">
 <p><strong>Disclaimer:</strong> I noticed that the rules do not support Bazel 2.0.0 yet. You will have to use the latest 1.x version. I am sure <a href="https://github.com/bazelbuild/rules_groovy/issues/55">this issue</a> will be fixed in the near future.</p>
@@ -121,16 +120,16 @@ if (!doNotTrack) {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+<pre class="highlight"><code class="language-python" data-lang="python">load(&#34;@bazel_tools//tools/build_defs/repo:http.bzl&#34;, &#34;http_archive&#34;)
 
 http_archive(
-    name = "io_bazel_rules_groovy",
-    url = "https://github.com/bazelbuild/rules_groovy/archive/0.0.5.tar.gz",
-    sha256 = "d41ca1290de57f2eabc71d5a097689491e3afe7337367a7326396d55db4910f7",
-    strip_prefix = "rules_groovy-0.0.5",
+    name = &#34;io_bazel_rules_groovy&#34;,
+    url = &#34;https://github.com/bazelbuild/rules_groovy/archive/0.0.5.tar.gz&#34;,
+    sha256 = &#34;d41ca1290de57f2eabc71d5a097689491e3afe7337367a7326396d55db4910f7&#34;,
+    strip_prefix = &#34;rules_groovy-0.0.5&#34;,
 )
 
-load("@io_bazel_rules_groovy//groovy:groovy.bzl", "groovy_repositories")
+load(&#34;@io_bazel_rules_groovy//groovy:groovy.bzl&#34;, &#34;groovy_repositories&#34;)
 groovy_repositories()</code></pre>
 </div>
 </div>
@@ -138,7 +137,7 @@ groovy_repositories()</code></pre>
 <p><em>Listing 1. Creating a dependency on the Groovy rules</em></p>
 </div>
 <div class="paragraph">
-<p>The Groovy rules internally depend on a specific version of the Groovy SDK. While the version of the SDK is hard-coded, you can always reconfigure it to the version you need. Next, we&#8217;ll have a look the code required to build a binary.</p>
+<p>The Groovy rules internally depend on a specific version of the Groovy SDK. While the version of the SDK is hard-coded, you can always reconfigure it to the version you need. Next, we’ll have a look the code required to build a binary.</p>
 </div>
 </div>
 </div>
@@ -146,25 +145,25 @@ groovy_repositories()</code></pre>
 <h2 id="_compiling_code_creating_a_jar_file">Compiling code, creating a JAR file</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Groovy rules can now be consumed from a <code>BUILD</code> file. We&#8217;ll start with the easiest example possible, "Hello World". I won&#8217;t go into the details of actually implementing Groovy code. There&#8217;s plenty of content out there to reference if you want to dive deeper into the language.</p>
+<p>The Groovy rules can now be consumed from a <code>BUILD</code> file. We’ll start with the easiest example possible, &#34;Hello World&#34;. I won’t go into the details of actually implementing Groovy code. There’s plenty of content out there to reference if you want to dive deeper into the language.</p>
 </div>
 <div class="paragraph">
-<p>Imagine, we set up a Groovy source file with a <code>main</code> method under the root source code directory <code>src/main/groovy</code>. You might recognize that we are using the same conventional source code directory you might already know from other build tools like Maven and Gradle. There&#8217;s nothing speaking against using a different path though. It&#8217;s up to your preference.</p>
+<p>Imagine, we set up a Groovy source file with a <code>main</code> method under the root source code directory <code>src/main/groovy</code>. You might recognize that we are using the same conventional source code directory you might already know from other build tools like Maven and Gradle. There’s nothing speaking against using a different path though. It’s up to your preference.</p>
 </div>
 <div class="paragraph">
-<p>Listing 2 shows how to load the Groovy rules we already set up in the <code>WORKSPACE</code> file. The rule <code>groovy_binary</code> compiles the Groovy source code we&#8217;ll point it to. For the purpose of making the code executable, we also have to set a main class.</p>
+<p>Listing 2 shows how to load the Groovy rules we already set up in the <code>WORKSPACE</code> file. The rule <code>groovy_binary</code> compiles the Groovy source code we’ll point it to. For the purpose of making the code executable, we also have to set a main class.</p>
 </div>
 <div class="paragraph">
 <p><em>BUILD</em></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">load("@io_bazel_rules_groovy//groovy:groovy.bzl", "groovy_binary")
+<pre class="highlight"><code class="language-python" data-lang="python">load(&#34;@io_bazel_rules_groovy//groovy:groovy.bzl&#34;, &#34;groovy_binary&#34;)
 
 groovy_binary(
-    name = "hello-world",
-    srcs = glob(["src/main/groovy/com/bmuschko/**/*.groovy"]),
-    main_class = "com.bmuschko.HelloWorld"
+    name = &#34;hello-world&#34;,
+    srcs = glob([&#34;src/main/groovy/com/bmuschko/**/*.groovy&#34;]),
+    main_class = &#34;com.bmuschko.HelloWorld&#34;
 )</code></pre>
 </div>
 </div>
@@ -172,12 +171,12 @@ groovy_binary(
 <p><em>Listing 2. Building a JAR file from a Groovy class</em></p>
 </div>
 <div class="paragraph">
-<p>The target for compiling code and building the JAR file is called <code>hello-world</code>. You could have called it anything you want really. Let&#8217;s execute the target from the command line. Navigate to the directory containing the <code>BUILD</code> file and run the <code>build</code> command, as shown below.</p>
+<p>The target for compiling code and building the JAR file is called <code>hello-world</code>. You could have called it anything you want really. Let’s execute the target from the command line. Navigate to the directory containing the <code>BUILD</code> file and run the <code>build</code> command, as shown below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-shell" data-lang="shell">$ bazel build //:hello-world
-INFO: Writing tracer profile to '/private/var/tmp/_bazel_bmuschko/db126b824c509a76348765b600ae1c98/command.profile.gz'
+INFO: Writing tracer profile to &#39;/private/var/tmp/_bazel_bmuschko/db126b824c509a76348765b600ae1c98/command.profile.gz&#39;
 INFO: Analyzed target //:hello-world (0 packages loaded, 0 targets configured).
 INFO: Found 1 target...
 Target //:hello-world up-to-date:
@@ -189,7 +188,7 @@ INFO: Build completed successfully, 1 total action</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Bazel automatically downloads the Groovy SDK if it is not available on your machine yet. It compiles the code using the SDK and builds the JAR file. You can find the binary file under the directory <code>bazel-bin</code>. Let&#8217;s try it out real quick.</p>
+<p>Bazel automatically downloads the Groovy SDK if it is not available on your machine yet. It compiles the code using the SDK and builds the JAR file. You can find the binary file under the directory <code>bazel-bin</code>. Let’s try it out real quick.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -199,7 +198,7 @@ Hello World!</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Pretty straightforward, right?! In the next section, we&#8217;ll have a look at testing support.</p>
+<p>Pretty straightforward, right?! In the next section, we’ll have a look at testing support.</p>
 </div>
 </div>
 </div>
@@ -207,7 +206,7 @@ Hello World!</code></pre>
 <h2 id="_executing_tests_with_junit_4">Executing tests with JUnit 4</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For the longest time, Junit 4 was <em>the</em> standard test framework for JVM projects. Nowadays, JUnit 5 (the API is now called Jupiter) took its place as the more modern, convenient and feature-rich implementation. The Groovy rules do not support JUnit 5 directly. You&#8217;d have to write your own rule or extend the Groovy rules project. Either way, JUnit 4 is supported and that&#8217;s what we are going to have a look at more closely.</p>
+<p>For the longest time, Junit 4 was <em>the</em> standard test framework for JVM projects. Nowadays, JUnit 5 (the API is now called Jupiter) took its place as the more modern, convenient and feature-rich implementation. The Groovy rules do not support JUnit 5 directly. You’d have to write your own rule or extend the Groovy rules project. Either way, JUnit 4 is supported and that’s what we are going to have a look at more closely.</p>
 </div>
 <div class="paragraph">
 <p>Listing 3 first loads the relevant rules. We are also making the mental model of the build more structured by separating a Groovy library from the binary. The library simply compiles the code, the binary uses the compiled code as a reference and produces the JAR file. All the way at the bottom of the listing, you can find the portion of the code that compiles the test source code and provides a target for running the tests. We configured the build to search for Groovy test source code under the directory <code>src/test/groovy</code>.</p>
@@ -217,30 +216,30 @@ Hello World!</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">load("@io_bazel_rules_groovy//groovy:groovy.bzl", "groovy_binary", "groovy_library", "groovy_test")
+<pre class="highlight"><code class="language-python" data-lang="python">load(&#34;@io_bazel_rules_groovy//groovy:groovy.bzl&#34;, &#34;groovy_binary&#34;, &#34;groovy_library&#34;, &#34;groovy_test&#34;)
 
 groovy_library(
-    name = "prodlib",
-    srcs = glob(["src/main/groovy/**/*.groovy"]),
+    name = &#34;prodlib&#34;,
+    srcs = glob([&#34;src/main/groovy/**/*.groovy&#34;]),
 )
 
 groovy_binary(
-    name = "hello-world",
-    srcs = glob(["src/main/groovy/**/*.groovy"]),
-    main_class = "com.bmuschko.HelloWorld",
-    deps = [":prodlib"],
+    name = &#34;hello-world&#34;,
+    srcs = glob([&#34;src/main/groovy/**/*.groovy&#34;]),
+    main_class = &#34;com.bmuschko.HelloWorld&#34;,
+    deps = [&#34;:prodlib&#34;],
 )
 
 groovy_library(
-    name = "testlib",
-    srcs = glob(["src/test/groovy/**/*.groovy"]),
-    deps = [":prodlib"],
+    name = &#34;testlib&#34;,
+    srcs = glob([&#34;src/test/groovy/**/*.groovy&#34;]),
+    deps = [&#34;:prodlib&#34;],
 )
 
 groovy_test(
-    name = "tests",
-    srcs = ["src/test/groovy/com/bmuschko/messenger/MessengerTest.groovy"],
-    deps = [":testlib"],
+    name = &#34;tests&#34;,
+    srcs = [&#34;src/test/groovy/com/bmuschko/messenger/MessengerTest.groovy&#34;],
+    deps = [&#34;:testlib&#34;],
 )</code></pre>
 </div>
 </div>
@@ -248,12 +247,12 @@ groovy_test(
 <p><em>Listing 3. Executing JUnit 4 tests written in Groovy</em></p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s execute the test by running the <code>test</code> command. Below, you can find the console output. It gives us a couple of hints on what&#8217;s going on. Apparently, we are executing a single test with JUnit 4 which seems to pass. But where is the JUnit 4 library coming from? It&#8217;s downloaded automatically by the Groovy rules. Again, the hard-coded version of the library depends on the value configured in the Groovy rules.</p>
+<p>Let’s execute the test by running the <code>test</code> command. Below, you can find the console output. It gives us a couple of hints on what’s going on. Apparently, we are executing a single test with JUnit 4 which seems to pass. But where is the JUnit 4 library coming from? It’s downloaded automatically by the Groovy rules. Again, the hard-coded version of the library depends on the value configured in the Groovy rules.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-shell" data-lang="shell">$ bazel test //:tests
-INFO: Writing tracer profile to '/private/var/tmp/_bazel_bmuschko/d3fe1e22cf58ce848cb5c284730e1906/command.profile.gz'
+INFO: Writing tracer profile to &#39;/private/var/tmp/_bazel_bmuschko/d3fe1e22cf58ce848cb5c284730e1906/command.profile.gz&#39;
 INFO: Analyzed target //:tests (26 packages loaded, 674 targets configured).
 INFO: Found 1 test target...
 INFO: Deleting stale sandbox base /private/var/tmp/_bazel_bmuschko/d3fe1e22cf58ce848cb5c284730e1906/sandbox
@@ -269,7 +268,7 @@ INFO: Build completed successfully, 7 total actions</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>JUnit 4 is not very popular among Groovy developers. Most developers I know use the Spock framework instead. The Groovy rules do support Spock and that&#8217;s what&#8217;ll have a look at next.</p>
+<p>JUnit 4 is not very popular among Groovy developers. Most developers I know use the Spock framework instead. The Groovy rules do support Spock and that’s what’ll have a look at next.</p>
 </div>
 </div>
 </div>
@@ -277,37 +276,37 @@ INFO: Build completed successfully, 7 total actions</code></pre>
 <h2 id="_executing_tests_with_spock">Executing tests with Spock</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <a href="http://spockframework.org/">Spock framework</a> is a library for implementing BDD-style tests in Groovy. The framework also provides many advanced features that JUnit 4 doesn&#8217;t offer e.g. data-driven test cases for executing a specific test cases with multiple variations. Say you did implement your test code with the help of Spock. There&#8217;s only a minor change you&#8217;ll have to make to your <code>BUILD</code> file to make it work. You have to reference the external library of Spock when compiling and executing the test code. Listing 4 pretty much looks like listing 3 except for the reference to <code>//external:spock</code>.</p>
+<p>The <a href="http://spockframework.org/">Spock framework</a> is a library for implementing BDD-style tests in Groovy. The framework also provides many advanced features that JUnit 4 doesn’t offer e.g. data-driven test cases for executing a specific test cases with multiple variations. Say you did implement your test code with the help of Spock. There’s only a minor change you’ll have to make to your <code>BUILD</code> file to make it work. You have to reference the external library of Spock when compiling and executing the test code. Listing 4 pretty much looks like listing 3 except for the reference to <code>//external:spock</code>.</p>
 </div>
 <div class="paragraph">
 <p><em>BUILD</em></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-python" data-lang="python">load("@io_bazel_rules_groovy//groovy:groovy.bzl", "groovy_binary", "groovy_library", "groovy_test")
+<pre class="highlight"><code class="language-python" data-lang="python">load(&#34;@io_bazel_rules_groovy//groovy:groovy.bzl&#34;, &#34;groovy_binary&#34;, &#34;groovy_library&#34;, &#34;groovy_test&#34;)
 
 groovy_library(
-    name = "prodlib",
-    srcs = glob(["src/main/groovy/**/*.groovy"]),
+    name = &#34;prodlib&#34;,
+    srcs = glob([&#34;src/main/groovy/**/*.groovy&#34;]),
 )
 
 groovy_binary(
-    name = "hello-world",
-    srcs = glob(["src/main/groovy/**/*.groovy"]),
-    main_class = "com.bmuschko.HelloWorld",
-    deps = [":prodlib"],
+    name = &#34;hello-world&#34;,
+    srcs = glob([&#34;src/main/groovy/**/*.groovy&#34;]),
+    main_class = &#34;com.bmuschko.HelloWorld&#34;,
+    deps = [&#34;:prodlib&#34;],
 )
 
 groovy_library(
-    name = "testlib",
-    srcs = glob(["src/test/groovy/**/*.groovy"]),
-    deps = [":prodlib", "//external:spock"],
+    name = &#34;testlib&#34;,
+    srcs = glob([&#34;src/test/groovy/**/*.groovy&#34;]),
+    deps = [&#34;:prodlib&#34;, &#34;//external:spock&#34;],
 )
 
 groovy_test(
-    name = "tests",
-    srcs = ["src/test/groovy/com/bmuschko/messenger/MessengerTest.groovy"],
-    deps = [":testlib"],
+    name = &#34;tests&#34;,
+    srcs = [&#34;src/test/groovy/com/bmuschko/messenger/MessengerTest.groovy&#34;],
+    deps = [&#34;:testlib&#34;],
 )</code></pre>
 </div>
 </div>
@@ -315,7 +314,7 @@ groovy_test(
 <p><em>Listing 4. Executing tests using the Spock framework</em></p>
 </div>
 <div class="paragraph">
-<p>Upon executing of the command <code>bazel test //:tests</code>, you will see similar output we saw in the JUnit 4 example. The Groovy rules automatically download the Spock library with a hard-coded version if it isn&#8217;t already available on your machine.</p>
+<p>Upon executing of the command <code>bazel test //:tests</code>, you will see similar output we saw in the JUnit 4 example. The Groovy rules automatically download the Spock library with a hard-coded version if it isn’t already available on your machine.</p>
 </div>
 </div>
 </div>
@@ -323,13 +322,13 @@ groovy_test(
 <h2 id="_conclusion">Conclusion</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>We&#8217;ve learned that Groovy rules can give you a head start on building a Groovy project. I&#8217;d like to point you to <a href="https://github.com/bmuschko/bazel-examples/tree/master/groovy">this GitHub repository</a> that contains all examples we discussed if you want to dig deeper into relevant bits and pieces.</p>
+<p>We’ve learned that Groovy rules can give you a head start on building a Groovy project. I’d like to point you to <a href="https://github.com/bmuschko/bazel-examples/tree/master/groovy">this GitHub repository</a> that contains all examples we discussed if you want to dig deeper into relevant bits and pieces.</p>
 </div>
 <div class="paragraph">
-<p>For the most part, I only talked about the features that <em>do</em> work with Groovy rules. Let&#8217;s chat about the features that do not work well or aren&#8217;t available at all. I couldn&#8217;t quite figure out how to reconfigure the default versions for the Groovy SDK, JUnit and Spock. I am sure it&#8217;s possible but I couldn&#8217;t get an example working. Another aspect that didn&#8217;t work for me was Groovy/Java source code cross-compilation. The documentation of the Groovy rules provides an example, however, it didn&#8217;t work for me. This might simply be a bug. Furthermore, generating Groovydoc is not a core functionality of the rules so you have to implement your own.</p>
+<p>For the most part, I only talked about the features that <em>do</em> work with Groovy rules. Let’s chat about the features that do not work well or aren’t available at all. I couldn’t quite figure out how to reconfigure the default versions for the Groovy SDK, JUnit and Spock. I am sure it’s possible but I couldn’t get an example working. Another aspect that didn’t work for me was Groovy/Java source code cross-compilation. The documentation of the Groovy rules provides an example, however, it didn’t work for me. This might simply be a bug. Furthermore, generating Groovydoc is not a core functionality of the rules so you have to implement your own.</p>
 </div>
 <div class="paragraph">
-<p>I hope I could get you on your way to building Groovy with Bazel. I&#8217;d love to see your contributions to the rules project if you feel like you want them to work better.</p>
+<p>I hope I could get you on your way to building Groovy with Bazel. I’d love to see your contributions to the rules project if you feel like you want them to work better.</p>
 </div>
 </div>
 </div>

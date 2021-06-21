@@ -6,11 +6,7 @@
     <description>Recent content in jenkins on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 30 Jan 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/jenkins/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 30 Jan 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/jenkins/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Crushing the Certified Jenkins Engineer (CJE) exam</title>
       <link>https://bmuschko.com/blog/cje-prep/</link>
@@ -26,7 +22,7 @@
       <pubDate>Thu, 31 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/jenkins-shared-libraries/</guid>
-      <description>Introduction Pipeline definitions in Jenkins start small and maintainble. You write a Jenkinsfile that declares a couple of stages. Nothing dramatic, simple, understandable code. As your adoption of Jenkins and &#34;pipelines as code&#34; grows within the organization, you&amp;#8217;ll find out that other teams are copy-pasting pipeline code all over the place. What works for one project should work for other projects, right?! Soon requirements become more complex and your organization will enter a world of pain of unmaintainable, duplicated code.</description>
+      <description>Introduction Pipeline definitions in Jenkins start small and maintainble. You write a Jenkinsfile that declares a couple of stages. Nothing dramatic, simple, understandable code. As your adoption of Jenkins and &amp;#34;pipelines as code&amp;#34; grows within the organization, you’ll find out that other teams are copy-pasting pipeline code all over the place. What works for one project should work for other projects, right?! Soon requirements become more complex and your organization will enter a world of pain of unmaintainable, duplicated code.</description>
     </item>
     
     <item>
@@ -35,7 +31,7 @@
       <pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/go-on-jenkins/</guid>
-      <description>The Go 1.11 release introduced experimental, opt-in support for Go modules. It is now possible to build Go projects outside of the $GOPATH. This profound change has a significant impact on developer workflows. For example, you don&amp;#8217;t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</description>
+      <description>The Go 1.11 release introduced experimental, opt-in support for Go modules. It is now possible to build Go projects outside of the $GOPATH. This profound change has a significant impact on developer workflows. For example, you don’t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</description>
     </item>
     
     <item>

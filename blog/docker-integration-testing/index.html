@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Docker with Gradle: Integration testing using containers</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -94,7 +93,7 @@ if (!doNotTrack) {
           <div class="panel-body">
             <div class="blogpost">
               <div class="paragraph">
-<p>In the <a href="http://bmuschko.com/blog/dockerized-spring-boot-app/">first blog post</a> on "Docker with Gradle" you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.</p>
+<p>In the <a href="http://bmuschko.com/blog/dockerized-spring-boot-app/">first blog post</a> on &#34;Docker with Gradle&#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.</p>
 </div>
 <div class="paragraph">
 <p>Integration testing plays an important role in the software development lifecycle to ensure functional and non-functional requirements have been met. With the rise of microservices, we see an increasing number of projects that reach out to other services e.g. by performing a HTTP call. During integration testing, external services and endpoints need to be available. It can be very tedious, time-consuming and error-prone to bring up multiple services just for the purpose of integration testing especially during development. Docker containers enable standing up services with a desired state on demand.</p>
@@ -102,7 +101,7 @@ if (!doNotTrack) {
 <div class="paragraph">
 <p>In this blog post, you will learn how to pull a specific tag of a Docker image from a registry and use it as fixture for integration testing. You will also automate the process as part of a Continuous Integration job on <a href="https://travis-ci.org/">Travis CI</a>. You can find the <a href="https://github.com/bmuschko/docker-integration-testing">full source code</a> used on GitHub.</p>
 </div>
-<hr>
+<hr/>
 <div class="sect1">
 <h2 id="_setting_up_integration_testing">Setting up integration testing</h2>
 <div class="sectionbody">
@@ -110,7 +109,7 @@ if (!doNotTrack) {
 <p>The code under test in this example builds upon the account management application created in an earlier blog post. <a href="https://github.com/bmuschko/docker-integration-testing/blob/master/src/main/java/com/bmuschko/consumer/DefaultAccountManager.java"><code>DefaultAccountManager.java</code></a> implements a method for retrieving account information by ID via HTTP(s) and crediting a monetary amount to the existing balance of that account. The test <a href="https://github.com/bmuschko/docker-integration-testing/blob/master/src/integrationTest/groovy/com/bmuschko/consumer/DefaultAccountManagerIntegrationTest.groovy"><code>DefaultAccountManagerIntegrationTest.groovy</code></a> requires the account management service to be up and running to verify the integration point.</p>
 </div>
 <div class="paragraph">
-<p>It&#8217;s considered good practice to separate the source code of different test types with the help of dedicated directories. Furthermore, different types of tests should be runnable individually by invoking corresponding tasks. For example sometimes you might want to just run unit tests, other times will want to run integration tests.</p>
+<p>It’s considered good practice to separate the source code of different test types with the help of dedicated directories. Furthermore, different types of tests should be runnable individually by invoking corresponding tasks. For example sometimes you might want to just run unit tests, other times will want to run integration tests.</p>
 </div>
 <div class="paragraph">
 <p>Listing 1 demonstrates how to create a dedicated source set and <code>Test</code> task for the purpose of integration testing. The logic has been extracted into a script plugin named <code>integration-test.gradle</code>. Keeping the setup for integration testing separate from the main build script improves maintainability and readability.</p>
@@ -122,16 +121,16 @@ if (!doNotTrack) {
 <div class="content">
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">sourceSets {
     integrationTest {
-        groovy.srcDir file('src/integrationTest/groovy')
-        resources.srcDir file('src/integrationTest/resources')
+        groovy.srcDir file(&#39;src/integrationTest/groovy&#39;)
+        resources.srcDir file(&#39;src/integrationTest/resources&#39;)
         compileClasspath += sourceSets.main.output + configurations.testRuntime
         runtimeClasspath += output + compileClasspath
     }
 }
 
 task integrationTest(type: Test) {
-    description = 'Runs the integration tests.'
-    group = 'verification'
+    description = &#39;Runs the integration tests.&#39;
+    group = &#39;verification&#39;
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     mustRunAfter test
@@ -151,7 +150,7 @@ check.dependsOn integrationTest</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-groovy" data-lang="groovy">apply from: 'gradle/integration-test.gradle'</code></pre>
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">apply from: &#39;gradle/integration-test.gradle&#39;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -163,14 +162,14 @@ check.dependsOn integrationTest</code></pre>
 <div class="paragraph">
 <p>In the course of the next sections, you will set up the Docker plugin to retrieve the Docker image bundling the account management application. Moreoever, you will add tasks for starting and stopping a Docker container as fixture for integration testing.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_configuring_the_docker_plugin">Configuring the Docker plugin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The Docker plugin knows how to do the heavy lifting of communicating with Docker from the Gradle build. It&#8217;s binary artifact is available on the <a href="https://plugins.gradle.org/plugin/com.bmuschko.docker-remote-api">Gradle plugin portal</a>. Because of a known <a href="https://github.com/gradle/gradle/issues/1262">limitation of applying third-party plugins from a script plugin</a>, the Docker plugin needs to be applied by type as shown in listing 3.</p>
+<p>The Docker plugin knows how to do the heavy lifting of communicating with Docker from the Gradle build. It’s binary artifact is available on the <a href="https://plugins.gradle.org/plugin/com.bmuschko.docker-remote-api">Gradle plugin portal</a>. Because of a known <a href="https://github.com/gradle/gradle/issues/1262">limitation of applying third-party plugins from a script plugin</a>, the Docker plugin needs to be applied by type as shown in listing 3.</p>
 </div>
 <div class="paragraph">
 <p><em>gradle/integration-test.gradle</em></p>
@@ -180,11 +179,11 @@ check.dependsOn integrationTest</code></pre>
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">buildscript {
     repositories {
         maven {
-            url 'https://plugins.gradle.org/m2/'
+            url &#39;https://plugins.gradle.org/m2/&#39;
         }
     }
     dependencies {
-        classpath 'com.bmuschko:gradle-docker-plugin:3.2.3'
+        classpath &#39;com.bmuschko:gradle-docker-plugin:3.2.3&#39;
     }
 }
 
@@ -197,7 +196,7 @@ apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin</code></pre>
 <div class="paragraph">
 <p>Next, you will use a custom task type provided by the plugin to pull an image from a registry.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -214,8 +213,8 @@ apply plugin: com.bmuschko.gradle.docker.DockerRemoteApiPlugin</code></pre>
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.bmuschko.gradle.docker.tasks.image.DockerPullImage
 
 task pullImage(type: DockerPullImage) {
-    repository = 'bmuschko/account-web-service'
-    tag = '1.0.0'
+    repository = &#39;bmuschko/account-web-service&#39;
+    tag = &#39;1.0.0&#39;
 }</code></pre>
 </div>
 </div>
@@ -225,7 +224,7 @@ task pullImage(type: DockerPullImage) {
 <div class="paragraph">
 <p>Downloading the image might take a while depending on your network bandwidth. The compressed size of the image is roughly 71 MB. The following section explains how to start and stop a container running the image.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -248,7 +247,7 @@ task pullImage(type: DockerPullImage) {
 </ol>
 </div>
 <div class="paragraph">
-<p>Step 3 is extremely important to ensure that the integration tests do not start executing before the application can serve requests. The task <code>startAndWaitOnHealthyContainer</code> inspects the starting container periodically and only proceeds if the health check returns a "ready state". It also implements a circuit breaker pattern in case the operation takes longer than expected.</p>
+<p>Step 3 is extremely important to ensure that the integration tests do not start executing before the application can serve requests. The task <code>startAndWaitOnHealthyContainer</code> inspects the starting container periodically and only proceeds if the health check returns a &#34;ready state&#34;. It also implements a circuit breaker pattern in case the operation takes longer than expected.</p>
 </div>
 <div class="paragraph">
 <p><em>gradle/integration-test.gradle</em></p>
@@ -263,7 +262,7 @@ import com.bmuschko.gradle.docker.tasks.container.extras.DockerWaitHealthyContai
 task createContainer(type: DockerCreateContainer) {
     dependsOn pullImage
     targetImageId { pullImage.getImageId() }
-    portBindings = ['8080:8080']
+    portBindings = [&#39;8080:8080&#39;]
 }
 
 task startContainer(type: DockerStartContainer) {
@@ -286,9 +285,9 @@ task stopContainer(type: DockerStopContainer) {
 <p><em>Listing 5. Creating tasks for starting and stopping a container</em></p>
 </div>
 <div class="paragraph">
-<p>Finally it&#8217;s time to hook the container tasks into the task for executing integration tests.</p>
+<p>Finally it’s time to hook the container tasks into the task for executing integration tests.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -298,7 +297,7 @@ task stopContainer(type: DockerStopContainer) {
 <p>Integrations tests may or may not fail. The container running the account management application needs to be teared down independent of the outcome of the test execution. Dangling but unused services accumlating over time lead to unnecessary resource consumption and will inevitability overload a system.</p>
 </div>
 <div class="paragraph">
-<p>Meet the Gradle API method <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#finalizedBy-java.lang.Object&#8230;&#8203;-"><code>Task.finalizedBy(Object&#8230;&#8203;)</code></a>. It behaves analogous to Java&#8217;s try/finally construct and will execute the finalizer task even if a failure occurs.</p>
+<p>Meet the Gradle API method <a href="https://docs.gradle.org/current/javadoc/org/gradle/api/Task.html#finalizedBy-java.lang.Object…​-"><code>Task.finalizedBy(Object…​)</code></a>. It behaves analogous to Java’s try/finally construct and will execute the finalizer task even if a failure occurs.</p>
 </div>
 <div class="paragraph">
 <p><em>gradle/integration-test.gradle</em></p>
@@ -317,7 +316,7 @@ task stopContainer(type: DockerStopContainer) {
 <div class="paragraph">
 <p>The workflow is now fully set up and ready for use. Running integration tests as part of a deployment pipeline ensures that every commit is automatically verified.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">

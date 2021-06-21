@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Building Go projects using modules on Jenkins</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -86,31 +85,31 @@ if (!doNotTrack) {
           <div class="panel-body">
             <div class="blogpost">
               <div class="paragraph">
-<p>The Go 1.11 release introduced experimental, opt-in support for <a href="https://github.com/golang/go/wiki/Modules">Go modules</a>. It is now possible to build Go projects outside of the <code>$GOPATH</code>. This profound change has a significant impact on developer workflows. For example, you don&#8217;t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</p>
+<p>The Go 1.11 release introduced experimental, opt-in support for <a href="https://github.com/golang/go/wiki/Modules">Go modules</a>. It is now possible to build Go projects outside of the <code>$GOPATH</code>. This profound change has a significant impact on developer workflows. For example, you don’t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</p>
 </div>
 <div class="paragraph">
 <p>In this blog post, you will learn how to set up an end-to-end Jenkins pipeline for a Go project using modules. You will configure the Jenkins Go plugin which automatically downloads and installs the Go runtime for a specific version. The pipeline will consist of typical stages like compilation, running tests, performing code analysis and releasing the cross-compiled binaries.</p>
 </div>
-<hr>
+<hr/>
 <div class="sect1">
 <h2 id="_auto_installation_of_go_runtime">Auto-installation of Go runtime</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Using Go in Jenkins should be as easy as possible. Jenkins provides a central place for configuring tools. The <a href="https://wiki.jenkins.io/display/JENKINS/Go+Plugin">Go plugin</a> ties into that mechanism. First, install the plugin via <em>Manage Jenkins &gt; Manage Plugins &gt; Available &gt; Search for "Go Plugin"</em>, then navigate to <em>Manage Jenkins &gt; Global Tool Configuration &gt; Go</em> to configure the Go runtime.</p>
+<p>Using Go in Jenkins should be as easy as possible. Jenkins provides a central place for configuring tools. The <a href="https://wiki.jenkins.io/display/JENKINS/Go+Plugin">Go plugin</a> ties into that mechanism. First, install the plugin via <em>Manage Jenkins &gt; Manage Plugins &gt; Available &gt; Search for &#34;Go Plugin&#34;</em>, then navigate to <em>Manage Jenkins &gt; Global Tool Configuration &gt; Go</em> to configure the Go runtime.</p>
 </div>
 <div class="paragraph">
 <p>In the screenshot below, we are configuring Go 1.11.4. Jenkins will automatically download the distribution and install it on the CI agent when running a Go build. Make sure to give the Go installation a meaningful name so it can be clearly identified in the pipeline definition.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/go-on-jenkins/go-tool-installation.png" alt="Go tool installation"></span></p>
+<p><span class="image"><img src="/img/blog/go-on-jenkins/go-tool-installation.png" alt="Go tool installation"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 1. Configuring Go runtimes</em></p>
 </div>
 <div class="paragraph">
-<p>Next, we&#8217;ll use the Go runtime in a Jenkinsfile, the "configuration as code" source of truth for Jenkins pipelines.</p>
+<p>Next, we’ll use the Go runtime in a Jenkinsfile, the &#34;configuration as code&#34; source of truth for Jenkins pipelines.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -120,7 +119,7 @@ if (!doNotTrack) {
 <p>Jenkins derives the definition of a <a href="https://jenkins.io/doc/book/pipeline/syntax/#declarative-pipeline">declarative pipeline</a> from a Jenkinsfile. A Jenkinsfile uses a Domain Specific Language (DSL) to specify where the job can be run, what stages it consists of and which steps to execute in each of the stages.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s start by building the foundation for a Go project. Every declarative pipeline needs to define the root element <code>pipeline</code>. The Jenkinsfile shown in listing 1 configures the Go runtime and enables Go modules by setting the environment variable <code>GO111MODULE</code> to <code>on</code>.</p>
+<p>Let’s start by building the foundation for a Go project. Every declarative pipeline needs to define the root element <code>pipeline</code>. The Jenkinsfile shown in listing 1 configures the Go runtime and enables Go modules by setting the environment variable <code>GO111MODULE</code> to <code>on</code>.</p>
 </div>
 <div class="paragraph">
 <p><em>Jenkinsfile</em></p>
@@ -130,10 +129,10 @@ if (!doNotTrack) {
 <pre class="highlight"><code class="language-groovy" data-lang="groovy">pipeline {
     agent any
     tools {
-        go 'go-1.11'
+        go &#39;go-1.11&#39;
     }
     environment {
-        GO111MODULE = 'on'
+        GO111MODULE = &#39;on&#39;
     }
     stages {
         ...
@@ -145,16 +144,16 @@ if (!doNotTrack) {
 <p><em>Listing 1. Define a pipeline for Go projects</em></p>
 </div>
 <div class="paragraph">
-<p>In the next section, we&#8217;ll declare the Go commands and tool invocations that should be executed when the pipeline is run. For that purpose, we&#8217;ll expand on the DSL element <code>stages</code>.</p>
+<p>In the next section, we’ll declare the Go commands and tool invocations that should be executed when the pipeline is run. For that purpose, we’ll expand on the DSL element <code>stages</code>.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_defining_pipeline_stages">Defining pipeline stages</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The actual work of a pipeline is defined in so-called stages. Stages represent a grouping of individual steps that can execute one or more steps. We&#8217;ll define the following stages to demonstrate a typical pipeline for Go projects:</p>
+<p>The actual work of a pipeline is defined in so-called stages. Stages represent a grouping of individual steps that can execute one or more steps. We’ll define the following stages to demonstrate a typical pipeline for Go projects:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -173,16 +172,16 @@ if (!doNotTrack) {
 </ul>
 </div>
 <div class="paragraph">
-<p>Jenkins' pipeline visualization renders each stage of a pipeline as shown in figure 2. You may have noticed that the last stages hasn&#8217;t been executed. We&#8217;ll configure the "release" stage to only run if the commit has been tagged.</p>
+<p>Jenkins&#39; pipeline visualization renders each stage of a pipeline as shown in figure 2. You may have noticed that the last stages hasn’t been executed. We’ll configure the &#34;release&#34; stage to only run if the commit has been tagged.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/go-on-jenkins/pipeline-visualization.png" alt="Pipeline visualization"></span></p>
+<p><span class="image"><img src="/img/blog/go-on-jenkins/pipeline-visualization.png" alt="Pipeline visualization"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 2. The standard pipeline visualization in Jenkins</em></p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s complete the pipeline definition by adding the stages described above. In listing 2, you can see the relevant shell commands for each stage. For some of the commands, you will have to set up access tokens by defining environment variables or credentials.</p>
+<p>Let’s complete the pipeline definition by adding the stages described above. In listing 2, you can see the relevant shell commands for each stage. For some of the commands, you will have to set up access tokens by defining environment variables or credentials.</p>
 </div>
 <div class="paragraph">
 <p><em>Jenkinsfile</em></p>
@@ -193,35 +192,35 @@ if (!doNotTrack) {
     ...
 
     stages {
-        stage('Compile') {
+        stage(&#39;Compile&#39;) {
             steps {
-                sh 'go build'
+                sh &#39;go build&#39;
             }
         }
-        stage('Test') {
+        stage(&#39;Test&#39;) {
             environment {
-                CODECOV_TOKEN = credentials('codecov_token')
+                CODECOV_TOKEN = credentials(&#39;codecov_token&#39;)
             }
             steps {
-                sh 'go test ./... -coverprofile=coverage.txt'
-                sh "curl -s https://codecov.io/bash | bash -s -"
+                sh &#39;go test ./... -coverprofile=coverage.txt&#39;
+                sh &#34;curl -s https://codecov.io/bash | bash -s -&#34;
             }
         }
-        stage('Code Analysis') {
+        stage(&#39;Code Analysis&#39;) {
             steps {
-                sh 'curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin v1.12.5'
-                sh 'golangci-lint run'
+                sh &#39;curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | bash -s -- -b $GOPATH/bin v1.12.5&#39;
+                sh &#39;golangci-lint run&#39;
             }
         }
-        stage('Release') {
+        stage(&#39;Release&#39;) {
             when {
                 buildingTag()
             }
             environment {
-                GITHUB_TOKEN = credentials('github_token')
+                GITHUB_TOKEN = credentials(&#39;github_token&#39;)
             }
             steps {
-                sh 'curl -sL https://git.io/goreleaser | bash'
+                sh &#39;curl -sL https://git.io/goreleaser | bash&#39;
             }
         }
     }
@@ -234,23 +233,23 @@ if (!doNotTrack) {
 <div class="paragraph">
 <p>Once you are happy with the pipeline definition, make sure to commit and push the Jenkinsfile to the remote repository. Now, we are ready to stand up the pipeline job in Jenkins.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_creating_the_pipeline_job">Creating the pipeline job</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Creating the pipeline job in Jenkins require a manual step. In the UI, select <em>New Item</em>, enter a name and select "Pipeline" or "Multibranch Pipeline" depending on whether you want to build a pipeline for a  single branch or for multiple branches.</p>
+<p>Creating the pipeline job in Jenkins require a manual step. In the UI, select <em>New Item</em>, enter a name and select &#34;Pipeline&#34; or &#34;Multibranch Pipeline&#34; depending on whether you want to build a pipeline for a  single branch or for multiple branches.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/go-on-jenkins/pipeline-job.png" alt="Pipeline job"></span></p>
+<p><span class="image"><img src="/img/blog/go-on-jenkins/pipeline-job.png" alt="Pipeline job"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 3. Selecting the location of the Jenkinsfile</em></p>
 </div>
 <div class="paragraph">
-<p>In the section "Pipeline" of the new job select "Pipeline script from SCM", pick the origin of the Jenkinsfile and enter the repository URL. Save the job and you are done. Click the option "Build Now" to ensure that everything works as expected.</p>
+<p>In the section &#34;Pipeline&#34; of the new job select &#34;Pipeline script from SCM&#34;, pick the origin of the Jenkinsfile and enter the repository URL. Save the job and you are done. Click the option &#34;Build Now&#34; to ensure that everything works as expected.</p>
 </div>
 </div>
 </div>

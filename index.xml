@@ -6,18 +6,14 @@
     <description>Recent content on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 01 Feb 2020 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sat, 01 Feb 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Building Groovy with Bazel</title>
       <link>https://bmuschko.com/blog/bazel-groovy/</link>
       <pubDate>Sat, 01 Feb 2020 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/bazel-groovy/</guid>
-      <description>Bazel is a build automation tool that ships with support for a variety of languages out-of-the-box. For example, you can build Java projects right away without having to configure external functionality, so-called rules. Groovy is a popular language in the JVM space. As a developer, you&amp;#8217;d expect the following features:
+      <description>Bazel is a build automation tool that ships with support for a variety of languages out-of-the-box. For example, you can build Java projects right away without having to configure external functionality, so-called rules. Groovy is a popular language in the JVM space. As a developer, you’d expect the following features:
    Compiling Groovy source code
   Creating a JAR file to bundle the class files
   Executing Groovy-based tests written with JUnit or Spock</description>
@@ -38,7 +34,7 @@
       <pubDate>Thu, 31 Oct 2019 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/jenkins-shared-libraries/</guid>
-      <description>Introduction Pipeline definitions in Jenkins start small and maintainble. You write a Jenkinsfile that declares a couple of stages. Nothing dramatic, simple, understandable code. As your adoption of Jenkins and &#34;pipelines as code&#34; grows within the organization, you&amp;#8217;ll find out that other teams are copy-pasting pipeline code all over the place. What works for one project should work for other projects, right?! Soon requirements become more complex and your organization will enter a world of pain of unmaintainable, duplicated code.</description>
+      <description>Introduction Pipeline definitions in Jenkins start small and maintainble. You write a Jenkinsfile that declares a couple of stages. Nothing dramatic, simple, understandable code. As your adoption of Jenkins and &amp;#34;pipelines as code&amp;#34; grows within the organization, you’ll find out that other teams are copy-pasting pipeline code all over the place. What works for one project should work for other projects, right?! Soon requirements become more complex and your organization will enter a world of pain of unmaintainable, duplicated code.</description>
     </item>
     
     <item>
@@ -66,7 +62,7 @@
       <pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/go-on-jenkins/</guid>
-      <description>The Go 1.11 release introduced experimental, opt-in support for Go modules. It is now possible to build Go projects outside of the $GOPATH. This profound change has a significant impact on developer workflows. For example, you don&amp;#8217;t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</description>
+      <description>The Go 1.11 release introduced experimental, opt-in support for Go modules. It is now possible to build Go projects outside of the $GOPATH. This profound change has a significant impact on developer workflows. For example, you don’t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</description>
     </item>
     
     <item>
@@ -104,7 +100,7 @@
       <pubDate>Tue, 16 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/containerization-with-jib/</guid>
-      <description>Containerizing a Java application is the natural extension to building a plain, executable JAR file: &#34;write once, run everywhere&#34;. Creating an optimized image for an application is far from straightforward and requires in-depth knowledge of Docker concepts and best practices.
+      <description>Containerizing a Java application is the natural extension to building a plain, executable JAR file: &amp;#34;write once, run everywhere&amp;#34;. Creating an optimized image for an application is far from straightforward and requires in-depth knowledge of Docker concepts and best practices.
  A typical developer worflow involves the following steps. First, you start out by writing a Dockerfile with the goal of producing an image small in size while at the same time ensuring cacheability of layers as much as possible.</description>
     </item>
     
@@ -124,7 +120,7 @@
       <pubDate>Sat, 26 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/migrating-glide-to-dep/</guid>
-      <description>Package management is a bread-and-butter task. Rarely does a Go developer write a Go program that doesn&amp;#8217;t reference an external package. Over the course of the years, the Go community has seen various approaches to solving the same problem. From go get over vendoring to package managers like Glide. Each solution comes with its benefits and drawbacks.
+      <description>Package management is a bread-and-butter task. Rarely does a Go developer write a Go program that doesn’t reference an external package. Over the course of the years, the Go community has seen various approaches to solving the same problem. From go get over vendoring to package managers like Glide. Each solution comes with its benefits and drawbacks.
  Recently, the Go community settled on dep as the canonical tool for package management.</description>
     </item>
     
@@ -146,7 +142,7 @@
       
       <guid>https://bmuschko.com/blog/starting-a-new-chapter/</guid>
       <description>The news has been out for over two weeks, but I just got around to writing a blog post about it. April 30th marked my last day at Gradle Inc., the company behind the open source build tool Gradle and Gradle Enterprise, the complimentary commercial offering.
- It&amp;#8217;s been almost 5 years full of challenges and learning experiences. Over the course of that time, I had the opportunity to help several companies migrate their build environment to Gradle and adopt Continuous Delivery in the process.</description>
+ It’s been almost 5 years full of challenges and learning experiences. Over the course of that time, I had the opportunity to help several companies migrate their build environment to Gradle and adopt Continuous Delivery in the process.</description>
     </item>
     
     <item>
@@ -164,7 +160,7 @@
       <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/gradle-docker-convention-plugin/</guid>
-      <description>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series &#34;Docker with Gradle&#34;, we looked at creating a Docker image for a Spring Boot application and how to use the image as fixture for integration testing. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects.</description>
+      <description>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series &amp;#34;Docker with Gradle&amp;#34;, we looked at creating a Docker image for a Spring Boot application and how to use the image as fixture for integration testing. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects.</description>
     </item>
     
     <item>
@@ -182,7 +178,7 @@
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/docker-integration-testing/</guid>
-      <description>In the first blog post on &#34;Docker with Gradle&#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
+      <description>In the first blog post on &amp;#34;Docker with Gradle&amp;#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
  Integration testing plays an important role in the software development lifecycle to ensure functional and non-functional requirements have been met.</description>
     </item>
     
@@ -201,7 +197,7 @@
       <pubDate>Mon, 01 Jan 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/junit5-vs-spock-showdown/</guid>
-      <description>Introduction For over a decade JUnit 4 has been the go-to test framework for JVM-based software projects. You can find the use of JUnit across the board in organizations from big entprises to small startups. Despite its popularity, the test framework&amp;#8217;s features barely moved with the times. Due to its deep penetration among the industry, evolutionary changes became harder and harder to implement without introducing inevidable breakages to the API.</description>
+      <description>Introduction For over a decade JUnit 4 has been the go-to test framework for JVM-based software projects. You can find the use of JUnit across the board in organizations from big entprises to small startups. Despite its popularity, the test framework’s features barely moved with the times. Due to its deep penetration among the industry, evolutionary changes became harder and harder to implement without introducing inevidable breakages to the API.</description>
     </item>
     
     <item>
@@ -219,7 +215,7 @@
       <pubDate>Sat, 29 Jul 2017 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/golang-with-gradle/</guid>
-      <description>Introduction In July 2017 Google Go made a big jump on the TIOBE index. It&amp;#8217;s now ranked among the top 10 most popular programming languages. With the rise of Moby aka Docker, Kubernetes and InfluxDB the language has become the go-to tool in the DevOps space. The complexity of automating the process of building, assembling and distributing the source code and binaries for any medium- to large-sized project is high. It&amp;#8217;s somewhat shocking to see that the predominant tooling of automating in Go is still a mixture of Make files and shell scripts as it can be observed in the Moby and Kubernetes code base.</description>
+      <description>Introduction In July 2017 Google Go made a big jump on the TIOBE index. It’s now ranked among the top 10 most popular programming languages. With the rise of Moby aka Docker, Kubernetes and InfluxDB the language has become the go-to tool in the DevOps space. The complexity of automating the process of building, assembling and distributing the source code and binaries for any medium- to large-sized project is high. It’s somewhat shocking to see that the predominant tooling of automating in Go is still a mixture of Make files and shell scripts as it can be observed in the Moby and Kubernetes code base.</description>
     </item>
     
     <item>
@@ -228,7 +224,7 @@
       <pubDate>Tue, 18 Jul 2017 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/writing-tech-book/</guid>
-      <description>You are a published author. Your family and friends are super proud of you and co-workers admire your perseverance, hard work and deep technical knowledge. Being an author looks great on the resume and companies are eager to hire you (it must be worth a higher salary right?). That&amp;#8217;s the dream you set out to achieve: writing a technical book on an area of knowledge you are passionate about. Unfortunately, you haven&amp;#8217;t started writing yet and you are still looking for a publisher for your work.</description>
+      <description>You are a published author. Your family and friends are super proud of you and co-workers admire your perseverance, hard work and deep technical knowledge. Being an author looks great on the resume and companies are eager to hire you (it must be worth a higher salary right?). That’s the dream you set out to achieve: writing a technical book on an area of knowledge you are passionate about. Unfortunately, you haven’t started writing yet and you are still looking for a publisher for your work.</description>
     </item>
     
     <item>

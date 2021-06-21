@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Build pipelines with Jenkins 2 by example</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -109,16 +108,16 @@ if (!doNotTrack) {
 <p>The functionality of the sample application is straightforward. It allows the user to record to-do items that can be completed by checking them off the list. A database stores the to-do items and their states. Figure 1 shows a screenshot of the deployed application. You can try out the <a href="https://todo-spring-boot.herokuapp.com/">deployed application</a> for yourself on Heroku.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/todo-app-screenshot.png" alt="todo app screenshot"></span></p>
+<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/todo-app-screenshot.png" alt="todo app screenshot"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 1. A web-based application for managing to-do items</em></p>
 </div>
 <div class="paragraph">
-<p>On the technical side, the web application was built with Java and Spring Boot. Automated tests use JUnit and <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html">Spring Boot&#8217;s test utilities</a> for integration testing of Spring components. The actual work performed by the build pipeline is based on Gradle build logic.</p>
+<p>On the technical side, the web application was built with Java and Spring Boot. Automated tests use JUnit and <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html">Spring Boot’s test utilities</a> for integration testing of Spring components. The actual work performed by the build pipeline is based on Gradle build logic.</p>
 </div>
 <div class="paragraph">
-<p>The main focus of this post is going to be on modeling pipeline capabilities of Jenkins. I&#8217;d encourage you to have a look at the Gradle build scripts available in the source code repository to learn more about the build logic. Before diving into Jenkins right away, let&#8217;s first have a look at the different stages of build pipeline you are about to model.</p>
+<p>The main focus of this post is going to be on modeling pipeline capabilities of Jenkins. I’d encourage you to have a look at the Gradle build scripts available in the source code repository to learn more about the build logic. Before diving into Jenkins right away, let’s first have a look at the different stages of build pipeline you are about to model.</p>
 </div>
 </div>
 </div>
@@ -157,7 +156,7 @@ if (!doNotTrack) {
 <p>Some of the phases should be executable in parallel especially the ones that might take a long time to finish e.g. integration testing (3) and static code analysis (4). While Continuous Deployment might work perfectly for this kind of application, the pipeline should also implement a manual step that only triggers deployment to production (6) if a user pushes a button.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/model-build-pipeline.png" alt="model build pipeline"></span></p>
+<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/model-build-pipeline.png" alt="model build pipeline"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 2. The build pipeline in theory</em></p>
@@ -176,31 +175,31 @@ if (!doNotTrack) {
 <div class="sect2">
 <h3 id="_installing_jenkins">Installing Jenkins</h3>
 <div class="paragraph">
-<p>First, you&#8217;ll need to install Jenkins on your developer machine or on a server. Download the desired distribution from the <a href="https://jenkins.io/download/">"Getting started with Jenkins" page</a>. For the purpose of this blog post, you&#8217;ll download the WAR file which is runnable on all operating systems.</p>
+<p>First, you’ll need to install Jenkins on your developer machine or on a server. Download the desired distribution from the <a href="https://jenkins.io/download/">&#34;Getting started with Jenkins&#34; page</a>. For the purpose of this blog post, you’ll download the WAR file which is runnable on all operating systems.</p>
 </div>
 <div class="paragraph">
-<p>Navigate to the directory containing the WAR file and execute the command <code>java -jar jenkins.war</code> from your console. Bring up Jenkins in the web browser of your choice via the url <code><a href="http://localhost:8080/" class="bare">http://localhost:8080/</a></code>. Log in with the temporary administrator password and simply go with the option "Install suggested plugins". The <a href="https://jenkins.io/doc/book/pipeline/">pipeline plugin</a>, responsible for defining and rendering build pipelines in Jenkins, is a standard plugin and will be installed automatically. In the next screen, set up a new admin user.</p>
+<p>Navigate to the directory containing the WAR file and execute the command <code>java -jar jenkins.war</code> from your console. Bring up Jenkins in the web browser of your choice via the url <code><a href="http://localhost:8080/" class="bare">http://localhost:8080/</a></code>. Log in with the temporary administrator password and simply go with the option &#34;Install suggested plugins&#34;. The <a href="https://jenkins.io/doc/book/pipeline/">pipeline plugin</a>, responsible for defining and rendering build pipelines in Jenkins, is a standard plugin and will be installed automatically. In the next screen, set up a new admin user.</p>
 </div>
 <div class="paragraph">
-<p>In addition to the visualization provided by the standard pipeline plugin, I prefer to use the view introduced by <a href="https://jenkins.io/projects/blueocean/">Blue Ocean plugin</a>. Blue Ocean aims to offer a fresh and overhauled UI. Later, you&#8217;ll explore the standard pipeline view as well as the visualization provided by Blue Ocean.</p>
+<p>In addition to the visualization provided by the standard pipeline plugin, I prefer to use the view introduced by <a href="https://jenkins.io/projects/blueocean/">Blue Ocean plugin</a>. Blue Ocean aims to offer a fresh and overhauled UI. Later, you’ll explore the standard pipeline view as well as the visualization provided by Blue Ocean.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_defining_credentials">Defining credentials</h3>
 <div class="paragraph">
-<p>As part of our pipeline, you&#8217;ll use SonarCloud for static code analysis and Heroku for hosting the application. Both services have free tiers. Sign up for an account if you&#8217;d like to take advantage of these services. In this section, you&#8217;ll configure the credentials for SonarCloud and Heroku in Jenkins. As a result, the pipeline will have access to environment variables that can be passed down to the Gradle build.</p>
+<p>As part of our pipeline, you’ll use SonarCloud for static code analysis and Heroku for hosting the application. Both services have free tiers. Sign up for an account if you’d like to take advantage of these services. In this section, you’ll configure the credentials for SonarCloud and Heroku in Jenkins. As a result, the pipeline will have access to environment variables that can be passed down to the Gradle build.</p>
 </div>
 <div class="paragraph">
-<p>SonarCloud and Heroku provide an access token that can be retrieved from the setting page of the corresponding service after logging in. In Jenkins you can declare those access tokens as "Secret text" under "Jenkins &gt; Credentials". For the purpose of this sample pipeline, we&#8217;ll create the credentials with ID <code>SONARCLOUD_TOKEN</code> and <code>HEROKU_API_KEY</code>. Figure 3 shows the definition of the SonarCloud credentials.</p>
+<p>SonarCloud and Heroku provide an access token that can be retrieved from the setting page of the corresponding service after logging in. In Jenkins you can declare those access tokens as &#34;Secret text&#34; under &#34;Jenkins &gt; Credentials&#34;. For the purpose of this sample pipeline, we’ll create the credentials with ID <code>SONARCLOUD_TOKEN</code> and <code>HEROKU_API_KEY</code>. Figure 3 shows the definition of the SonarCloud credentials.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/sonarcloud-credentials.png" alt="sonarcloud credentials"></span></p>
+<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/sonarcloud-credentials.png" alt="sonarcloud credentials"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 3. Adding SonarCloud credentials</em></p>
 </div>
 <div class="paragraph">
-<p>Next, we&#8217;ll dive into the creation of the job that defines the build pipeline.</p>
+<p>Next, we’ll dive into the creation of the job that defines the build pipeline.</p>
 </div>
 </div>
 </div>
@@ -209,7 +208,7 @@ if (!doNotTrack) {
 <h2 id="_pipeline_definition_in_jenkins">Pipeline definition in Jenkins</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Creating a Jenkins pipeline is not fastly different from creating a freestyle project. Select the "Pipeline" option in the job creation screen to get started. We&#8217;ll use the job name <code>todo-spring-boot</code> for now to reflect the project name on GitHub.</p>
+<p>Creating a Jenkins pipeline is not fastly different from creating a freestyle project. Select the &#34;Pipeline&#34; option in the job creation screen to get started. We’ll use the job name <code>todo-spring-boot</code> for now to reflect the project name on GitHub.</p>
 </div>
 <div class="paragraph">
 <p>For pipeline definitions we have two options:</p>
@@ -225,7 +224,7 @@ if (!doNotTrack) {
 </ol>
 </div>
 <div class="paragraph">
-<p>In the light of <a href="https://en.wikipedia.org/wiki/Infrastructure_as_Code">Infrastructure as code</a>, we&#8217;ll go with option 2. The Github repository already <a href="https://github.com/bmuschko/todo-spring-boot/blob/blog-post/Jenkinsfile">contains the file</a> defining the desired layout and configuration of the pipeline for our job. By default, this file is called <code>Jenkinsfile</code>. Listing 1 shows pipeline definition in its full beauty.</p>
+<p>In the light of <a href="https://en.wikipedia.org/wiki/Infrastructure_as_Code">Infrastructure as code</a>, we’ll go with option 2. The Github repository already <a href="https://github.com/bmuschko/todo-spring-boot/blob/blog-post/Jenkinsfile">contains the file</a> defining the desired layout and configuration of the pipeline for our job. By default, this file is called <code>Jenkinsfile</code>. Listing 1 shows pipeline definition in its full beauty.</p>
 </div>
 <div class="paragraph">
 <p><em>Jenkinsfile</em></p>
@@ -236,79 +235,79 @@ if (!doNotTrack) {
     agent any
 
     triggers {
-        pollSCM('*/5 * * * *')
+        pollSCM(&#39;*/5 * * * *&#39;)
     }
 
     stages {
-        stage('Compile') {
+        stage(&#39;Compile&#39;) {
             steps {
-                gradlew('clean', 'classes')
+                gradlew(&#39;clean&#39;, &#39;classes&#39;)
             }
         }
-        stage('Unit Tests') {
+        stage(&#39;Unit Tests&#39;) {
             steps {
-                gradlew('test')
+                gradlew(&#39;test&#39;)
             }
             post {
                 always {
-                    junit '**/build/test-results/test/TEST-*.xml'
+                    junit &#39;**/build/test-results/test/TEST-*.xml&#39;
                 }
             }
         }
-        stage('Long-running Verification') {
+        stage(&#39;Long-running Verification&#39;) {
             environment {
-                SONAR_LOGIN = credentials('SONARCLOUD_TOKEN')
+                SONAR_LOGIN = credentials(&#39;SONARCLOUD_TOKEN&#39;)
             }
             parallel {
-                stage('Integration Tests') {
+                stage(&#39;Integration Tests&#39;) {
                     steps {
-                        gradlew('integrationTest')
+                        gradlew(&#39;integrationTest&#39;)
                     }
                     post {
                         always {
-                            junit '**/build/test-results/integrationTest/TEST-*.xml'
+                            junit &#39;**/build/test-results/integrationTest/TEST-*.xml&#39;
                         }
                     }
                 }
-                stage('Code Analysis') {
+                stage(&#39;Code Analysis&#39;) {
                     steps {
-                        gradlew('sonarqube')
+                        gradlew(&#39;sonarqube&#39;)
                     }
                 }
             }
         }
-        stage('Assemble') {
+        stage(&#39;Assemble&#39;) {
             steps {
-                gradlew('assemble')
-                stash includes: '**/build/libs/*.war', name: 'app'
+                gradlew(&#39;assemble&#39;)
+                stash includes: &#39;**/build/libs/*.war&#39;, name: &#39;app&#39;
             }
         }
-        stage('Promotion') {
+        stage(&#39;Promotion&#39;) {
             steps {
-                timeout(time: 1, unit:'DAYS') {
-                    input 'Deploy to Production?'
+                timeout(time: 1, unit:&#39;DAYS&#39;) {
+                    input &#39;Deploy to Production?&#39;
                 }
             }
         }
-        stage('Deploy to Production') {
+        stage(&#39;Deploy to Production&#39;) {
             environment {
-                HEROKU_API_KEY = credentials('HEROKU_API_KEY')
+                HEROKU_API_KEY = credentials(&#39;HEROKU_API_KEY&#39;)
             }
             steps {
-                unstash 'app'
-                gradlew('deployHeroku')
+                unstash &#39;app&#39;
+                gradlew(&#39;deployHeroku&#39;)
             }
         }
     }
     post {
         failure {
-            mail to: 'benjamin.muschko@gmail.com', subject: 'Build failed', body: 'Please fix!'
+            mail to: &#39;benjamin.muschko@gmail.com&#39;, subject: &#39;Build failed&#39;, body: &#39;Please fix!&#39;
         }
     }
 }
 
 def gradlew(String... args) {
-    sh "./gradlew ${args.join(' ')} -s"
+    sh &#34;./gradlew ${args.join(&#39; &#39;)} -s&#34;
 }</code></pre>
 </div>
 </div>
@@ -316,19 +315,19 @@ def gradlew(String... args) {
 <p><em>Listing 1. The pipeline definition as code</em></p>
 </div>
 <div class="paragraph">
-<p>As you can see in the listing, the code is very readable and understandable even if you do not know the syntax in more detail. The script defines each stage of the pipeline in order. Each stage may contain one or many steps. The actual "work" of the pipeline happens under the covers and is performed by Gradle. Jenkins merely acts as orchistration engine.</p>
+<p>As you can see in the listing, the code is very readable and understandable even if you do not know the syntax in more detail. The script defines each stage of the pipeline in order. Each stage may contain one or many steps. The actual &#34;work&#34; of the pipeline happens under the covers and is performed by Gradle. Jenkins merely acts as orchistration engine.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s see what happens when we execute the job by triggering the "Build Now" action. Jenkins runs through all stages of the pipeline up until the point that requires manual execution. In the console view, you can confirm or abort the manual execution to trigger the deployment to production. Below you can find the standard view of the pipeline in the job.</p>
+<p>Let’s see what happens when we execute the job by triggering the &#34;Build Now&#34; action. Jenkins runs through all stages of the pipeline up until the point that requires manual execution. In the console view, you can confirm or abort the manual execution to trigger the deployment to production. Below you can find the standard view of the pipeline in the job.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/jenkins-stage-view.png" alt="jenkins stage view"></span></p>
+<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/jenkins-stage-view.png" alt="jenkins stage view"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 4. Jenkins stage view</em></p>
 </div>
 <div class="paragraph">
-<p>You might have noticed that the standard job view of the pipeline does not render parallel stages or manual triggers. Blue Ocean makes a much better attempt at rendering those features. In the next section, we&#8217;ll have a brief look at what Blue Ocean pipeline views have to offer.</p>
+<p>You might have noticed that the standard job view of the pipeline does not render parallel stages or manual triggers. Blue Ocean makes a much better attempt at rendering those features. In the next section, we’ll have a brief look at what Blue Ocean pipeline views have to offer.</p>
 </div>
 </div>
 </div>
@@ -336,28 +335,28 @@ def gradlew(String... args) {
 <h2 id="_a_look_at_the_blue_ocean_pipeline_view">A look at the Blue Ocean pipeline view</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In an earlier section, you installed the Blue Ocean plugin. On the left hand side, of your job screen you should see a "Open Blue Ocean" option. Executing the job shows a much richer representation of the pipeline. You can literally see how your change travels through each stage of the pipeline in real-time. The following screenshot shows the waiting state of the pipeline expecting user input on the promotion stage. The UI even provides an option to proceed with the next stage or abort the flow of the pipeline.</p>
+<p>In an earlier section, you installed the Blue Ocean plugin. On the left hand side, of your job screen you should see a &#34;Open Blue Ocean&#34; option. Executing the job shows a much richer representation of the pipeline. You can literally see how your change travels through each stage of the pipeline in real-time. The following screenshot shows the waiting state of the pipeline expecting user input on the promotion stage. The UI even provides an option to proceed with the next stage or abort the flow of the pipeline.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/blue-ocean-input-wait.png" alt="blue ocean input wait"></span></p>
+<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/blue-ocean-input-wait.png" alt="blue ocean input wait"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 5. Blue Ocean view of the pipeline waiting for user input</em></p>
 </div>
 <div class="paragraph">
-<p>In the pipeline script above, you configured to wait for interactive input during the promotion step for one day. Jenkins automatically times out the manual operation after the defined waiting period. If you don&#8217;t want to wait this long, then you can always abort the operation manually.</p>
+<p>In the pipeline script above, you configured to wait for interactive input during the promotion step for one day. Jenkins automatically times out the manual operation after the defined waiting period. If you don’t want to wait this long, then you can always abort the operation manually.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/blue-ocean-input-abort.png" alt="blue ocean input abort"></span></p>
+<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/blue-ocean-input-abort.png" alt="blue ocean input abort"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 6. Aborting a manual step in Blue Ocean pipeline view</em></p>
 </div>
 <div class="paragraph">
-<p>If you happen to actually want to deploy the WAR file to production, then all you need to do is to press the "Proceed" button. The pipeline will continue its operation immediately and move on with the next stage in line.</p>
+<p>If you happen to actually want to deploy the WAR file to production, then all you need to do is to press the &#34;Proceed&#34; button. The pipeline will continue its operation immediately and move on with the next stage in line.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/blue-ocean-all-green.png" alt="blue ocean all green"></span></p>
+<p><span class="image"><img src="/img/blog/jenkins-build-pipeline/blue-ocean-all-green.png" alt="blue ocean all green"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 7. Triggering the deployment via manual step in Blue Ocean</em></p>

@@ -6,11 +6,7 @@
     <description>Recent content in container on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 12 Nov 2018 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/container/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 12 Nov 2018 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/container/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Testing a Java project with TestContainers on JUnit 5</title>
       <link>https://bmuschko.com/blog/java-project-testcontainers/</link>
@@ -36,7 +32,7 @@
       <pubDate>Tue, 16 Oct 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/containerization-with-jib/</guid>
-      <description>Containerizing a Java application is the natural extension to building a plain, executable JAR file: &#34;write once, run everywhere&#34;. Creating an optimized image for an application is far from straightforward and requires in-depth knowledge of Docker concepts and best practices.
+      <description>Containerizing a Java application is the natural extension to building a plain, executable JAR file: &amp;#34;write once, run everywhere&amp;#34;. Creating an optimized image for an application is far from straightforward and requires in-depth knowledge of Docker concepts and best practices.
  A typical developer worflow involves the following steps. First, you start out by writing a Dockerfile with the goal of producing an image small in size while at the same time ensuring cacheability of layers as much as possible.</description>
     </item>
     
@@ -55,7 +51,7 @@
       <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/gradle-docker-convention-plugin/</guid>
-      <description>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series &#34;Docker with Gradle&#34;, we looked at creating a Docker image for a Spring Boot application and how to use the image as fixture for integration testing. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects.</description>
+      <description>The Gradle Docker plugin provides turnkey solutions to common use cases. In the previous blog posts of the series &amp;#34;Docker with Gradle&amp;#34;, we looked at creating a Docker image for a Spring Boot application and how to use the image as fixture for integration testing. If you read the articles, you might have noticed that the plugin capabilities are flexible enough to model different situations. Nevertheless, this approach can easily become tedious if you want to use it across multiple, independent projects.</description>
     </item>
     
     <item>
@@ -64,7 +60,7 @@
       <pubDate>Sun, 18 Feb 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/docker-integration-testing/</guid>
-      <description>In the first blog post on &#34;Docker with Gradle&#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
+      <description>In the first blog post on &amp;#34;Docker with Gradle&amp;#34; you learned how to package a Spring Boot application as a Docker image. After verifying that the image works as expected you pushed the image to a registry. Being able to produce and push a new image of an application with every single commit lays the foundation for enabling supplemental automation workflows.
  Integration testing plays an important role in the software development lifecycle to ensure functional and non-functional requirements have been met.</description>
     </item>
     

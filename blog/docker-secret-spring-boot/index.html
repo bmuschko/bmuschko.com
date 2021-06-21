@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Injecting credentials into a Docker container running a Spring Boot application</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -91,25 +90,25 @@ if (!doNotTrack) {
 <p>The <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-profiles.html">profile concept</a> in Spring Boot makes is extremely easy to provide configuration specific to a runtime environment. A typical setup might include configuration for the local development environment, a testing environment, staging and production. All you need to do is to provide a properties files per environment on the classpath e.g. <code>application-dev.properties</code> and <code>application-prod.properties</code>. At runtime, you can tell Spring Boot which profile to pick via command line option or environment variable.</p>
 </div>
 <div class="paragraph">
-<p>Now, different environments require different credentials. Let&#8217;s say your application uses an embedded H2 database for development purposes and PostgreSQL for all other environments. It feels natural to just add username/password or access tokens to the profile property files. When building the binary file, the executable JAR or WAR file of a Spring Boot application, those files would simply be included into the deliverable.</p>
+<p>Now, different environments require different credentials. Let’s say your application uses an embedded H2 database for development purposes and PostgreSQL for all other environments. It feels natural to just add username/password or access tokens to the profile property files. When building the binary file, the executable JAR or WAR file of a Spring Boot application, those files would simply be included into the deliverable.</p>
 </div>
 <div class="paragraph">
-<p>Depending on how you are planning to share the binary file and the applied deployment strategy this approach may raise security concerns. Should anyone with access to the file allowed to crack open the archive and access the plain-text credentials? What if you build a Docker image for your application and share it on a Docker registry? You might have guessed it. It&#8217;s likely a better idea to externalize the credentials and inject them at runtime to elminate a potential security breach.</p>
+<p>Depending on how you are planning to share the binary file and the applied deployment strategy this approach may raise security concerns. Should anyone with access to the file allowed to crack open the archive and access the plain-text credentials? What if you build a Docker image for your application and share it on a Docker registry? You might have guessed it. It’s likely a better idea to externalize the credentials and inject them at runtime to elminate a potential security breach.</p>
 </div>
 <div class="paragraph">
-<p>In this blog post, I am going to show you how to use <a href="https://docs.docker.com/engine/swarm/secrets/">Docker secrets</a> to create credentials in a Docker Swarm. We&#8217;ll run a Spring Boot application on that Swarm distributed to multiple replicas and only inject the credentials when creating a service for that application.</p>
+<p>In this blog post, I am going to show you how to use <a href="https://docs.docker.com/engine/swarm/secrets/">Docker secrets</a> to create credentials in a Docker Swarm. We’ll run a Spring Boot application on that Swarm distributed to multiple replicas and only inject the credentials when creating a service for that application.</p>
 </div>
 <div class="paragraph">
-<p>Docker secrets is an enterprise feature. Unfortunately, you won&#8217;t be able to use Docker secrets without distributing your application in a Swarm. In a future post, I am going to discuss other options for storing credentials like <a href="https://www.vaultproject.io/">HashiCorp&#8217;s Vault</a>.</p>
+<p>Docker secrets is an enterprise feature. Unfortunately, you won’t be able to use Docker secrets without distributing your application in a Swarm. In a future post, I am going to discuss other options for storing credentials like <a href="https://www.vaultproject.io/">HashiCorp’s Vault</a>.</p>
 </div>
 <div class="sect1">
 <h2 id="_reading_a_docker_secrets_file">Reading a Docker secrets file</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Switching between different environments for a Spring Boot application is easy, even if it is run within a Docker container. Simply pass the environment variable <code>SPRING_PROFILES_ACTIVE</code> when starting the container and point it to the desired profile name. In addition, we&#8217;ll want to read credentials from a Docker secrets file if it does exist. By default, Docker secrets are available in the directory <code>/run/secrets</code> when run on a node in a Docker Swarm.</p>
+<p>Switching between different environments for a Spring Boot application is easy, even if it is run within a Docker container. Simply pass the environment variable <code>SPRING_PROFILES_ACTIVE</code> when starting the container and point it to the desired profile name. In addition, we’ll want to read credentials from a Docker secrets file if it does exist. By default, Docker secrets are available in the directory <code>/run/secrets</code> when run on a node in a Docker Swarm.</p>
 </div>
 <div class="paragraph">
-<p>A good fit for reading a Docker secret credentials file is an implementation of an <a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/env/EnvironmentPostProcessor.html">EnvironmentPostProcessor</a>. Let&#8217;s say we wanted to read a database password and use it for our application&#8217;s data source. The class shown in listing 1 achieves exactly that.</p>
+<p>A good fit for reading a Docker secret credentials file is an implementation of an <a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/env/EnvironmentPostProcessor.html">EnvironmentPostProcessor</a>. Let’s say we wanted to read a database password and use it for our application’s data source. The class shown in listing 1 achieves exactly that.</p>
 </div>
 <div class="paragraph">
 <p><em>DockerSecretsDatabasePasswordProcessor.java</em></p>
@@ -137,18 +136,18 @@ public class DockerSecretsDatabasePasswordProcessor implements EnvironmentPostPr
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        Resource resource = new FileSystemResource("/run/secrets/db-password");
+        Resource resource = new FileSystemResource(&#34;/run/secrets/db-password&#34;);
 
         if (resource.exists()) {
             try {
                 if (logger.isInfoEnabled()) {
-                    logger.info("Using database password from injected Docker secret file");
+                    logger.info(&#34;Using database password from injected Docker secret file&#34;);
                 }
 
                 String dbPassword = StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
                 Properties props = new Properties();
-                props.put("spring.datasource.password", dbPassword);
-                environment.getPropertySources().addLast(new PropertiesPropertySource("dbProps", props));
+                props.put(&#34;spring.datasource.password&#34;, dbPassword);
+                environment.getPropertySources().addLast(new PropertiesPropertySource(&#34;dbProps&#34;, props));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -161,7 +160,7 @@ public class DockerSecretsDatabasePasswordProcessor implements EnvironmentPostPr
 <p><em>Listing 1. Reading and applying database credentials from a Docker secrets file</em></p>
 </div>
 <div class="paragraph">
-<p>Implementing the <code>EnvironmentPostProcessor</code> is not enough. You&#8217;ll have to register the class in a file named <code>spring.factories</code>. For Maven and Gradle projects this file usually sits in the directory <code>src/main/resources</code> and is bundled with the application when creating the executable binary.</p>
+<p>Implementing the <code>EnvironmentPostProcessor</code> is not enough. You’ll have to register the class in a file named <code>spring.factories</code>. For Maven and Gradle projects this file usually sits in the directory <code>src/main/resources</code> and is bundled with the application when creating the executable binary.</p>
 </div>
 <div class="paragraph">
 <p><em>META-INF/spring.factories</em></p>
@@ -172,7 +171,7 @@ public class DockerSecretsDatabasePasswordProcessor implements EnvironmentPostPr
 </div>
 </div>
 <div class="paragraph">
-<p>The application is ready to go. Next, we&#8217;ll have a look at the container infrastructure.</p>
+<p>The application is ready to go. Next, we’ll have a look at the container infrastructure.</p>
 </div>
 </div>
 </div>
@@ -187,7 +186,7 @@ public class DockerSecretsDatabasePasswordProcessor implements EnvironmentPostPr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ printf "prodpwd" | docker secret create db-password -</pre>
+<pre>$ printf &#34;prodpwd&#34; | docker secret create db-password -</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -201,7 +200,7 @@ nskgie2gozso364hwl92ne3og   db-password                             12 days ago 
 </div>
 </div>
 <div class="paragraph">
-<p>We created a secret. Let&#8217;s inject it into the container running our application.</p>
+<p>We created a secret. Let’s inject it into the container running our application.</p>
 </div>
 </div>
 </div>
@@ -212,7 +211,7 @@ nskgie2gozso364hwl92ne3og   db-password                             12 days ago 
 <p>In Docker, you distribute an application across multiple nodes with the help of a service. When creating a service you can provide options for setting environment variables and Docker secrets.</p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s say we wanted to run a Spring Boot application in a production environment. First, we activate the profile with <code>--env SPRING_PROFILES_ACTIVE=prod</code>. Second, we pass in the Docker secret with a name via <code>--secret db-password</code>. Below you can find the full command for creating a Docker service with five replicas.</p>
+<p>Let’s say we wanted to run a Spring Boot application in a production environment. First, we activate the profile with <code>--env SPRING_PROFILES_ACTIVE=prod</code>. Second, we pass in the Docker secret with a name via <code>--secret db-password</code>. Below you can find the full command for creating a Docker service with five replicas.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -228,7 +227,7 @@ nskgie2gozso364hwl92ne3og   db-password                             12 days ago 
 <h2 id="_summary">Summary</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Credentials shouldn&#8217;t be baked into a Spring Boot application binary whether you run it in a container or just as a plain, executable JAR file. Docker secrets can help with keeping credentials secure. In a Docker Swarm environment, it&#8217;s easy to inject the secret into a running container. Reading the secret from a Spring Boot application only requires the implementation of a post processor.</p>
+<p>Credentials shouldn’t be baked into a Spring Boot application binary whether you run it in a container or just as a plain, executable JAR file. Docker secrets can help with keeping credentials secure. In a Docker Swarm environment, it’s easy to inject the secret into a running container. Reading the secret from a Spring Boot application only requires the implementation of a post processor.</p>
 </div>
 </div>
 </div>

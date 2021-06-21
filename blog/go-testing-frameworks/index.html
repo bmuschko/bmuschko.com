@@ -8,7 +8,7 @@
     
     <link rel="shortcut icon" type="image/x-icon" href="https://bmuschko.com/img/favicon.ico">
     <title>Exploring the landscape of Go testing frameworks</title>
-    <meta name="generator" content="Hugo 0.59.0" />
+    <meta name="generator" content="Hugo 0.84.0" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://bmuschko.com/css/main.css" /><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/darcula.min.css">
     
@@ -34,7 +34,6 @@ if (!doNotTrack) {
 	ga('send', 'pageview');
 }
 </script>
-
     
   </head>
 
@@ -131,12 +130,12 @@ if (!doNotTrack) {
 <div class="paragraph">
 <p>You can find all code shown in the blog post in the <a href="https://github.com/bmuschko/go-testing-frameworks">respective GitHub repository</a>.</p>
 </div>
-<hr>
+<hr/>
 <div class="sect1">
 <h2 id="_code_under_test">Code under test</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The code under test doesn&#8217;t have to be complicated to demonstrate the usage of testing frameworks. It&#8217;s represented by a simple calculator implementation providing exported functions for addition, subtration, multiplication and division.</p>
+<p>The code under test doesn’t have to be complicated to demonstrate the usage of testing frameworks. It’s represented by a simple calculator implementation providing exported functions for addition, subtration, multiplication and division.</p>
 </div>
 <div class="paragraph">
 <p><em>calc.go</em></p>
@@ -174,9 +173,9 @@ func Divide(a, b int) float64 {
 <p><em>Listing 1. Simple calculator functions</em></p>
 </div>
 <div class="paragraph">
-<p>The code shown in listing 1 sits in the package <code>calc</code>. All test code is going to live in a different package called <code>calc_test</code> to ensure that the code only verifies the public API. First, we&#8217;ll have a look at the testing support that comes with the Go standard library.</p>
+<p>The code shown in listing 1 sits in the package <code>calc</code>. All test code is going to live in a different package called <code>calc_test</code> to ensure that the code only verifies the public API. First, we’ll have a look at the testing support that comes with the Go standard library.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -193,15 +192,15 @@ func Divide(a, b int) float64 {
 <pre class="highlight"><code class="language-go" data-lang="go">package calc_test
 
 import (
-	. "github.com/bmuschko/go-testing-frameworks/calc"
-	"testing"
+	. &#34;github.com/bmuschko/go-testing-frameworks/calc&#34;
+	&#34;testing&#34;
 )
 
 func TestAddWithTestingPackage(t *testing.T) {
 	result := Add(1, 2)
 
 	if result != 3 {
-		t.Errorf("Result was incorrect, got: %d, want: %d.", result, 3)
+		t.Errorf(&#34;Result was incorrect, got: %d, want: %d.&#34;, result, 3)
 	}
 }
 
@@ -209,7 +208,7 @@ func TestSubtractWithTestingPackage(t *testing.T) {
 	result := Subtract(5, 3)
 
 	if result != 2 {
-		t.Errorf("Result was incorrect, got: %d, want: %d.", result, 2)
+		t.Errorf(&#34;Result was incorrect, got: %d, want: %d.&#34;, result, 2)
 	}
 }
 
@@ -217,7 +216,7 @@ func TestMultiplyWithTestingPackage(t *testing.T) {
 	result := Multiply(5, 6)
 
 	if result != 30 {
-		t.Errorf("Result was incorrect, got: %d, want: %d.", result, 30)
+		t.Errorf(&#34;Result was incorrect, got: %d, want: %d.&#34;, result, 30)
 	}
 }
 
@@ -225,7 +224,7 @@ func TestDivideWithTestingPackage(t *testing.T) {
 	result := Divide(10, 2)
 
 	if result != 5 {
-		t.Errorf("Result was incorrect, got: %f, want: %f.", result, float64(5))
+		t.Errorf(&#34;Result was incorrect, got: %f, want: %f.&#34;, result, float64(5))
 	}
 }</code></pre>
 </div>
@@ -252,9 +251,9 @@ ok  	github.com/bmuschko/go-testing-frameworks/calc	0.007s</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>From my perspective, there&#8217;s nothing wrong with reusing existing functionality even though it requires an external library or may steepen the learning curve. I would expect that most Go developers are familiar with at least one assertion helper library or a more intricate testing framework. Let&#8217;s have a look at Testify, the most popular assertion library.</p>
+<p>From my perspective, there’s nothing wrong with reusing existing functionality even though it requires an external library or may steepen the learning curve. I would expect that most Go developers are familiar with at least one assertion helper library or a more intricate testing framework. Let’s have a look at Testify, the most popular assertion library.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -274,9 +273,9 @@ ok  	github.com/bmuschko/go-testing-frameworks/calc	0.007s</pre>
 <pre class="highlight"><code class="language-go" data-lang="go">package calc_test
 
 import (
-	. "github.com/bmuschko/go-testing-frameworks/calc"
-	. "github.com/stretchr/testify/assert"
-	"testing"
+	. &#34;github.com/bmuschko/go-testing-frameworks/calc&#34;
+	. &#34;github.com/stretchr/testify/assert&#34;
+	&#34;testing&#34;
 )
 
 func TestAddWithTestify(t *testing.T) {
@@ -306,14 +305,14 @@ func TestDivideWithTestify(t *testing.T) {
 <div class="paragraph">
 <p>If you are used to testing frameworks in other languages e.g. <a href="https://junit.org/junit5/">JUnit</a> then you might be wondering about set up and tear down functionality or a way to define a suite of tests. Testify supports these concepts with the help of the <a href="https://github.com/stretchr/testify#suite-package"><code>suite</code></a> package. From my perspective the functionality of the library is easy to grasp and use.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="gocheck">The alternative assertion library: gocheck</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The library <a href="https://labix.org/gocheck">gocheck</a> offers similar functionality to Testify. It&#8217;s a testing framework with support for rich assertions, the definition of test suites and fixture callbacks. The two features I really like in gocheck are explicit test skipping and the ability to select test execution from the command line via filters. In listing 4, you can see a multiple test cases written with gocheck.</p>
+<p>The library <a href="https://labix.org/gocheck">gocheck</a> offers similar functionality to Testify. It’s a testing framework with support for rich assertions, the definition of test suites and fixture callbacks. The two features I really like in gocheck are explicit test skipping and the ability to select test execution from the command line via filters. In listing 4, you can see a multiple test cases written with gocheck.</p>
 </div>
 <div class="paragraph">
 <p><em>calc_gocheck_test.go</em></p>
@@ -323,9 +322,9 @@ func TestDivideWithTestify(t *testing.T) {
 <pre class="highlight"><code class="language-go" data-lang="go">package calc_test
 
 import (
-	. "github.com/bmuschko/go-testing-frameworks/calc"
-	. "github.com/go-check/check"
-	"testing"
+	. &#34;github.com/bmuschko/go-testing-frameworks/calc&#34;
+	. &#34;github.com/go-check/check&#34;
+	&#34;testing&#34;
 )
 
 func Test(t *testing.T) {
@@ -361,7 +360,7 @@ func (s *MySuite) TestDivideWithGocheck(c *C) {
 <p><em>Listing 4. Using the assertion helpers provided by gocheck</em></p>
 </div>
 <div class="paragraph">
-<p>The testing framework condenses the usual test results in the console output. It&#8217;s unfortunate that the level of details cannot be controlled by a command line option.</p>
+<p>The testing framework condenses the usual test results in the console output. It’s unfortunate that the level of details cannot be controlled by a command line option.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -374,9 +373,9 @@ ok  	github.com/bmuschko/go-testing-frameworks/calc	0.007s</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The last commit to the source code happened in 2016 which might indicate that active development stopped for good. Despite its complete feature set, I&#8217;d probably prefer Testify over gocheck as you can still expect bugfixes and propose feature requests.</p>
+<p>The last commit to the source code happened in 2016 which might indicate that active development stopped for good. Despite its complete feature set, I’d probably prefer Testify over gocheck as you can still expect bugfixes and propose feature requests.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -393,12 +392,12 @@ ok  	github.com/bmuschko/go-testing-frameworks/calc	0.007s</pre>
 <pre class="highlight"><code class="language-go" data-lang="go">package calc_test
 
 import (
-	. "github.com/bmuschko/go-testing-frameworks/calc"
-	. "github.com/ToQoz/gopwt/assert"
-	. "github.com/ToQoz/gopwt"
-	"testing"
-	"flag"
-	"os"
+	. &#34;github.com/bmuschko/go-testing-frameworks/calc&#34;
+	. &#34;github.com/ToQoz/gopwt/assert&#34;
+	. &#34;github.com/ToQoz/gopwt&#34;
+	&#34;testing&#34;
+	&#34;flag&#34;
+	&#34;os&#34;
 )
 
 func TestMain(m *testing.M) {
@@ -432,7 +431,7 @@ func TestDivideWithGopwt(t *testing.T) {
 <p><em>Listing 5. Power assertions with gopwt</em></p>
 </div>
 <div class="paragraph">
-<p>Let&#8217;s give it a go. As you can see below, the console output clearly indicates the actual values of every variable used in the expression in the error message.</p>
+<p>Let’s give it a go. As you can see below, the console output clearly indicates the actual values of every variable used in the expression in the error message.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -464,14 +463,14 @@ FAIL	github.com/bmuschko/go-testing-frameworks/calc	0.006s
 exit status 1</pre>
 </div>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="go-testdeep">Deep comparison with go-testdeep</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Sometimes you&#8217;ll need to write assertions that compare values in data structures. The library <a href="https://github.com/maxatome/go-testdeep">go-testdeep</a> offers flexible operators to avoid having to repeat common comparison functionality. For example, you can compare the contents of a map or check if the value of a number is greater or equals than the expected value. The calculator functions under test are not the best show case for demonstrating go-testdeep&#8217;s capabilities, however, listing 6 uses some of its comparison functions in action.</p>
+<p>Sometimes you’ll need to write assertions that compare values in data structures. The library <a href="https://github.com/maxatome/go-testdeep">go-testdeep</a> offers flexible operators to avoid having to repeat common comparison functionality. For example, you can compare the contents of a map or check if the value of a number is greater or equals than the expected value. The calculator functions under test are not the best show case for demonstrating go-testdeep’s capabilities, however, listing 6 uses some of its comparison functions in action.</p>
 </div>
 <div class="paragraph">
 <p><em>calc_gotestdeep_test.go</em></p>
@@ -481,9 +480,9 @@ exit status 1</pre>
 <pre class="highlight"><code class="language-go" data-lang="go">package calc_test
 
 import (
-	. "github.com/bmuschko/go-testing-frameworks/calc"
-	. "github.com/maxatome/go-testdeep"
-	"testing"
+	. &#34;github.com/bmuschko/go-testing-frameworks/calc&#34;
+	. &#34;github.com/maxatome/go-testdeep&#34;
+	&#34;testing&#34;
 )
 
 func TestAddWithGoTestDeep(t *testing.T) {
@@ -492,9 +491,9 @@ func TestAddWithGoTestDeep(t *testing.T) {
 	CmpDeeply(t, &amp;result, Ptr(3))
 	CmpDeeply(t, result, Code(func (r int) (bool, string) {
 		if r == 3 {
-			return true, ""
+			return true, &#34;&#34;
 		}
-		return false, "Result should be 3"
+		return false, &#34;Result should be 3&#34;
 	}))
 }
 
@@ -526,16 +525,16 @@ FAIL	github.com/bmuschko/go-testing-frameworks/calc	0.028s</pre>
 <p>Similar to testify, go-testdeep is one of those libraries you can just add to your tool chain when using the standard <code>testing</code> package. If you are sick and tired of writing the same comparison logic over and over again, then go-testdeep might be for you.</p>
 </div>
 <div class="paragraph">
-<p>In the next section, we&#8217;ll have a look at BDD-style testing frameworks.</p>
+<p>In the next section, we’ll have a look at BDD-style testing frameworks.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="ginkgo">Expressive BDD-style tests with Ginkgo and Gomega</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The BDD testing style is known for its expressiveness and readability. The most well-known BDD testing framework in the Go world is <a href="https://github.com/onsi/ginkgo">Ginkgo</a>. There&#8217;s slightly more code you&#8217;ll have to write with Ginkgo compared to the tests that only use an assertion helper library. However, it pays back with a given/when/then pattern that should be understandable by even non-programmers.</p>
+<p>The BDD testing style is known for its expressiveness and readability. The most well-known BDD testing framework in the Go world is <a href="https://github.com/onsi/ginkgo">Ginkgo</a>. There’s slightly more code you’ll have to write with Ginkgo compared to the tests that only use an assertion helper library. However, it pays back with a given/when/then pattern that should be understandable by even non-programmers.</p>
 </div>
 <div class="paragraph">
 <p>Ginkgo really shines when used in conjunction with its sister project, the assertion library <a href="http://onsi.github.io/gomega/">Gomega</a>. It allows for writing builder-style assertion logic that can even be used independent of Gingko. It reads like natural language and is easy to write. Additionally, Gomega provides a shortcut symbol for writing assertion via the <code>Ω</code> notation. The notation may align well from a branding perspective but I am personally not a fan of using it as it makes the syntax more obscure and harder to parse. Listing 7 shows test cases written with Ginkgo and the Gomega <code>Expect</code> notation.</p>
@@ -548,44 +547,44 @@ FAIL	github.com/bmuschko/go-testing-frameworks/calc	0.028s</pre>
 <pre class="highlight"><code class="language-go" data-lang="go">package calc_test
 
 import (
-	. "github.com/bmuschko/go-testing-frameworks/calc"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. &#34;github.com/bmuschko/go-testing-frameworks/calc&#34;
+	. &#34;github.com/onsi/ginkgo&#34;
+	. &#34;github.com/onsi/gomega&#34;
 )
 
 func TestCalc(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Calculator Suite")
+	RunSpecs(t, &#34;Calculator Suite&#34;)
 }
 
-var _ = Describe("Calculator", func() {
-	Describe("Add numbers", func() {
-		Context("1 and 2", func() {
-			It("should be 3", func() {
+var _ = Describe(&#34;Calculator&#34;, func() {
+	Describe(&#34;Add numbers&#34;, func() {
+		Context(&#34;1 and 2&#34;, func() {
+			It(&#34;should be 3&#34;, func() {
 				Expect(Add(1, 2)).To(Equal(3))
 			})
 		})
 	})
 
-	Describe("Subtract numbers", func() {
-		Context("3 from 5", func() {
-			It("should be 2", func() {
+	Describe(&#34;Subtract numbers&#34;, func() {
+		Context(&#34;3 from 5&#34;, func() {
+			It(&#34;should be 2&#34;, func() {
 				Expect(Subtract(5, 3)).To(Equal(2))
 			})
 		})
 	})
 
-	Describe("Multiply numbers", func() {
-		Context("5 with 6", func() {
-			It("should be 30", func() {
+	Describe(&#34;Multiply numbers&#34;, func() {
+		Context(&#34;5 with 6&#34;, func() {
+			It(&#34;should be 30&#34;, func() {
 				Expect(Multiply(5, 6)).To(Equal(30))
 			})
 		})
 	})
 
-	Describe("Divide numbers", func() {
-		Context("10 by 2", func() {
-			It("should be 30", func() {
+	Describe(&#34;Divide numbers&#34;, func() {
+		Context(&#34;10 by 2&#34;, func() {
+			It(&#34;should be 30&#34;, func() {
 				Expect(Divide(10, 2)).To(Equal(float64(5)))
 			})
 		})
@@ -600,7 +599,7 @@ var _ = Describe("Calculator", func() {
 <p>Upon execution, Ginkgo renders color-coded console output which makes it extremely easy to parse the results.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/go-testing-frameworks/ginkgo-console-output.png" alt="ginkgo console output"></span></p>
+<p><span class="image"><img src="/img/blog/go-testing-frameworks/ginkgo-console-output.png" alt="ginkgo console output"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 1. Console output from Ginkgo</em></p>
@@ -608,14 +607,14 @@ var _ = Describe("Calculator", func() {
 <div class="paragraph">
 <p>Ginkgo and Gomega have great documentation which makes it real easy for beginners. If you prefer writing BDD-style tests with an expansive feature set then Ginkgo is for you.</p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
 <h2 id="goblin">Simple and flexible BDD-style testing with Goblin</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://github.com/franela/goblin">Goblin</a> is another BDD-style testing framework for Go. Despite its fairly simplistic API, Goblin makes it easy to write declarative and expressive test cases. You don&#8217;t necessarily need to go with its built-in assertion functions. Alternatively, you can plug in other assertion libraries e.g. Gomega.</p>
+<p><a href="https://github.com/franela/goblin">Goblin</a> is another BDD-style testing framework for Go. Despite its fairly simplistic API, Goblin makes it easy to write declarative and expressive test cases. You don’t necessarily need to go with its built-in assertion functions. Alternatively, you can plug in other assertion libraries e.g. Gomega.</p>
 </div>
 <div class="paragraph">
 <p><em>calc_goblin_test.go</em></p>
@@ -623,27 +622,27 @@ var _ = Describe("Calculator", func() {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-go" data-lang="go">import (
-	. "github.com/bmuschko/go-testing-frameworks/calc"
-	. "github.com/franela/goblin"
-	"testing"
+	. &#34;github.com/bmuschko/go-testing-frameworks/calc&#34;
+	. &#34;github.com/franela/goblin&#34;
+	&#34;testing&#34;
 )
 
 func TestCalculator(t *testing.T) {
 	g := Goblin(t)
-	g.Describe("Calculator", func() {
-		g.It("should add two numbers ", func() {
+	g.Describe(&#34;Calculator&#34;, func() {
+		g.It(&#34;should add two numbers &#34;, func() {
 			g.Assert(Add(1, 2)).Equal(3)
 		})
 
-		g.It("should subtract two numbers", func() {
+		g.It(&#34;should subtract two numbers&#34;, func() {
 			g.Assert(Subtract(5, 3)).Equal(2)
 		})
 
-		g.It("should multiply two numbers", func() {
+		g.It(&#34;should multiply two numbers&#34;, func() {
 			g.Assert(Multiply(5, 6)).Equal(30)
 		})
 
-		g.It("should divide two numbers", func() {
+		g.It(&#34;should divide two numbers&#34;, func() {
 			g.Assert(Divide(10, 2)).Equal(float64(5))
 		})
 	})
@@ -657,12 +656,12 @@ func TestCalculator(t *testing.T) {
 <p>What I really like about Goblin is the colored console output which looks similar to the one provided by <a href="https://mochajs.org/">Mocha</a>, a JavaScript-based testing framework. Figure 2 shows the output for a successful execution of <code>calc_goblin_test.go</code>.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/go-testing-frameworks/goblin-console-output.png" alt="goblin console output"></span></p>
+<p><span class="image"><img src="/img/blog/go-testing-frameworks/goblin-console-output.png" alt="goblin console output"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 2. Console output from Goblin</em></p>
 </div>
-<hr>
+<hr/>
 </div>
 </div>
 <div class="sect1">
@@ -677,50 +676,50 @@ func TestCalculator(t *testing.T) {
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-go" data-lang="go">import (
-	. "github.com/bmuschko/go-testing-frameworks/calc"
-	. "github.com/smartystreets/goconvey/convey"
-	"testing"
+	. &#34;github.com/bmuschko/go-testing-frameworks/calc&#34;
+	. &#34;github.com/smartystreets/goconvey/convey&#34;
+	&#34;testing&#34;
 )
 
 func TestAddWithGoConvey(t *testing.T) {
-	Convey("Adding two numbers", t, func() {
+	Convey(&#34;Adding two numbers&#34;, t, func() {
 		x := 1
 		y := 2
 
-		Convey("should produce the expected result", func() {
+		Convey(&#34;should produce the expected result&#34;, func() {
 			So(Add(x, y), ShouldEqual, 3)
 		})
 	})
 }
 
 func TestSubtractWithGoConvey(t *testing.T) {
-	Convey("Subtracting two numbers", t, func() {
+	Convey(&#34;Subtracting two numbers&#34;, t, func() {
 		x := 5
 		y := 3
 
-		Convey("should produce the expected result", func() {
+		Convey(&#34;should produce the expected result&#34;, func() {
 			So(Subtract(x, y), ShouldEqual, 2)
 		})
 	})
 }
 
 func TestMultiplyWithGoConvey(t *testing.T) {
-	Convey("Multiplying two numbers", t, func() {
+	Convey(&#34;Multiplying two numbers&#34;, t, func() {
 		x := 5
 		y := 6
 
-		Convey("should produce the expected result", func() {
+		Convey(&#34;should produce the expected result&#34;, func() {
 			So(Multiply(x, y), ShouldEqual, 30)
 		})
 	})
 }
 
 func TestDivideWithGoConvey(t *testing.T) {
-	Convey("Dividing two numbers", t, func() {
+	Convey(&#34;Dividing two numbers&#34;, t, func() {
 		x := 10
 		y := 2
 
-		Convey("should produce the expected result", func() {
+		Convey(&#34;should produce the expected result&#34;, func() {
 			So(Divide(x, y), ShouldEqual, float64(5))
 		})
 	})
@@ -734,7 +733,7 @@ func TestDivideWithGoConvey(t *testing.T) {
 <p>GoConvey comes with an extremely useful web interface. You can start it from the console by executing the command <code>goconvey</code>. Navigating to <code>localhost:8080</code> shows an up to date view of your test result as shown in figure 3.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="/img/blog/go-testing-frameworks/goconvey-web-ui.png" alt="goconvey web ui"></span></p>
+<p><span class="image"><img src="/img/blog/go-testing-frameworks/goconvey-web-ui.png" alt="goconvey web ui"/></span></p>
 </div>
 <div class="paragraph">
 <p><em>Figure 3. Live execution and rendering of test results with GoConvey</em></p>
@@ -748,10 +747,10 @@ func TestDivideWithGoConvey(t *testing.T) {
 <p>Many Go developers are content with the standard testing support. Nevertheless, the Go ecosystem produced a wealth of testing libraries that go far beyond the basics. You can avoid writing unnecessary boilerplate code with the help of an assertion library. My personal favorite testing frameworks in this category are Testify and gopwt.</p>
 </div>
 <div class="paragraph">
-<p>BDD-style testing frameworks can further improve the expressiveness of your test code. I like Goblin for its simplicity and feature-rich console output. For larger projects, I&#8217;d probably go with Ginkgo.</p>
+<p>BDD-style testing frameworks can further improve the expressiveness of your test code. I like Goblin for its simplicity and feature-rich console output. For larger projects, I’d probably go with Ginkgo.</p>
 </div>
 <div class="paragraph">
-<p>Which testing framework do you prefer? I&#8217;d love to hear your opinions.</p>
+<p>Which testing framework do you prefer? I’d love to hear your opinions.</p>
 </div>
 </div>
 </div>

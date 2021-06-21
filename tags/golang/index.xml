@@ -6,18 +6,14 @@
     <description>Recent content in golang on Benjamin Muschko&#39;s development blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 25 Jan 2019 00:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://bmuschko.com/tags/golang/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Fri, 25 Jan 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://bmuschko.com/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Building Go projects using modules on Jenkins</title>
       <link>https://bmuschko.com/blog/go-on-jenkins/</link>
       <pubDate>Fri, 25 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/go-on-jenkins/</guid>
-      <description>The Go 1.11 release introduced experimental, opt-in support for Go modules. It is now possible to build Go projects outside of the $GOPATH. This profound change has a significant impact on developer workflows. For example, you don&amp;#8217;t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</description>
+      <description>The Go 1.11 release introduced experimental, opt-in support for Go modules. It is now possible to build Go projects outside of the $GOPATH. This profound change has a significant impact on developer workflows. For example, you don’t have to set up the expected directory structure anymore just because you want to fix a simple bug in an open source package. Furthermore, CI processes can clone the code and run the Go command directly from the checkout directory.</description>
     </item>
     
     <item>
@@ -36,7 +32,7 @@
       <pubDate>Sat, 26 May 2018 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/migrating-glide-to-dep/</guid>
-      <description>Package management is a bread-and-butter task. Rarely does a Go developer write a Go program that doesn&amp;#8217;t reference an external package. Over the course of the years, the Go community has seen various approaches to solving the same problem. From go get over vendoring to package managers like Glide. Each solution comes with its benefits and drawbacks.
+      <description>Package management is a bread-and-butter task. Rarely does a Go developer write a Go program that doesn’t reference an external package. Over the course of the years, the Go community has seen various approaches to solving the same problem. From go get over vendoring to package managers like Glide. Each solution comes with its benefits and drawbacks.
  Recently, the Go community settled on dep as the canonical tool for package management.</description>
     </item>
     
@@ -46,7 +42,7 @@
       <pubDate>Sat, 29 Jul 2017 00:00:00 +0000</pubDate>
       
       <guid>https://bmuschko.com/blog/golang-with-gradle/</guid>
-      <description>Introduction In July 2017 Google Go made a big jump on the TIOBE index. It&amp;#8217;s now ranked among the top 10 most popular programming languages. With the rise of Moby aka Docker, Kubernetes and InfluxDB the language has become the go-to tool in the DevOps space. The complexity of automating the process of building, assembling and distributing the source code and binaries for any medium- to large-sized project is high. It&amp;#8217;s somewhat shocking to see that the predominant tooling of automating in Go is still a mixture of Make files and shell scripts as it can be observed in the Moby and Kubernetes code base.</description>
+      <description>Introduction In July 2017 Google Go made a big jump on the TIOBE index. It’s now ranked among the top 10 most popular programming languages. With the rise of Moby aka Docker, Kubernetes and InfluxDB the language has become the go-to tool in the DevOps space. The complexity of automating the process of building, assembling and distributing the source code and binaries for any medium- to large-sized project is high. It’s somewhat shocking to see that the predominant tooling of automating in Go is still a mixture of Make files and shell scripts as it can be observed in the Moby and Kubernetes code base.</description>
     </item>
     
   </channel>
