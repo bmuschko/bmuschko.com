@@ -157,7 +157,7 @@ Formally, this process releases a new version of the artifact. In practice we ha
 
 Publishing one or many artifacts with Gradle is relatively straightforward. The project needs to apply the necessary publishing plugins and provides additional metadata.
 
-You can set up Maven repositories on JCenter to host your released artifacts. Listing 3 shows how to publish the JAR file produced by the project to the link:https://bintray.com/bmuschko/experimental[repository named "experimental"]. Credentials can be provided through environment variables or project properties.
+You can set up Maven repositories on JCenter to host your released artifacts. Listing 3 shows how to publish the JAR file produced by the project to the repository named "experimental". Credentials can be provided through environment variables or project properties.
 
 _build.gradle_
 [source,groovy]

@@ -152,7 +152,7 @@ Next, we'll look at publishing the extension.
 
 == Publishing the extension
 
-To make an extension reusable, you have to compile the source code, bundle it into a JAR file and then publish it to a binary repository. For the example extension, I decided to make it https://bintray.com/bmuschko/maven/asciidoctorj-tabbed-code-extension[available on Bintray's JCenter]. JCenter is a superset of Maven Central so you should be able to retrieve from there as well.
+To make an extension reusable, you have to compile the source code, bundle it into a JAR file and then publish it to a binary repository. For the example extension, I decided to make it available on Bintray's JCenter. JCenter is a superset of Maven Central so you should be able to retrieve from there as well.
 
 AsciidoctorJ doesn't provide any tooling for publishing extensions. I decided to go with Gradle for publishing to Bintray. I won't go into details in this blog post but you can find the https://github.com/bmuschko/asciidoctorj-tabbed-code-extension/blob/master/buildSrc/src/main/kotlin/com/bmuschko/asciidoctorj/tabbedcode/PublishingPlugin.kt[relevant code] on GitHub.
 
