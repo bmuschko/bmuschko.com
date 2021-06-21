@@ -20,7 +20,7 @@ jobs:
       - name: Install tools
         run: |
           gem install asciidoctor
-          wget https://github.com/gohugoio/hugo/releases/download/v0.59.0/hugo_0.59.0_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
+          wget https://github.com/gohugoio/hugo/releases/download/v0.84.0/hugo_0.84.0_Linux-64bit.tar.gz -O /tmp/hugo.tar.gz
           wget https://github.com/bmuschko/link-verifier/releases/download/v0.7/link-verifier-0.7-linux-amd64.tar.gz -O /tmp/link-verifier.tar.gz
           tar -xvf /tmp/hugo.tar.gz
           tar -xvf /tmp/link-verifier.tar.gz
