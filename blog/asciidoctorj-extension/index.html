@@ -262,7 +262,7 @@ public class TabbedCodeBlockDocinfoProcessorTest {
 <h2 id="_publishing_the_extension">Publishing the extension</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To make an extension reusable, you have to compile the source code, bundle it into a JAR file and then publish it to a binary repository. For the example extension, I decided to make it <a href="https://bintray.com/bmuschko/maven/asciidoctorj-tabbed-code-extension">available on Bintray&#8217;s JCenter</a>. JCenter is a superset of Maven Central so you should be able to retrieve from there as well.</p>
+<p>To make an extension reusable, you have to compile the source code, bundle it into a JAR file and then publish it to a binary repository. For the example extension, I decided to make it available on Bintray&#8217;s JCenter. JCenter is a superset of Maven Central so you should be able to retrieve from there as well.</p>
 </div>
 <div class="paragraph">
 <p>AsciidoctorJ doesn&#8217;t provide any tooling for publishing extensions. I decided to go with Gradle for publishing to Bintray. I won&#8217;t go into details in this blog post but you can find the <a href="https://github.com/bmuschko/asciidoctorj-tabbed-code-extension/blob/master/buildSrc/src/main/kotlin/com/bmuschko/asciidoctorj/tabbedcode/PublishingPlugin.kt">relevant code</a> on GitHub.</p>
