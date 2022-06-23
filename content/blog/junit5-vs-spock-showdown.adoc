@@ -390,7 +390,7 @@ _Listing 10. Disabling test methods by annotation_
 
 === Spock
 
-Disabling a test in Spock follows the same pattern as JUnit 5. The API introduces the annotation `@Ignore`. The annotation can apply to a type or a method and allows for providing an optional reason. Groovy-based tests can also use the annotation link:http://docs.groovy-lang.org/latest/html/api/groovy/transform/NotYetImplemented.html[`@NotYetImplemented`] to pass a test if a test failure occurs for functionality that currently does not work but will be implemented in the future.
+Disabling a test in Spock follows the same pattern as JUnit 5. The API introduces the annotation `@Ignore`. The annotation can apply to a type or a method and allows for providing an optional reason. Groovy-based tests can also use the annotation link:https://docs.groovy-lang.org/3.0.8/html/gapi/groovy/transform/NotYetImplemented.html[`@NotYetImplemented`] to pass a test if a test failure occurs for functionality that currently does not work but will be implemented in the future.
 
 _IgnoredTest.groovy_
 [source,java]
