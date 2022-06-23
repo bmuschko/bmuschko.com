@@ -27,7 +27,7 @@ highlight = true
 <br>
 ++++
 
-To certify, you have to register with a test center near you. The test center provides a computer preloaded with the questions. You have two hours to complete them. With the right practical knowledge of Jenkins, you should have not trouble hitting the passing score. For a rough guideance on the curriculum, check out the https://www.previous.cloudbees.com/sites/default/files/cje-study-guide-2018.pdf[2018 study guide]. The PDF contains helpful links to external resources you may want to read.
+To certify, you have to register with a test center near you. The test center provides a computer preloaded with the questions. You have two hours to complete them. With the right practical knowledge of Jenkins, you should have not trouble hitting the passing score. For a rough guideance on the curriculum, check out the https://assets.ctfassets.net/vtn4rfaw6n2j/cje-study-guide-2018pdf/fa6be21a4a7390866f40365f92eefaf5/cje-study-guide-2018.pdf[2018 study guide]. The PDF contains helpful links to external resources you may want to read.
 
 In this post, I want to summarize the resources I used to prepare for the CJE exam. I hope they will help you with succeeding the exam with flying colors.
 
@@ -46,7 +46,7 @@ I personally decided to run Jenkins on my developer machine by executing the Jav
 There are a couple of free and paid resources that I found helpful. Moreover, I wrote two blog posts if you'd like go further on certain aspects.
 
 1. A good way to start are the https://standard.cbu.cloudbees.com/series/certified-jenkins-engineer-exam-prep[video courses by CloudBees university]. Those courses lay out the curriculum and touch on all topics important to the exam.
-2. The course "Learn Jenkins by doing" is an instructor-led https://linuxacademy.com/course/learn-jenkins-by-doing/[video course by Linux Academy]. It might be helful to go through the material shortly before taking the test. You can subscribe to a 30-day trial to get access to the content.
+2. The course "Certified Jenkins Engineer (2020)" is an instructor-led https://acloudguru.com/course/certified-jenkins-engineer-2020[video course by A Cloud Guru]. It might be helful to go through the material shortly before taking the test. You can subscribe to a 30-day trial to get access to the content.
 3. I wrote a blog post on https://bmuschko.com/blog/jenkins-shared-libraries/[best practices for shared libraries in Jenkins]. The content goes beyond what's required for the exam but you might find it helpful if you planning to roll out pipeline logic on a bigger scale in your organization.
 4. You can set up your Jenkins environment in a Kubernetes cluster. To learn more, check out https://github.com/bmuschko/jenkins-with-kubernetes[this GitHub repository]. The instructions walk you through the installation and configuration steps. I know that a lot of people are interested in this topic but it's not really relevant to the exam.
 
