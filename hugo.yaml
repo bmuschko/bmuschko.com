@@ -1,0 +1,327 @@
+baseURL: "https://bmuschko.com/"
+languageCode: "en-us"
+title: "Benjamin Muschko"
+theme: hugo-profile
+
+outputs:
+  home:
+    - "HTML"
+    - "RSS"
+    - "JSON"
+  page:
+    - "HTML"
+    - "RSS"
+
+enableRobotsTXT: true
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+services:
+  googleAnalytics:
+    id: G-NQWC4QFM1D
+
+params:
+  title: "Benjamin Muschko"
+  description: "Software engineer, consultant, trainer, and O'Reilly author specializing in AI-augmented development, cloud-native technologies, Kubernetes, and DevOps."
+  favicon: "/images/profile.jpg"
+
+  useBootstrapCDN: false
+  customCSS: true
+  mathjax: false
+  animate: false
+
+  theme:
+    defaultTheme: "dark"
+    disableThemeToggle: true
+
+  font:
+    fontSize: 1rem
+    fontWeight: 400
+    lineHeight: 1.625
+    textAlign: left
+
+  color:
+    primaryColor: "#38bdf8"
+    textColor: "#8892a4"
+    secondaryTextColor: "#4a5568"
+    textLinkColor: "#38bdf8"
+    backgroundColor: "#0b1221"
+    secondaryBackgroundColor: "#1e293b"
+    secondaryColor: "#1e293b"
+
+    darkmode:
+      primaryColor: "#38bdf8"
+      textColor: "#8892a4"
+      secondaryTextColor: "#4a5568"
+      textLinkColor: "#38bdf8"
+      backgroundColor: "#0b1221"
+      secondaryBackgroundColor: "#1e293b"
+      secondaryColor: "#1e293b"
+
+  navbar:
+    align: ms-auto
+    brandName: "Benjamin Muschko"
+    disableSearch: true
+    stickyNavBar:
+      enable: true
+      showOnScrollUp: true
+    enableSeparator: false
+    menus:
+      disableAbout: false
+      disableExperience: false
+      disableEducation: true
+      disableProjects: false
+      disableAchievements: false
+      disableContact: false
+
+  hero:
+    enable: true
+    intro: "Hi, I'm"
+    title: "Benjamin Muschko"
+    subtitle: "Software Engineer, Trainer and Author"
+    content: "Founder of Automated Ascent. O'Reilly author, CNCF Ambassador, and Kubestronaut with 20+ years of experience building enterprise software. I help teams adopt cloud-native technologies, Kubernetes, and DevOps best practices."
+    image: /images/profile.jpg
+    roundImage: true
+    bottomImage:
+      enable: false
+    button:
+      enable: false
+    socialLinks:
+      fontAwesomeIcons:
+        - icon: fab fa-github
+          url: https://github.com/bmuschko
+        - icon: fab fa-linkedin
+          url: https://www.linkedin.com/in/benjaminmuschko
+        - icon: fas fa-envelope
+          url: mailto:benjamin.muschko@gmail.com
+
+  about:
+    enable: true
+    title: "About Me"
+    content: |-
+      I'm a software engineer, consultant, and trainer with over 20 years of experience in enterprise software development. As the founder of [Automated Ascent](https://automatedascent.com), I help organizations navigate the complexities of cloud-native application development, container orchestration, and CI/CD pipelines.
+    skills:
+      enable: true
+      title: "Technologies, tools and methodologies I work with:"
+      items:
+        - "Agentic AI"
+        - "Developer Tooling"
+        - "Cloud Application Development"
+        - "Mass Refactoring"
+        - "DevSecOps"
+        - "Kubernetes"
+        - "JVM Languages"
+        - "Go"
+        - "Build Tools"
+        - "CI/CD"
+
+  experience:
+    enable: true
+    items:
+      - company: "Automated Ascent"
+        companyUrl: "https://automatedascent.com"
+        jobs:
+          - name: "Consultant and Trainer"
+            date: "May 2018 - Present"
+            content: |-
+              - Delivered high-impact, short- and long-term consulting engagements to a variety of enterprise companies with a focus on CI/CD, cloud-native application development, container solutions, and DevSecOps.
+              - Designed and conducted live and video-based trainings for 1000+ students on topics like Kubernetes, Docker, Gradle, Go, Java, and Groovy for O'Reilly Media, LinkedIn Learning, and privately-owned training organizations.
+              - Technical writing in the form of technology reports and books for O'Reilly Media.
+              - Created over 100 interactive learning experiences available on the O'Reilly Learning Platform.
+
+      - company: "Gradle Inc."
+        companyUrl: "https://gradle.com"
+        jobs:
+          - name: "Principal Engineer"
+            date: "Aug 2013 - Apr 2018"
+            content: |-
+              - Implemented new features and bug fixes for the Open Source build tool Gradle with impact on millions of users.
+              - Engaged with the Gradle community as developer advocate by speaking at conferences, improving documentation and interacting with key contributors.
+              - Served as technical liaison for development partnership with Netflix for more than 2 years.
+              - Delivered consulting engagements for more than 20 industry leaders and Fortune 500 companies ranging from 1 to 4 weeks.
+              - Designed, developed and delivered in-person and online training courses to thousands of experienced professionals.
+
+  education:
+    enable: false
+
+  achievements:
+    enable: true
+    title: "Highlights"
+    items:
+      - title: "AI-Augmented Software Developer"
+        content: "Helping developers and teams adopt agentic AI workflows, from AI-assisted coding and automated refactoring to orchestrating multi-step AI agents across the full software development lifecycle."
+      - title: "Embedded Consultant"
+        content: "Working side by side with engineering teams to understand their domain, identify their toughest challenges, and collaboratively build solutions that drive real impact. Combining deep technical empathy with hands-on problem solving to deliver outcomes, not just advice."
+      - title: "Prolific Author and Trainer"
+        content: "Author of 10+ books and video courses, and instructor of live online trainings with O'Reilly Media and LinkedIn Learning covering Kubernetes, Java, Go, and build automation. Known for breaking down complex topics into approachable steps and building up knowledge from the ground up."
+        url: "https://www.oreilly.com/pub/au/7768"
+      - title: "CNCF Ambassador"
+        content: "Recognized by the Cloud Native Computing Foundation for contributions to the cloud-native community."
+        url: "https://www.credly.com/badges/c6f3e17f-0105-426c-813b-fd66cf50949a"
+      - title: "Kubestronaut"
+        content: "Earned all five Kubernetes certifications from the Linux Foundation: CKA, CKAD, CKS, KCNA, and KCSA."
+        url: "https://www.credly.com/badges/78379dc0-4934-4e62-a250-a9ebe5bb3304"
+
+  projects:
+    enable: true
+    title: "Books"
+    items:
+      - title: "CKA Study Guide, 2nd Edition"
+        content: "Comprehensive study guide for the Certified Kubernetes Administrator exam."
+        image: /images/cka-study-guide.jpg
+        featured:
+          name: "O'Reilly"
+          link: "https://www.oreilly.com/library/view/certified-kubernetes-administrator/9798341608399/"
+        badges:
+          - "Kubernetes"
+          - "CKA"
+          - "O'Reilly"
+        links:
+          - icon: fab fa-amazon
+            url: "https://www.amazon.com/Certified-Kubernetes-Administrator-Study-Depth/dp/B0FPQ7GFZ1"
+
+      - title: "CKAD Study Guide, 2nd Edition"
+        content: "In-depth preparation guide for the Certified Kubernetes Application Developer exam."
+        image: /images/ckad-study-guide.jpg
+        featured:
+          name: "O'Reilly"
+          link: "https://www.oreilly.com/library/view/certified-kubernetes-application/9781098152857/"
+        badges:
+          - "Kubernetes"
+          - "CKAD"
+          - "O'Reilly"
+        links:
+          - icon: fab fa-amazon
+            url: "https://www.amazon.com/Certified-Kubernetes-Application-Developer-Depth-ebook/dp/B0D4X23FSY"
+
+      - title: "CKS Study Guide"
+        content: "In-depth guide for the Certified Kubernetes Security Specialist exam."
+        image: /images/cks-study-guide.jpg
+        featured:
+          name: "O'Reilly"
+          link: "https://www.oreilly.com/library/view/certified-kubernetes-security/9781098132965/"
+        badges:
+          - "Kubernetes"
+          - "CKS"
+          - "O'Reilly"
+        links:
+          - icon: fab fa-amazon
+            url: "https://www.amazon.com/Certified-Kubernetes-Security-Specialist-Depth/dp/1098132971"
+
+      - title: "Gradle in Action"
+        content: "A practical guide to build automation with Gradle for Java and JVM projects."
+        image: /images/gradle-in-action.jpg
+        featured:
+          name: "Manning"
+          link: "https://www.manning.com/books/gradle-in-action"
+        badges:
+          - "Gradle"
+          - "Java"
+          - "Manning"
+        links:
+          - icon: fab fa-amazon
+            url: "https://www.amazon.com/Gradle-Action-Benjamin-Muschko/dp/1617291307"
+
+      - title: "97 Things Every Java Programmer Should Know"
+        content: "Collective wisdom from experienced Java practitioners on writing better code."
+        image: /images/97-things-java.jpg
+        featured:
+          name: "O'Reilly"
+          link: "https://www.oreilly.com/library/view/97-things-every/9781491952689/"
+        badges:
+          - "Java"
+          - "O'Reilly"
+        links:
+          - icon: fab fa-amazon
+            url: "https://www.amazon.com/Things-Every-Java-Programmer-Should/dp/1491952695"
+
+      - title: "Getting Started with Bazel"
+        content: "A guide to building software fast and correctly with Bazel."
+        image: /images/getting-started-with-bazel.jpg
+        featured:
+          name: "O'Reilly"
+          link: "https://www.oreilly.com/library/view/getting-started-with/9781492077107"
+        badges:
+          - "Bazel"
+          - "O'Reilly"
+
+  videoCourses:
+    enable: true
+    title: "Video Courses"
+    items:
+      - title: "Automated Software Refactoring with OpenRewrite and Generative AI"
+        content: "Using OpenRewrite and AI to automate large-scale code refactoring with practical examples."
+        image: /images/openrewrite-course.jpg
+        featured:
+          name: "LinkedIn Learning"
+          link: "https://www.linkedin.com/learning/automated-software-refactoring-with-openrewrite-and-generative-ai/"
+
+      - title: "Learning Gradle"
+        content: "Core concepts and building blocks of Gradle, an open-source build automation tool."
+        image: /images/learning-gradle-course.jpg
+        featured:
+          name: "LinkedIn Learning"
+          link: "https://www.linkedin.com/learning/learning-gradle"
+
+      - title: "Gradle for Java-Based Applications and Libraries"
+        content: "Covers typical tasks needed to work with Java projects using Gradle build tools."
+        image: /images/gradle-java-course.jpg
+        featured:
+          name: "LinkedIn Learning"
+          link: "https://www.linkedin.com/learning/gradle-for-java-based-applications-and-libraries"
+
+      - title: "Learning Groovy"
+        content: "Groovy fundamentals and advanced concepts including closures, collections, and file handling."
+        image: /images/learning-groovy-course.jpg
+        featured:
+          name: "LinkedIn Learning"
+          link: "https://www.linkedin.com/learning/learning-groovy"
+
+      - title: "Certified Kubernetes Application Developer (CKAD) Prep Course"
+        content: "Learn about the ins and outs required to pass the CKAD certification exam."
+        image: /images/ckad-prep-course.jpg
+        featured:
+          name: "O'Reilly"
+          link: "https://learning.oreilly.com/course/certified-kubernetes-application/0642572045296/"
+
+  contact:
+    enable: true
+    content: "Whether you need help with AI tooling and workflows, cloud-native architecture, or just want to connect - I'd love to hear from you."
+    email: "benjamin.muschko@gmail.com"
+    btnName: Send Message
+
+  footer:
+    recentPosts:
+      path: "blogs"
+      count: 3
+      title: Recent Posts
+      enable: false
+      disableFeaturedImage: false
+    socialNetworks:
+      github: https://github.com/bmuschko
+      linkedin: https://www.linkedin.com/in/benjaminmuschko
+
+  listPages:
+    disableFeaturedImage: false
+
+  singlePages:
+    socialShare: true
+    readTime:
+      enable: true
+      content: "min read"
+    scrollprogress:
+      enable: true
+
+  terms:
+    read: "Read"
+    toc: "Table Of Contents"
+    copyright: "All rights reserved"
+    emailText: "Check out this site"
+
+  datesFormat:
+    article: "Jan 2, 2006"
+    articleList: "Jan 2, 2006"
+    articleRecent: "Jan 2, 2006"

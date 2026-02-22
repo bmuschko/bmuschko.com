@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="{{ .Language.Lang }}">
+
+<head>
+  {{- partial "head.html" . -}}
+  {{- block "head" . }} {{- end }}
+
+  <!-- Inter font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Custom Styles -->
+  {{ if .Site.Params.customCSS }}
+    <link rel="stylesheet" href="{{ (printf "%sstyle.css" (.Site.Params.staticPath | default "")) | relURL }}">
+  {{ end }}
+
+  <title>
+    {{- block "title" . }} {{- end }}
+  </title>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Benjamin Muschko",
+      "url": "https://bmuschko.com",
+      "jobTitle": "Software Engineer, Trainer and Author",
+      "description": {{ .Site.Params.description }},
+      "sameAs": [
+        "https://github.com/bmuschko",
+        "https://linkedin.com/in/benjaminmuschko"
+      ]
+    }
+  }
+  </script>
+</head>
+
+<body class="dark">
+
+  <div class="bc-layout">
+    <!-- LEFT COLUMN: Sticky sidebar -->
+    <aside class="bc-sidebar">
+      <div class="bc-sidebar-inner">
+        <div class="bc-sidebar-top">
+          <h1 class="bc-name">
+            <a href="/">{{ .Site.Params.hero.title | default .Site.Title }}</a>
+          </h1>
+          <h2 class="bc-title">{{ .Site.Params.hero.subtitle }}</h2>
+          {{ if .Site.Params.hero.image }}
+          <img src="{{ .Site.Params.hero.image }}" alt="{{ .Site.Title }}" class="bc-profile-img">
+          {{ end }}
+
+          <nav class="bc-nav">
+            {{ if .Site.Params.about.enable }}
+            <a href="#about" class="bc-nav-link active">
+              <span class="bc-nav-indicator"></span>
+              <span class="bc-nav-text">About</span>
+            </a>
+            {{ end }}
+            {{ if .Site.Params.achievements.enable }}
+            <a href="#achievements" class="bc-nav-link">
+              <span class="bc-nav-indicator"></span>
+              <span class="bc-nav-text">{{ .Site.Params.achievements.title | default "Highlights" }}</span>
+            </a>
+            {{ end }}
+            {{ if .Site.Params.experience.enable }}
+            <a href="#experience" class="bc-nav-link">
+              <span class="bc-nav-indicator"></span>
+              <span class="bc-nav-text">Experience</span>
+            </a>
+            {{ end }}
+            {{ if .Site.Params.projects.enable }}
+            <a href="#projects" class="bc-nav-link">
+              <span class="bc-nav-indicator"></span>
+              <span class="bc-nav-text">{{ .Site.Params.projects.title | default "Books" }}</span>
+            </a>
+            {{ end }}
+            {{ if .Site.Params.videoCourses.enable }}
+            <a href="#videocourses" class="bc-nav-link">
+              <span class="bc-nav-indicator"></span>
+              <span class="bc-nav-text">{{ .Site.Params.videoCourses.title | default "Video Courses" }}</span>
+            </a>
+            {{ end }}
+            {{ if .Site.Params.contact.enable }}
+            <a href="#contact" class="bc-nav-link">
+              <span class="bc-nav-indicator"></span>
+              <span class="bc-nav-text">Contact</span>
+            </a>
+            {{ end }}
+          </nav>
+        </div>
+
+        <div class="bc-socials">
+          {{ range .Site.Params.hero.socialLinks.fontAwesomeIcons }}
+          <a href="{{ .url }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .icon }}">
+            <i class="{{ .icon }}"></i>
+          </a>
+          {{ end }}
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT COLUMN: Scrolling content -->
+    <main class="bc-main">
+      <div id="content">
+        {{- block "main" . }}{{- end }}
+      </div>
+      <footer class="bc-footer">
+      </footer>
+    </main>
+  </div>
+
+  {{- if (or (eq .Site.Params.UseBootstrapCDN true) (eq .Site.Params.UseBootstrapCDN "js")) -}}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+  {{- else -}}
+  <script src="{{ (printf "%sbootstrap-5/js/bootstrap.bundle.min.js" (.Site.Params.staticPath | default "")) | relURL }}"></script>
+  {{- end -}}
+
+  {{- partial "scripts.html" . -}}
+
+  <script>
+  // Active nav section tracking with IntersectionObserver
+  (function() {
+    var sections = document.querySelectorAll('.bc-section');
+    var navLinks = document.querySelectorAll('.bc-nav-link');
+
+    if (sections.length === 0 || navLinks.length === 0) return;
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          navLinks.forEach(function(link) { link.classList.remove('active'); });
+          var activeLink = document.querySelector('.bc-nav-link[href="#' + entry.target.id + '"]');
+          if (activeLink) activeLink.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -80% 0px' });
+
+    sections.forEach(function(section) { observer.observe(section); });
+
+    // Smooth scroll for nav links
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        var self = this;
+        var target = document.querySelector(self.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+          // Manually set active state for the clicked link
+          navLinks.forEach(function(l) { l.classList.remove('active'); });
+          self.classList.add('active');
+        }
+      });
+    });
+  })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+{{ if .Site.Params.about.enable | default false }}
+{{- $about := .Site.Language.Params.about | default .Site.Params.about -}}
+<section id="about" class="bc-section">
+    <h3 class="bc-section-heading">About</h3>
+    <div class="bc-section-content">
+        {{ $about.content | markdownify }}
+
+        {{ if .Site.Params.about.skills.enable }}
+        <div class="bc-skills">
+            <p class="bc-skills-title">{{ $about.skills.title | default .Site.Params.about.skills.title }}</p>
+            <div class="bc-pills">
+                {{ range .Site.Params.about.skills.items }}
+                <span class="bc-pill">{{ . }}</span>
+                {{ end }}
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</section>
+{{ end }}
