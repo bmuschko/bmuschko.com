@@ -1,21 +1,22 @@
-{{ partial "head" . }}
-  <body>
-    <div id="wrap">
-      {{ partial "header" . }}
-      <section id="about">
-        <div class="container">
-        <div class="avatar">
-          <img class="img-circle" src="{{ .Site.BaseURL }}img/{{ .Site.Params.avatar }}" alt="Responsive image">
-        </div>
-        <h3>I'm <strong>{{ .Site.Params.author }}</strong>, an independent software consultant and trainer at <a href="https://automatedascent.com">Automated Ascent LLC</a>.</h3>
-        <h3>Book author of <a href="https://amzn.to/39KqVxP">Certified Kubernetes Administrator (CKA) Study Guide</a>, <a href="https://amzn.to/3ncOy5k">Certified Kubernetes Application Developer (CKAD) Study Guide</a>, and <a href="https://amzn.to/3xNUTJ9">Gradle in Action</a>, <a href="https://automatedascent.com/services/training/">trainer</a> and <a href="https://speakerdeck.com/bmuschko">speaker</a>.
-        <h3>Open-source advocate and <a href="https://github.com/bmuschko/">contributor</a>.</h3>
-        <h3>Passionate about project automation, testing and Continuous Delivery.</h3>
-        <h3>Contact me at <a href="http://twitter.com/{{ .Site.Params.Social.Twitter }}">@{{ .Site.Params.Social.Twitter }}</a> or by <a href="mailto:{{ .Site.Params.Social.Email }}">email</a>.</h3>
-        {{ partial "social.html" . }}
-        </div>
-      </section>
-    </div>
-    {{ partial "footer" . }}
-  </body>
-</html>
+{{ define "head" }}
+<meta name="description" content="{{ .Site.Params.description }}">
+<link rel="canonical" href="{{ .Permalink }}">
+<link rel="stylesheet" href="{{ (printf "%scss/index.css" (.Site.Params.staticPath | default "")) | relURL }}" media="all">
+<link rel="stylesheet" href="{{ (printf "%scss/projects.css" (.Site.Params.staticPath | default "")) | relURL }}" media="all">
+
+<!-- fontawesome -->
+<script defer src="{{ (printf "%sfontawesome-6/all-6.4.2.js" (.Site.Params.staticPath | default "")) | relURL }}"></script>
+{{ end }}
+
+{{ define "title" }}
+{{ .Site.Title }}
+{{ end }}
+
+{{ define "main" }}
+{{- partial "sections/about.html" . -}}
+{{- partial "sections/achievements.html" . -}}
+{{- partial "sections/experience.html" . -}}
+{{- partial "sections/projects.html" . -}}
+{{- partial "sections/videocourses.html" . -}}
+{{- partial "sections/contact.html" . -}}
+{{ end }}

@@ -1,0 +1,23 @@
+{{ if .Site.Params.achievements.enable | default false }}
+{{- $achievements := .Site.Language.Params.achievements | default .Site.Params.achievements -}}
+<section id="achievements" class="bc-section">
+    <h3 class="bc-section-heading">{{ $achievements.title | default .Site.Params.achievements.title | default "Highlights" }}</h3>
+    <div class="bc-card-list">
+        {{ range $achievements.items | default .Site.Params.achievements.items }}
+        <div class="bc-card bc-card-simple" {{ if .url }}onclick="window.open('{{ .url }}', '_blank')"{{ end }}>
+            <div class="bc-card-body">
+                <h4 class="bc-card-title">
+                    {{ .title }}
+                    {{ if .url }}
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bc-arrow-icon">
+                        <path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd" />
+                    </svg>
+                    {{ end }}
+                </h4>
+                <p class="bc-card-desc">{{ .content }}</p>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+</section>
+{{ end }}

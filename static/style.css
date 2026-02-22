@@ -1,0 +1,542 @@
+/* ========================================
+   Cool Blue color scheme
+   Deep navy with ice blue accents
+   ======================================== */
+
+/* === Base & Dark Theme === */
+html {
+    scroll-behavior: smooth;
+    background-color: #0b1221 !important;
+}
+
+body.dark {
+    background-color: #0b1221 !important;
+    color: #8892a4 !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body.dark > * {
+    background-color: transparent !important;
+}
+
+::selection {
+    background-color: rgba(56, 189, 248, 0.3);
+    color: #f0f4f8;
+}
+
+/* Suppress theme header and hero */
+header#profileHeader,
+#hero {
+    display: none !important;
+}
+
+/* === Two-Column Layout === */
+.bc-layout {
+    display: flex;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    min-height: 100vh;
+    position: relative;
+    z-index: 2;
+}
+
+.bc-sidebar {
+    width: 48%;
+    max-width: 520px;
+    padding: 0 2rem 0 0;
+    flex-shrink: 0;
+}
+
+.bc-sidebar-inner {
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    padding: 6rem 0;
+}
+
+.bc-main {
+    flex: 1;
+    padding: 6rem 0 6rem 2rem;
+    min-width: 0;
+}
+
+/* === Profile Image === */
+.bc-profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1.25rem;
+    border: 2px solid #1e293b;
+    transition: border-color 0.3s;
+}
+
+.bc-profile-img:hover {
+    border-color: #38bdf8;
+}
+
+/* === Sidebar Typography === */
+.bc-name {
+    margin-bottom: 0.5rem;
+}
+
+.bc-name a {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #e2e8f0 !important;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    text-decoration: none !important;
+}
+
+.bc-name a:hover {
+    color: #38bdf8 !important;
+}
+
+.bc-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #e2e8f0 !important;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.bc-tagline {
+    color: #8892a4;
+    max-width: 320px;
+    line-height: 1.625;
+    font-size: 1rem;
+}
+
+/* === Sidebar Navigation === */
+.bc-nav {
+    margin-top: 3rem;
+}
+
+.bc-nav-link {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    text-decoration: none !important;
+    color: #4a5568 !important;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.25s;
+}
+
+.bc-nav-indicator {
+    display: inline-block;
+    width: 2rem;
+    height: 1px;
+    background-color: #2d3748;
+    margin-right: 1rem;
+    transition: all 0.25s;
+    flex-shrink: 0;
+}
+
+.bc-nav-link:hover,
+.bc-nav-link.active {
+    color: #e2e8f0 !important;
+}
+
+.bc-nav-link:hover .bc-nav-indicator,
+.bc-nav-link.active .bc-nav-indicator {
+    width: 4rem;
+    background-color: #38bdf8;
+}
+
+/* === Social Icons === */
+.bc-socials {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.bc-socials a {
+    color: #4a5568 !important;
+    font-size: 1.25rem;
+    text-decoration: none !important;
+    transition: color 0.2s;
+}
+
+.bc-socials a:hover {
+    color: #e2e8f0 !important;
+}
+
+/* === Section Styling === */
+.bc-section {
+    margin-bottom: 6rem;
+    scroll-margin-top: 6rem;
+}
+
+.bc-section-heading {
+    font-size: 0.875rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #e2e8f0 !important;
+    margin-bottom: 2.5rem;
+    display: none;
+}
+
+.bc-section-content {
+    color: #8892a4;
+    line-height: 1.625;
+    font-size: 1rem;
+}
+
+.bc-section-content a {
+    color: #e2e8f0 !important;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.bc-section-content a:hover {
+    color: #38bdf8 !important;
+}
+
+/* === Card List (Experience / Achievements) === */
+.bc-card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+}
+
+.bc-card {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+    text-decoration: none !important;
+    color: inherit !important;
+    transition: all 0.25s;
+    cursor: pointer;
+}
+
+.bc-card-simple {
+    grid-template-columns: 1fr;
+}
+
+.bc-book-card {
+    grid-template-columns: 56px 1fr;
+}
+
+.bc-card-thumbnail {
+    padding-top: 0.25rem;
+}
+
+.bc-card-thumbnail img {
+    width: 56px;
+    border-radius: 4px;
+    border: 2px solid rgba(136, 146, 164, 0.1);
+    transition: border-color 0.2s;
+}
+
+.bc-card:hover .bc-card-thumbnail img {
+    border-color: rgba(136, 146, 164, 0.3);
+}
+
+.bc-card-list:has(.bc-card:not(.bc-card-standalone):hover) .bc-card:not(.bc-card-standalone) {
+    opacity: 0.5;
+}
+
+.bc-card:not(.bc-card-standalone):hover {
+    opacity: 1 !important;
+    background-color: rgba(30, 41, 59, 0.6);
+    box-shadow: inset 0 1px 0 0 rgba(136, 146, 164, 0.1);
+    filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.04));
+}
+
+.bc-card-standalone:hover {
+    background-color: rgba(30, 41, 59, 0.6);
+}
+
+.bc-card-date {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #4a5568;
+    padding-top: 0.25rem;
+    white-space: nowrap;
+}
+
+.bc-card-body {
+    min-width: 0;
+}
+
+.bc-card-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #e2e8f0 !important;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+    background: transparent !important;
+}
+
+.bc-card-company {
+    color: #8892a4;
+    font-weight: 400;
+}
+
+.bc-card-company-link {
+    color: #8892a4;
+    text-decoration: none;
+}
+
+.bc-card-company-link:hover {
+    color: #38bdf8;
+}
+
+.bc-card:hover .bc-card-title {
+    color: #38bdf8 !important;
+}
+
+.bc-card-desc {
+    font-size: 0.875rem;
+    color: #8892a4;
+    line-height: 1.625;
+}
+
+.bc-card-desc ul {
+    padding-left: 1.25rem;
+    margin-top: 0.5rem;
+}
+
+.bc-card-desc li {
+    margin-bottom: 0.25rem;
+}
+
+/* Arrow icon animation */
+.bc-arrow-icon {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    vertical-align: middle;
+    margin-left: 0.25rem;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.bc-card:hover .bc-arrow-icon {
+    transform: translate(4px, -4px);
+}
+
+/* === Blue Pill Badges === */
+.bc-pill {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    background-color: rgba(56, 189, 248, 0.1);
+    color: #38bdf8;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 0.25rem 0.25rem 0.25rem 0;
+    white-space: nowrap;
+}
+
+/* === Skills section === */
+.bc-skills {
+    margin-top: 2rem;
+}
+
+.bc-skills-title {
+    font-size: 0.875rem;
+    color: #e2e8f0;
+    margin-bottom: 0.75rem;
+}
+
+.bc-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}
+
+/* === Contact Form === */
+.bc-contact-intro {
+    margin-bottom: 2rem;
+    line-height: 1.625;
+}
+
+.bc-contact-form {
+    max-width: 480px;
+}
+
+.bc-form-group {
+    margin-bottom: 1rem;
+}
+
+.bc-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: rgba(30, 41, 59, 0.5);
+    border: 1px solid #2d3748;
+    border-radius: 0.5rem;
+    color: #e2e8f0;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    resize: vertical;
+}
+
+.bc-input::placeholder {
+    color: #4a5568;
+}
+
+.bc-input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+.bc-btn {
+    padding: 0.625rem 1.5rem;
+    background-color: transparent;
+    border: 1px solid #38bdf8;
+    border-radius: 0.5rem;
+    color: #38bdf8;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.bc-btn:hover {
+    background-color: rgba(56, 189, 248, 0.1);
+}
+
+/* === Footer === */
+.bc-footer {
+    padding: 4rem 0 2rem;
+    font-size: 0.875rem;
+    color: #4a5568;
+    line-height: 1.625;
+}
+
+.bc-footer a {
+    color: #8892a4 !important;
+    text-decoration: none;
+}
+
+.bc-footer a:hover {
+    color: #38bdf8 !important;
+}
+
+/* ========================================
+   Mobile Responsive
+   ======================================== */
+@media (max-width: 991px) {
+    .bc-layout {
+        flex-direction: column;
+        padding: 0 1.5rem;
+    }
+
+    .bc-sidebar {
+        width: 100%;
+        max-width: 100%;
+        padding: 3rem 0 0;
+    }
+
+    .bc-sidebar-inner {
+        position: relative;
+        top: 0;
+        height: auto;
+        padding: 0;
+    }
+
+    .bc-nav {
+        display: none;
+    }
+
+    .bc-socials {
+        margin-top: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .bc-main {
+        padding: 2rem 0;
+    }
+
+    .bc-section {
+        margin-bottom: 4rem;
+        scroll-margin-top: 4rem;
+    }
+
+    .bc-section-heading {
+        display: block;
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        background-color: rgba(11, 18, 33, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 1.25rem 0;
+        margin-bottom: 1.5rem;
+    }
+
+    .bc-card {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+    }
+
+    .bc-contact-form {
+        max-width: 100%;
+    }
+
+    .bc-name a {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 575px) {
+    .bc-layout {
+        padding: 0 1rem;
+    }
+
+    .bc-name a {
+        font-size: 2rem;
+    }
+
+    .bc-title {
+        font-size: 1.1rem;
+    }
+
+    .bc-sidebar {
+        padding: 2rem 0 0;
+    }
+
+    .bc-section-heading {
+        font-size: 0.875rem;
+    }
+}
+
+/* === Override aggressive theme styles === */
+.dark .card {
+    background-color: transparent !important;
+}
+
+.dark #content {
+    background-color: transparent !important;
+}
+
+.dark section {
+    background-color: transparent !important;
+}
+
+#search-content {
+    display: none !important;
+}

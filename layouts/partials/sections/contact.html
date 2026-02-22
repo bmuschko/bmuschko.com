@@ -1,0 +1,29 @@
+{{ if .Site.Params.contact.enable | default false }}
+{{- $contact := .Site.Language.Params.contact | default .Site.Params.contact -}}
+<section id="contact" class="bc-section">
+    <h3 class="bc-section-heading">Contact</h3>
+    <div class="bc-section-content">
+        <div class="bc-contact-intro">
+            {{ $contact.content | emojify | markdownify }}
+        </div>
+        <form action="https://formsubmit.co/{{ .Site.Params.contact.email }}" method="POST" class="bc-contact-form">
+            <input type="hidden" name="_subject" value="New message from bmuschko.com">
+            <input type="hidden" name="_captcha" value="true">
+            <input type="hidden" name="_template" value="table">
+            <input type="text" name="_honey" style="display:none">
+            <div class="bc-form-group">
+                <input type="text" class="bc-input" name="name" required placeholder="Your name">
+            </div>
+            <div class="bc-form-group">
+                <input type="email" class="bc-input" name="email" required placeholder="Your email address">
+            </div>
+            <div class="bc-form-group">
+                <textarea class="bc-input" name="message" required placeholder="Your message" rows="5"></textarea>
+            </div>
+            <div class="bc-form-group">
+                <button type="submit" class="bc-btn">{{ $contact.btnName | default .Site.Params.contact.btnName | default (i18n "contact") }}</button>
+            </div>
+        </form>
+    </div>
+</section>
+{{ end }}
