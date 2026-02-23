@@ -234,7 +234,7 @@ header#profileHeader,
 }
 
 .bc-card-thumbnail {
-    align-self: center;
+    align-self: start;
 }
 
 .bc-card-thumbnail img {
@@ -282,6 +282,7 @@ header#profileHeader,
     font-weight: 500;
     color: #e2e8f0 !important;
     line-height: 1.4;
+    margin-top: 0;
     margin-bottom: 0.5rem;
     background: transparent !important;
 }
