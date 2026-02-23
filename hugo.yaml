@@ -95,8 +95,6 @@ params:
           url: https://github.com/bmuschko
         - icon: fab fa-linkedin
           url: https://www.linkedin.com/in/benjaminmuschko
-        - icon: fas fa-envelope
-          url: mailto:benjamin.muschko@gmail.com
 
   about:
     enable: true
