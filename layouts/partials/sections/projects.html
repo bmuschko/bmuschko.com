@@ -5,7 +5,7 @@
     <h3 class="bc-section-heading">{{ $projects.title | default .Site.Params.projects.title | default (i18n "projects") }}</h3>
     <div class="bc-card-list">
         {{ range $items }}
-        <div class="bc-card bc-book-card" {{ if .featured }}onclick="window.open('{{ .featured.link }}', '_blank')"{{ end }}>
+        <div class="bc-card bc-book-card" {{ if .featured }}onclick="window.open('{{ .featured.link }}', '_blank', 'noopener,noreferrer')"{{ end }}>
             <div class="bc-card-thumbnail">
                 <img src="{{ .image }}" alt="{{ .title }}" loading="lazy">
             </div>

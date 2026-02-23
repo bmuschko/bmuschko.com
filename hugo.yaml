@@ -17,7 +17,7 @@ enableRobotsTXT: true
 markup:
   goldmark:
     renderer:
-      unsafe: true
+      unsafe: false
 
 services:
   googleAnalytics:
