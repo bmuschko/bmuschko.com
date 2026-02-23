@@ -32,7 +32,7 @@
       "name": "Benjamin Muschko",
       "url": "https://bmuschko.com",
       "jobTitle": "Software Engineer, Trainer and Author",
-      "description": {{ .Site.Params.description }},
+      "description": {{ .Site.Params.description | jsonify }},
       "sameAs": [
         "https://github.com/bmuschko",
         "https://linkedin.com/in/benjaminmuschko"
