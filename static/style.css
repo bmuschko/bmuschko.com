@@ -83,6 +83,7 @@ header#profileHeader,
 
 /* === Sidebar Typography === */
 .bc-name {
+    margin-top: 0;
     margin-bottom: 0.5rem;
 }
 
@@ -191,6 +192,10 @@ header#profileHeader,
     color: #8892a4;
     line-height: 1.625;
     font-size: 1rem;
+}
+
+.bc-section:first-child .bc-section-content > :first-child {
+    margin-top: 0;
 }
 
 .bc-section-content a {
