@@ -16,6 +16,7 @@
   <!-- Custom Styles -->
   {{ if .Site.Params.customCSS }}
     <link rel="stylesheet" href="{{ (printf "%sstyle.css" (.Site.Params.staticPath | default "")) | relURL }}">
+    <link rel="stylesheet" href="{{ "ai.css" | relURL }}">
   {{ end }}
 
   <title>
@@ -54,7 +55,13 @@
           </h1>
           <h2 class="bc-title">{{ .Site.Params.hero.subtitle }}</h2>
           {{ if .Site.Params.hero.image }}
-          <img src="{{ .Site.Params.hero.image }}" alt="{{ .Site.Title }}" class="bc-profile-img" width="100" height="100">
+          <div class="bc-profile-row">
+            <img src="{{ .Site.Params.hero.image }}" alt="{{ .Site.Title }}" class="bc-profile-img" width="100" height="100">
+            <button class="bc-chat-btn" onclick="openChat()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="bc-ai-icon"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/><path d="M7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
+              Ask AI About Me
+            </button>
+          </div>
           {{ end }}
 
           <nav class="bc-nav">
@@ -121,6 +128,42 @@
     </main>
   </div>
 
+  <!-- Chat Modal -->
+  <div id="bc-chat-overlay" class="bc-chat-overlay" style="display: none;" onclick="if(event.target===this)closeChat()">
+    <div class="bc-chat-modal">
+      <div class="bc-chat-header">
+        <div class="bc-chat-header-info">
+          <div class="bc-chat-avatar">B</div>
+          <div>
+            <p class="bc-chat-header-title">Ask AI About Benjamin</p>
+            <p class="bc-chat-header-status"><span class="bc-chat-status-dot"></span>Ready to answer your questions</p>
+          </div>
+        </div>
+        <button class="bc-chat-close" onclick="closeChat()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </div>
+      <div id="bc-chat-messages" class="bc-chat-messages">
+        <div id="bc-chat-empty" class="bc-chat-empty">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="bc-chat-empty-icon"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/><path d="M7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>
+          <h3 class="bc-chat-empty-title">What would you like to know?</h3>
+          <p class="bc-chat-empty-desc">Ask specific questions about Benjamin's experience, skills, or fit for your role. Get honest, detailed answers.</p>
+          <div class="bc-chat-suggested">
+            {{ range .Site.Params.aiChat.suggestedQuestions }}
+            <button class="bc-chat-suggested-btn" onclick="sendChatMessage(this.textContent)">{{ . }}</button>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+      <div class="bc-chat-input-bar">
+        <input id="bc-chat-input" type="text" class="bc-chat-input" placeholder="Ask a question..." onkeydown="if(event.key==='Enter')sendChatMessage(this.value)">
+        <button class="bc-chat-send" onclick="sendChatMessage(document.getElementById('bc-chat-input').value)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   {{- partial "scripts.html" . -}}
 
   <script>
@@ -159,6 +202,30 @@
     });
   })();
   </script>
+
+  <script>
+  // AI config — Hugo injects data at build time, logic lives in static/ai.js
+  window.AI_CONFIG = {
+    apiUrl: '{{ .Site.Params.geminiProxyUrl | default "" }}',
+    systemContext: 'You are an AI assistant on Benjamin Muschko\'s professional portfolio website. ' +
+      'Answer questions about Benjamin based on the following portfolio information and any relevant details you can find via web search. ' +
+      'Be helpful, specific, and concise. Write in a professional but approachable tone. ' +
+      'Prioritize the portfolio data below as the primary source, but supplement with web search results when useful. ' +
+      'If asked something completely unrelated to Benjamin or his professional background, politely redirect the conversation.\n\n' +
+      'ABOUT: {{ .Site.Params.about.content | htmlEscape }}\n\n' +
+      'SKILLS: {{ delimit .Site.Params.about.skills.items ", " }}\n\n' +
+      'EXPERIENCE:\n' +
+      {{ range .Site.Params.experience.items }}
+      '{{ .company }} - {{ (index .jobs 0).name }} ({{ (index .jobs 0).date }}): {{ (index .jobs 0).content | htmlEscape }}\n' +
+      {{ end }}
+      'HIGHLIGHTS:\n' +
+      {{ range .Site.Params.achievements.items }}
+      '{{ .title }}: {{ .content | htmlEscape }}\n' +
+      {{ end }}
+      ''
+  };
+  </script>
+  <script src="/ai.js"></script>
 </body>
 
 </html>

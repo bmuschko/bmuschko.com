@@ -7,12 +7,15 @@ outputs:
   home:
     - "HTML"
     - "RSS"
-    - "JSON"
   page:
     - "HTML"
     - "RSS"
 
 enableRobotsTXT: true
+
+disableKinds:
+  - taxonomy
+  - term
 
 markup:
   goldmark:
@@ -27,6 +30,14 @@ params:
   title: "Benjamin Muschko"
   description: "Software engineer, consultant, trainer, and O'Reilly author specializing in AI-augmented development, cloud-native technologies, Kubernetes, and DevOps."
   favicon: "/images/profile.jpg"
+  geminiProxyUrl: "https://gemini-proxy.bmuschko.workers.dev"
+
+  aiChat:
+    suggestedQuestions:
+      - "Would Benjamin be a good fit for a team adopting Kubernetes and cloud-native practices?"
+      - "What kind of hands-on consulting has Benjamin delivered at enterprise companies?"
+      - "Tell me about Benjamin's experience building developer tools and training programs."
+      - "What leadership and community involvement does Benjamin have?"
 
   useBootstrapCDN: false
   customCSS: true
@@ -124,6 +135,8 @@ params:
         jobs:
           - name: "Consultant and Trainer"
             date: "May 2018 - Present"
+            aiContext: |-
+              Founded a solo consultancy after leaving Gradle. The core challenge was building a sustainable independent business while transitioning from build-tool expertise to the broader cloud-native ecosystem. Early engagements focused on CI/CD pipeline modernization at large enterprises, which naturally led to Kubernetes adoption consulting. The training side grew organically through O'Reilly partnerships. A key inflection point was earning all five Kubernetes certifications, which opened doors to CNCF Ambassador status and deeper community involvement.
             content: |-
               - Delivered high-impact, short- and long-term consulting engagements to a variety of enterprise companies with a focus on CI/CD, cloud-native application development, container solutions, and DevSecOps.
               - Designed and conducted live and video-based trainings for 1000+ students on topics like Kubernetes, Docker, Gradle, Go, Java, and Groovy for O'Reilly Media, LinkedIn Learning, and privately-owned training organizations.
@@ -135,6 +148,8 @@ params:
         jobs:
           - name: "Principal Engineer"
             date: "Aug 2013 - Apr 2018"
+            aiContext: |-
+              Joined Gradle as an early employee when the company was transitioning from a pure open-source project to a venture-backed company. The main challenge was balancing open-source community needs with enterprise product development. The Netflix partnership was particularly formative — it exposed massive-scale build challenges that influenced Gradle's architecture. The consulting and training work began as revenue generation but became a feedback loop for understanding real-world build pain points across industries.
             content: |-
               - Implemented new features and bug fixes for the Open Source build tool Gradle with impact on millions of users.
               - Engaged with the Gradle community as developer advocate by speaking at conferences, improving documentation and interacting with key contributors.
