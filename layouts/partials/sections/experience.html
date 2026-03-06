@@ -23,6 +23,45 @@
                 <div class="bc-card-desc">
                     {{ .content | markdownify }}
                 </div>
+
+                {{ if .aiContext }}
+                <button class="bc-ai-btn"
+                        onclick="event.stopPropagation(); loadAiContext(this);"
+                        data-ai-context="{{ .aiContext | htmlEscape }}"
+                        data-ai-bullets="{{ .content | htmlEscape }}"
+                        data-ai-role="{{ .name }}"
+                        data-ai-company="{{ $company }}">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="bc-ai-icon">
+                        <path d="M10 1a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 1zM5.05 3.05a.75.75 0 011.06 0l1.062 1.06A.75.75 0 116.11 5.173L5.05 4.11a.75.75 0 010-1.06zm9.9 0a.75.75 0 010 1.06l-1.06 1.062a.75.75 0 01-1.062-1.061l1.061-1.06a.75.75 0 011.06 0zM10 7a3 3 0 100 6 3 3 0 000-6zm-6.25 3a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5H3a.75.75 0 01.75.75zm14 0a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5H17a.75.75 0 01.75.75zm-11.89 5.11a.75.75 0 011.06-1.06l1.062 1.06a.75.75 0 01-1.061 1.06l-1.06-1.06zm8.78 0a.75.75 0 10-1.06-1.06l-1.062 1.06a.75.75 0 001.061 1.06l1.06-1.06zM10 17a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 0110 17z"/>
+                    </svg>
+                    View AI Context
+                </button>
+                <div class="bc-ai-response" style="display: none;">
+                    <div class="bc-ai-loading" style="display: none;">
+                        <div class="bc-ai-spinner"></div>
+                        <span>Generating context...</span>
+                    </div>
+                    <div class="bc-ai-error" style="display: none;"></div>
+                    <div class="bc-ai-content" style="display: none;">
+                        <div class="bc-ai-section">
+                            <h5 class="bc-ai-section-title">Situation</h5>
+                            <p class="bc-ai-section-text" data-section="situation"></p>
+                        </div>
+                        <div class="bc-ai-section">
+                            <h5 class="bc-ai-section-title">Approach</h5>
+                            <p class="bc-ai-section-text" data-section="approach"></p>
+                        </div>
+                        <div class="bc-ai-section">
+                            <h5 class="bc-ai-section-title">Technical Work</h5>
+                            <p class="bc-ai-section-text" data-section="technical"></p>
+                        </div>
+                        <div class="bc-ai-section">
+                            <h5 class="bc-ai-section-title">Lessons Learned</h5>
+                            <p class="bc-ai-section-text" data-section="lessons"></p>
+                        </div>
+                    </div>
+                </div>
+                {{ end }}
             </div>
         </div>
         {{ end }}
