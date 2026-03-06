@@ -67,12 +67,19 @@ header#profileHeader,
 }
 
 /* === Profile Image === */
+.bc-profile-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
 .bc-profile-img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0;
     border: 2px solid #1e293b;
     transition: border-color 0.3s;
 }
