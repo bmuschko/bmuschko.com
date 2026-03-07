@@ -239,6 +239,10 @@
     background-color: rgba(255, 255, 255, 0.05);
 }
 
+.bc-chat-close-back {
+    display: none;
+}
+
 /* Messages area */
 .bc-chat-messages {
     flex: 1;
@@ -401,6 +405,7 @@
 @media (max-width: 991px) {
     .bc-chat-modal {
         height: 90vh;
+        height: 90dvh;
         max-height: none;
         border-radius: 0.75rem;
     }
@@ -413,7 +418,23 @@
 
     .bc-chat-modal {
         height: 100vh;
+        height: 100dvh;
         max-height: none;
         border-radius: 0;
+    }
+
+    .bc-chat-close {
+        min-width: 2.5rem;
+        min-height: 2.5rem;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bc-chat-close-x {
+        display: none;
+    }
+
+    .bc-chat-close-back {
+        display: block;
     }
 }

@@ -122,15 +122,41 @@
   var sending = false;
 
   window.openChat = function() {
-    document.getElementById('bc-chat-overlay').style.display = 'flex';
+    var overlay = document.getElementById('bc-chat-overlay');
+    overlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
     setTimeout(function() { document.getElementById('bc-chat-input').focus(); }, 100);
+
+    // Handle viewport resize from virtual keyboard on mobile
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleViewportResize);
+    }
   };
 
   window.closeChat = function() {
     document.getElementById('bc-chat-overlay').style.display = 'none';
     document.body.style.overflow = '';
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', handleViewportResize);
+    }
   };
+
+  function handleViewportResize() {
+    var modal = document.querySelector('.bc-chat-modal');
+    if (modal && window.visualViewport) {
+      modal.style.height = window.visualViewport.height + 'px';
+    }
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var overlay = document.getElementById('bc-chat-overlay');
+      if (overlay && overlay.style.display !== 'none') {
+        closeChat();
+      }
+    }
+  });
 
   window.sendChatMessage = function(text) {
     if (!text || !text.trim() || sending) return;
